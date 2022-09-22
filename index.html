@@ -1,24 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Day 1</title>
-</head>
-<body>
-    <h1>Selamat Datang</h1>
-    <hr>
-    <div class="div">
-        <h2>Tentang Saya</h2>
-        <p>Halo, perkanalkan nama saya Redy Pamungkas, saya adalah peserta ZettaCamp Batch#3 Catfish bagian Backend.</p>
-        <hr>
-        <h2>Hobbi</h2>
-        <p>Hobi saya adalah jogging dan <span style="font-style: italic;">sepeda</span></p>
-        <hr>
-        <h2>Social Media</h2>
-        <h4><a href="https://www.facebook.com/redy.adhi/">Facebook</a></h4>
-        <hr>
-    </div>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HTML Day 1</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                color: #333;
+                background-color: #f4f4f4;
+                line-height: 1.4;
+            }
+            .card {
+                border: 1px solid #ddd;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+            }
+
+            #header {
+                background-color: #333;
+                color: #fff;
+            }
+
+            .text-bold {
+                font-size: 700;
+            }
+
+            .text-center {
+                display: block;
+                text-align: center;
+            }
+
+            #main {
+                width: 69%;
+                float: left;
+            }
+
+            #aside {
+                width: 29%;
+                float: right;
+            }
+
+            .clr {
+                clear: both;
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            #footer {
+                background-color: #333;
+                padding: 5px;
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <header id="header" class="card">
+            <h1>My Website</h1>
+            <p>Tugas harian ZettaCamp day 1</p>
+        </header>
+        <main>
+            <!-- Main Content (Left Side) -->
+            <section id="main">
+                <div class="card">
+                    <h2>Selamat datang di website ku</h2>
+                    <p>
+                        Halo, Perkenalkan nama saya Redy Surya Adhi Pamungkas,
+                        saya adalah peserta ZettaCamp Batch ke 3 CatFish bagian
+                        BackEnd, salam kenal semuanya.
+                    </p>
+                    <a
+                        href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                        class="text-center"
+                        >Click here to more</a
+                    >
+                </div>
+
+                <article>
+                    <h2>Biodata</h2>
+                    <!-- Hobi -->
+                    <h3>Hobbi</h3>
+                    <p>
+                        Hobi saya adalah Lorem ipsum dolor sit amet consectetur,
+                        adipisicing elit. Nobis necessitatibus molestias cumque
+                        quam, expedita quidem nulla, repellat doloremque harum,
+                        rem error doloribus magnam totam sed? Omnis aut quasi
+                        facilis asperiores Lorem ipsum dolor sit, amet
+                        consectetur adipisicing elit. Cupiditate et ipsa officia
+                        tenetur commodi, distinctio vel quidem neque quam minus
+                        expedita hic exercitationem, eos repellat? Ipsum a
+                        debitis pariatur laborum!
+                    </p>
+                    <h3>Makanan</h3>
+                    <p>
+                        Makanan yang saya sukai adalah Lorem ipsum dolor sit,
+                        amet consectetur adipisicing elit. Molestiae alias
+                        laudantium ducimus laborum quo, non consectetur
+                        dignissimos, sed voluptatum dicta autem cum dolor
+                        adipisci accusamus voluptas nostrum veniam inventore
+                        quasi! Quaerat aliquid praesentium aut accusantium
+                        maiores, voluptatem impedit vero minus quasi excepturi
+                        earum voluptate ad ipsum. Ab sed, odit voluptatem
+                        repudiandae minima nihil! Et labore eligendi sequi saepe
+                        eos ab?
+                    </p>
+                </article>
+            </section>
+            <!-- Biodata -->
+
+            <!-- Navigation Content (Right Side) -->
+            <section id="aside" class="card">
+                <h3>Social Media</h3>
+                <ul>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                            >Facebook</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                            >Twitter</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                            >Instagram</a
+                        >
+                    </li>
+                </ul>
+                <hr />
+                <h3>Kontak Saya</h3>
+                <ul>
+                    <li><strong>Alamat:</strong> ZettaCamp Jogja</li>
+                    <li><strong>No.HP:</strong> (77) 777-7777</li>
+                    <li><strong>Email:</strong> redy@email.com</li>
+                </ul>
+            </section>
+        </main>
+        <div class="clr"></div>
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="text-center">Copyright &copy; My Website 2022</p>
+        </footer>
+    </body>
 </html>
