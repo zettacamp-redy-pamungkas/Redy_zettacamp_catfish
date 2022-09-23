@@ -39,8 +39,8 @@
             }
 
             #aside {
-                width: 80%;
-                display: block;
+                display: flex;
+                justify-content: center;
             }
 
             .clr {
@@ -83,9 +83,4 @@
 
             #aside a {
                 text-decoration: none;
-            }
-
-            #contact {
-                margin-left: auto;
-                margin-right: auto;
             }
