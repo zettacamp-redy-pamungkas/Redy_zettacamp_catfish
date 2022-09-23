@@ -47,6 +47,29 @@
                 list-style: none;
             }
 
+            nav ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            nav li {
+                display: inline;
+                margin: 0 5px 0;
+                font-weight: 700;
+            }
+
+            nav.card a{
+                color: white;
+            }
+
+            nav.card {
+                background-color: #333;
+            }
+
+            nav a {
+                text-decoration: none;
+            }
+
             #footer {
                 background-color: #333;
                 padding: 1px;
