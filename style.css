@@ -38,6 +38,10 @@
                 margin-right: auto;
             }
 
+            #main a {
+                text-decoration: none;
+            }
+
             #aside {
                 display: flex;
                 justify-content: center;
@@ -83,4 +87,8 @@
 
             #aside a {
                 text-decoration: none;
+            }
+
+            .box-shadow {
+                box-shadow: 0 2px 10px rgba(0, 0, 0, .3);
             }
