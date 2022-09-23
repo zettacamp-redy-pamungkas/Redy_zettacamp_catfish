@@ -45,7 +45,15 @@ section:nth-of-type(3) {
     width: 35%;
 }
 
+#social ul li {
+    line-height: 2;
+}
+
 #contact {
     float: right;
     width: 35%;
+}
+
+#contact ul li {
+    line-height: 2;
 }
