@@ -92,3 +92,10 @@
             .box-shadow {
                 box-shadow: 0 2px 10px rgba(0, 0, 0, .3);
             }
+
+            article img {
+                width: 10%;
+                border-radius: 50px;
+                display: block;
+                margin: 0 auto 20px;
+            }
