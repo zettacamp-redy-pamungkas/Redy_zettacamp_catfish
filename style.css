@@ -7,6 +7,9 @@
                 color: #333;
                 background-color: #f4f4f4;
                 line-height: 1.4;
+                margin-left: auto;
+                margin-right: auto;
+                width: 80%;
             }
             .card {
                 border: 1px solid #ddd;
@@ -37,6 +40,7 @@
 
             #aside {
                 width: 80%;
+                display: block;
             }
 
             .clr {
@@ -75,4 +79,13 @@
                 padding: 1px;
                 color: #fff;
                 border-radius: 4px;
+            }
+
+            #aside a {
+                text-decoration: none;
+            }
+
+            #contact {
+                margin-left: auto;
+                margin-right: auto;
             }
