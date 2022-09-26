@@ -15,6 +15,11 @@
                 background-color: #f4f4f4;
                 line-height: 1.4;
             }
+
+            a {
+                text-decoration: none;
+            }
+            /*  */
             .card {
                 border: 1px solid #ddd;
                 padding: 10px;
@@ -22,6 +27,19 @@
                 border-radius: 4px;
             }
 
+            .text-bold {
+                font-weight: 700;
+            }
+            
+            .text-center {
+                display: block;
+                text-align: center;
+            }
+
+            .text-italic {
+                font-style: italic;
+            }
+            
             .box-shadow {
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             }
@@ -31,14 +49,6 @@
                 color: #fff;
             }
 
-            .text-bold {
-                font-size: 700;
-            }
-
-            .text-center {
-                display: block;
-                text-align: center;
-            }
 
             #main {
                 width: 69%;
@@ -63,13 +73,31 @@
                 padding: 5px;
                 color: #fff;
             }
+
+            /* img */
+            #aside img {
+                width: 48px;
+                display: inline-block;
+                padding: 5px;
+            }
+
+            #aside ul li a {
+                display: flex;
+                align-items: center;
+            }
+
+            #aside #aside-img {
+                display: block;
+                margin: auto;
+                width: 96px;
+            }
         </style>
     </head>
     <body>
         <!-- Header -->
         <header id="header" class="card box-shadow">
             <h1>My Website</h1>
-            <p>Tugas harian ZettaCamp day 1</p>
+            <p>Tugas harian ZettaCamp day <span class="text-bold">3</span></p>
         </header>
         <main>
             <!-- Main Content (Left Side) -->
@@ -77,9 +105,9 @@
                 <div class="card box-shadow">
                     <h2>Selamat datang di website ku</h2>
                     <p>
-                        Halo, Perkenalkan nama saya Redy Surya Adhi Pamungkas,
+                        Halo, Perkenalkan nama saya <span class="text-bold">Redy Surya Adhi Pamungkas</span>,
                         saya adalah peserta ZettaCamp Batch ke 3 CatFish bagian
-                        BackEnd, salam kenal semuanya.
+                        Back End, salam kenal semuanya.
                     </p>
                     <a
                         href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
@@ -127,35 +155,44 @@
                     <li>
                         <a
                             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
-                            >Facebook</a
+                            >
+                            <img src="https://www.freepnglogos.com/uploads/logo-facebook-png/logo-facebook-facebook-logo-png-transparent-svg-vector-bie-supply-18.png" alt="">
+                            <span>Facebook</span></a
+                        >
+                    </li>
+                    <li>
+                        
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                            ><img src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-logo-white-circle-png-images-23.png" alt="">
+                            <span>Twitter</span></a
                         >
                     </li>
                     <li>
                         <a
                             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
-                            >Twitter</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
-                            >Instagram</a
+                            >
+                            <img src="https://www.freepnglogos.com/uploads/black-instagram-logo-icon-png-10.png" alt="">
+                            <span>Instagram</span></a
                         >
                     </li>
                 </ul>
                 <hr />
-                <h3>Kontak Saya</h3>
-                <ul>
-                    <li><strong>Alamat:</strong> ZettaCamp Jogja</li>
-                    <li><strong>No.HP:</strong> (77) 777-7777</li>
-                    <li><strong>Email:</strong> redy@email.com</li>
-                </ul>
+                <div class="aside-contact">
+                    <h3>Kontak Saya</h3>
+                    <img id="aside-img" src="./img/person.png" alt="">
+                    <ul>
+                        <li><span class="text-bold">Alamat:</span> ZettaCamp Jogja</li>
+                        <li><span class="text-bold">No.HP:</span> (77) 777-7777</li>
+                        <li><span class="text-bold">Email:</span> redy@email.com</li>
+                    </ul>
+                </div>
             </section>
         </main>
         <div class="clr"></div>
         <!-- Footer -->
         <footer id="footer" class="box-shadow">
-            <p class="text-center">Copyright &copy; My Website 2022</p>
+            <p class="text-center">Copyright &#169; My Website 2022</p>
         </footer>
     </body>
 </html>
