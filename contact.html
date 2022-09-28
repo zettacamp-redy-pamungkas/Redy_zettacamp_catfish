@@ -77,6 +77,24 @@
                 font-size: 60px;
             }
 
+            .text-primary {
+                color: #fc8;
+            }
+
+            .lead {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                border: none;
+                background-color: #333;
+                padding: 13px 20px;
+                font-size: 1rem;
+                border-radius: 5px;
+                cursor: pointer;
+                color: #fff;
+            }
+
             /* Navbar */
             .navbar ul {
                 display: flex;
@@ -137,11 +155,62 @@
             }
 
             /* Contact */
-            #contact-form {
-                height: 100vh;
+            #contact-form .container h1 {
+                margin: 15px 0;
             }
 
+            /* Form */
+
+            form {
+                margin-bottom: 20px;
+            }
+            .form-group {
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .form-group label {
+                color: #333;
+                display: block;
+                padding-bottom: 5px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                font-size: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #fc8;
+            }
+
+            .form-group textarea {
+                width: 100%;
+                height: 300px;
+            }
+
+            .form-group-radio {
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .form-group-radio>label {
+                display: block;
+                margin-bottom: 5px;
+                padding-bottom: 5px;
+            }
             
+            #contact {
+                padding: 10px;
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-evenly;
+                border-radius: 5px;
+            }
         </style>
     </head>
     <body>
@@ -164,14 +233,74 @@
 
         <!-- Section Form -->
         <section id="contact-form">
-
+            <div class="container">
+                <h1 class="heading-1"><span class="text-primary">Contact</span> Me</h1>
+                <p class="lead">Fill the form below to contact me</p>
+                <form action="/" method="post">
+                    <div class="form-group">
+                        <label for="first">First Name</label>
+                        <input type="text" id="first" name="first" placeholder="Enter your first name" required minlength="4" maxlength="25">
+                    </div>
+                    <div class="form-group">
+                        <label for="last">Last Name</label>
+                        <input type="text" id="last" name="last" placeholder="Enter your last name" required="required" minLength="4" maxLength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">Telephone</label>
+                        <input type="tel" id="telephone" name="telephone" placeholder="Enter your phone number" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" placeholder="Enter your age">
+                    </div>
+                    <div class="form-group-radio">
+                        <label>Gender</label>
+                        <div class="radio-group">
+                            <input type="radio" id="men" name="gender">
+                            <label for="men">Men</label>
+                        </div>
+                        <div class="radio-group">
+                            <input type="radio" id="women" name="gender">
+                            <label for="women">Women</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea name="message" id="message" required="required"></textarea>
+                    </div>
+                    <button class="btn" type="button">Submit</button>
+                </form>
+            </div>
         </section>
 
-        <!-- Section Form -->
+        <!-- Section Contact -->
+        <section id="contact" class="bg-dark text-center">
+            <div class="contact-group">
+                <i class="fa-solid fa-location-dot fa-3x"></i>
+                <h3>Address</h3>
+                <p>St.69, Jogja</p>
+            </div>
+            <div class="contact-group">
+                <i class="fa-solid fa-phone fa-3x"></i>
+                <h3>Phone</h3>
+                <p>(77) 666-9999</p>
+            </div>
+            <div class="contact-group">
+                <i class="fa-solid fa-envelope fa-3x"></i>
+                <h3>Email</h3>
+                <p>redy@email.com</p>
+            </div>
+        </section>
 
         <!-- Footer -->
         <footer id="footer" class="box-shadow">
             <p class="text-center">Copyright &#169; My Website 2022</p>
         </footer>
+        <!-- FontAwesome -->
+        <script src="https://kit.fontawesome.com/62e6552738.js" crossorigin="anonymous"></script>
     </body>
 </html>
