@@ -307,11 +307,11 @@
                         </div>
                         <div class="form-group">
                             <label for="product-description">Product Description</label>
-                            <textarea name="description" id="product-description" required></textarea>
+                            <textarea name="description" id="product-description" required maxlength="250" minlength="5"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="product-img">Product Image</label>
-                            <input type="file" accept="image/*" id="product-img" name="img">
+                            <input type="file" accept="image/*" id="product-img" name="img" required>
                         </div>
                         <div class="form-group">
                             <label for="product-category">Product Category</label>
@@ -323,15 +323,15 @@
                         </div>
                         <div class="form-group">
                             <label for="product-price">Product Price</label>
-                            <input type="number" id="product-price" name="price" required step="0.01">
+                            <input type="number" id="product-price" name="price" required step="0.01" min="0">
                         </div>
                         <div class="form-group">
                             <label for="product-from">Product From</label>
-                            <input type="text" name="from" id="product-from">
+                            <input type="text" name="from" id="product-from" minlength="4" maxlength="25">
                         </div>
                         <div class="form-group">
                             <label for="product-owner">Product Owner</label>
-                            <input type="text" id="product-owner" name="owner">
+                            <input type="text" id="product-owner" name="owner" minlength="4" maxlength="25">
                         </div>
                         <div class="form-group checkbox">
                             <input type="checkbox" name="onSale" id="product-sale" value="true">
