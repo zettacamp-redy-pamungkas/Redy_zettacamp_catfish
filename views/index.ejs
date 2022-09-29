@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>HTML Day 4</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                color: #333;
+                background-color: #f4f4f4;
+                line-height: 1.4;
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            a {
+                text-decoration: none;
+            }
+            /* utilities */
+            .card {
+                border: 1px solid #ddd;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+            }
+
+            .text-bold {
+                font-weight: 700;
+            }
+
+            .text-center {
+                display: block;
+                text-align: center;
+            }
+
+            .text-italic {
+                font-style: italic;
+            }
+
+            .box-shadow {
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .bg-dark {
+                background-color: #333;
+                color: #fff;
+            }
+
+            .bg-dark a {
+                color: #fff;
+            }
+
+            .bg-dark a:hover {
+                color: #fc8;
+                background-color: #555;
+            }
+
+            .current {
+                font-weight: 700;
+                background-color: #555;
+            }
+
+            .lead {
+                font-size: 1.2rem;
+            }
+
+            /* Navbar */
+            .navbar ul {
+                display: flex;
+                padding: 0;
+            }
+
+            .navbar ul a {
+                display: block;
+                padding: 13px 20px;
+                margin: 0 5px;
+            }
+
+            #header {
+                background-color: #333;
+                color: #fff;
+            }
+
+            #main {
+                width: 69%;
+                float: left;
+            }
+
+            #aside {
+                width: 29%;
+                float: right;
+            }
+
+            .clr {
+                clear: both;
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            #footer {
+                background-color: #333;
+                padding: 5px;
+                color: #fff;
+            }
+
+            /* img */
+            #aside img {
+                width: 48px;
+                display: inline-block;
+                padding: 5px;
+            }
+
+            #aside ul li a {
+                display: flex;
+                align-items: center;
+            }
+
+            #aside #aside-img {
+                display: block;
+                margin: auto;
+                width: 96px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <nav class="navbar bg-dark">
+            <div class="container">
+                <ul>
+                    <li><a class="current" href="/">Home</a></li>
+                    <li><a href="/wishlist">Wish List</a></li>
+                    <li>
+                        <a href="/contact">Contact</a>
+                    </li>
+                    <li>
+                        <a href="/products">Products</a>
+                    </li>
+                    <li><a href="/products/new">New Product</a></li>
+                </ul>
+            </div>
+        </nav>
+        <header id="header" class="card box-shadow">
+            <h1>My Website</h1>
+            <p>Tugas harian ZettaCamp day 4</p>
+        </header>
+        <main>
+            <!-- Main Content (Left Side) -->
+            <section id="main">
+                <div class="card box-shadow">
+                    <h2>Selamat datang di website ku &#9731;</h2>
+                    <p>
+                        Halo, Perkenalkan nama saya
+                        <strong>Redy Surya Adhi Pamungkas</strong>, saya adalah
+                        peserta ZettaCamp Batch ke 3 CatFish bagian Back End,
+                        salam kenal semuanya.
+                    </p>
+                    <a
+                        href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                        class="text-center"
+                        >Click here to more</a
+                    >
+                </div>
+
+                <!-- Biodata -->
+                <article class="card box-shadow">
+                    <div class="article-group">
+                        <h2>Biodata</h2>
+                        <!-- Hobi -->
+                        <h3>Hobbi</h3>
+                        <p>
+                            Hobi saya adalah Lorem ipsum dolor sit amet
+                            consectetur, adipisicing elit. Nobis necessitatibus
+                            molestias cumque quam, expedita quidem nulla,
+                            repellat doloremque harum, rem error doloribus
+                            magnam totam sed? Omnis aut quasi facilis asperiores
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Cupiditate et ipsa officia tenetur commodi,
+                            distinctio vel quidem neque quam minus expedita hic
+                            exercitationem, eos repellat? Ipsum a debitis
+                            pariatur laborum!
+                        </p>
+                    </div>
+                    <!-- Makanan -->
+                    <div class="article-group">
+                        <h3>Makanan</h3>
+                        <p>
+                            Makanan yang saya sukai adalah Lorem ipsum dolor
+                            sit, amet consectetur adipisicing elit. Molestiae
+                            alias laudantium ducimus laborum quo, non
+                            consectetur dignissimos, sed voluptatum dicta autem
+                            cum dolor adipisci accusamus voluptas nostrum veniam
+                            inventore quasi! Quaerat aliquid praesentium aut
+                            accusantium maiores, voluptatem impedit vero minus
+                            quasi excepturi earum voluptate ad ipsum. Ab sed,
+                            odit voluptatem repudiandae minima nihil! Et labore
+                            eligendi sequi saepe eos ab?
+                        </p>
+                    </div>
+                    <!-- Music -->
+                    <div class="article-group">
+                        <h3>Music</h3>
+                        <figure>
+                            <figcaption>Title: -10&#8451;</figcaption>
+                            <figcaption>
+                                By:
+                                <a
+                                    class="text-bold"
+                                    href="https://twitter.com/shlllllw"
+                                    target="_blank"
+                                    >Sharou</a
+                                >
+                            </figcaption>
+                            <audio
+                                class="card"
+                                src="./assets/mp3/10℃ _ しゃろう.mp3"
+                                controls
+                                loop
+                            ></audio>
+                        </figure>
+                    </div>
+                    <!-- Video -->
+                    <div class="article-group">
+                        <h3>Video</h3>
+                        <p class="lead text-center">PewDiePie gets SALTY with Fortnite Players</p>
+                        <video
+                            controls
+                            width="100%"
+                            height="auto"
+                            class="box-shadow"
+                        >
+                    <source src="./assets/mp4/video.mp4" type="video/mp4">
+                    </video>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Navigation Content (Right Side) -->
+            <section id="aside" class="card box-shadow">
+                <h3>Social Media</h3>
+                <ul>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                        >
+                            <img
+                                src="https://www.freepnglogos.com/uploads/logo-facebook-png/logo-facebook-facebook-logo-png-transparent-svg-vector-bie-supply-18.png"
+                                alt=""
+                            />
+                            <span>Facebook</span></a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                            ><img
+                                src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-logo-white-circle-png-images-23.png"
+                                alt=""
+                            />
+                            <span>Twitter</span></a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                        >
+                            <img
+                                src="https://www.freepnglogos.com/uploads/black-instagram-logo-icon-png-10.png"
+                                alt=""
+                            />
+                            <span>Instagram</span></a
+                        >
+                    </li>
+                </ul>
+                <hr />
+                <div class="aside-contact">
+                    <h3>Kontak Saya</h3>
+                    <img id="aside-img" src="./img/person.png" alt="" />
+                    <ul>
+                        <li>
+                            <span class="text-bold">Alamat:</span> ZettaCamp
+                            Jogja
+                        </li>
+                        <li>
+                            <span class="text-bold">No.HP:</span> (77) 777-7777
+                        </li>
+                        <li>
+                            <span class="text-bold">Email:</span> redy@email.com
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        <div class="clr"></div>
+        <!-- Footer -->
+        <footer id="footer" class="box-shadow">
+            <p class="text-center">Copyright &#169; My Website 2022</p>
+        </footer>
+    </body>
+</html>

@@ -1,2 +1,9 @@
 # assets
 assets/
+
+# uploads
+uploads/*
+
+# node_module
+node_module/*
+node_modules/.bin/ejs.cmd

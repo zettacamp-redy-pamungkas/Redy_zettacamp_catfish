@@ -1,0 +1,26 @@
+{
+  "name": "redy_zettacamp_catfish",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zettacamp-redy-pamungkas/Redy_zettacamp_catfish.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zettacamp-redy-pamungkas/Redy_zettacamp_catfish/issues"
+  },
+  "homepage": "https://github.com/zettacamp-redy-pamungkas/Redy_zettacamp_catfish#readme",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}
