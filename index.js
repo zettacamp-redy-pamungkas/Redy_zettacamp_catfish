@@ -77,11 +77,18 @@ app.post('/contact', (req, res) => {
 
 // GET All Product Route
 app.get('/products', async (req, res) => {
-    const allProducts = await Product.find({});
-    res.render('products', {
-        allProducts,
-        categories
-    })
+    const { category } = req.query;
+    if (category) {
+        const allProducts = await Product.find({category});  
+        res.render('products', {
+            allProducts
+        })
+    } else {
+        const allProducts = await Product.find({});
+        res.render('products', {
+            allProducts
+        })
+    }
 });
 
 // POST new product route
