@@ -88,14 +88,18 @@
                 color: #fff;
             }
 
+            #main-content {
+                display: flex;
+                justify-content: space-between;
+            }
+
             #main {
-                width: 69%;
-                float: left;
+                width: 67%;
             }
 
             #aside {
                 width: 29%;
-                float: right;
+                align-self: flex-start;
             }
 
             .clr {
@@ -152,7 +156,7 @@
             <h1>My Website</h1>
             <p>Tugas harian ZettaCamp day 4</p>
         </header>
-        <main>
+        <main id="main-content">
             <!-- Main Content (Left Side) -->
             <section id="main">
                 <div class="card box-shadow">
