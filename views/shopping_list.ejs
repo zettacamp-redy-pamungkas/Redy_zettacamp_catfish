@@ -183,6 +183,32 @@
                 margin-bottom: 10px;
             }
             
+            /* Responsive */
+            @media (max-width: 820px) {
+                .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                }
+
+                #wishlist {
+                    display: none;
+                }
+
+                .priority-5 {
+                    display: none;
+                }
+            
+            @media (max-width: 500px) {
+                .priority-5 {
+                    display: none;
+                }
+
+                .priority-4 {
+                    display: none;
+                }
+            }
+
+        }
         </style>
     </head>
     <body>
@@ -213,7 +239,7 @@
             <div class="container">
                 <h1 class="text-center heading-1">Wish List</h1>
                 <!-- WishList -->
-                <section class="card box-shadow">
+                <section id="wishlist" class="card box-shadow">
                     <!-- Description List -->
                     <dl>
                         <div class="dl-group">
@@ -236,43 +262,43 @@
                         <tr>
                             <th>#</th>
                             <th>Nama</th>
-                            <th>Gambar</th>
+                            <th class="priority-5">Gambar</th>
                             <th>Harga</th>
-                            <th>Kategori</th>
-                            <th>Jumlah</th>
-                            <th>Total</th>
+                            <th class="priority-4">Kategori</th>
+                            <th class="priority-5">Jumlah</th>
+                            <th class="priority-5">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>1</td>
                             <td>Mountain Bike</td>
-                            <td>
+                            <td class="priority-5">
                                 <img src="https://images.pexels.com/photos/2591990/pexels-photo-2591990.jpeg" alt="">
                             </td>
                             <td>10.000.000</td>
-                            <td><ul>
+                            <td class="priority-4"><ul>
                                 <li>Sepeda
                                     <ul>
                                         <li>MTB</li>
                                     </ul>
                                 </li>
                             </ul></td>
-                            <td>
+                            <td class="priority-5">
                                 1
                             </td>
-                            <td class="text-bold">
+                            <td class="text-bold priority-5">
                                 10.000.000
                             </td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Jersey Sepeda</td>
-                            <td>
+                            <td class="priority-5">
                                 <img src="https://images.pexels.com/photos/248547/pexels-photo-248547.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
                             </td>
                             <td>2.100.000</td>
-                            <td><ul>
+                            <td class="priority-4"><ul>
                                 <li>Aksesoris
                                     <ul>
                                         <li>Safety</li>
@@ -280,21 +306,21 @@
                                     </ul>
                                 </li>
                             </ul></td>
-                            <td>
+                            <td class="priority-5">
                                 1
                             </td>
-                            <td class="text-bold">
+                            <td class="text-bold priority-5">
                                 2.100.000
                             </td>
                         </tr>
                         <tr>
                             <td>3</td>
                             <td>Helm Sepeda</td>
-                            <td>
+                            <td class="priority-5">
                                 <img src="https://images.pexels.com/photos/3642482/pexels-photo-3642482.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
                             </td>
                             <td>1.100.000</td>
-                            <td><ul>
+                            <td class="priority-4"><ul>
                                 <li>Aksesoris
                                     <ul>
                                         <li>Safety</li>
@@ -302,10 +328,10 @@
                                     </ul>
                                 </li>
                             </ul></td>
-                            <td>
+                            <td class="priority-5">
                                 1
                             </td>
-                            <td class="text-bold">
+                            <td class="text-bold priority-5">
                                 1.100.000
                             </td>
                         </tr>
