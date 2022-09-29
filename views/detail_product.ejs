@@ -307,33 +307,35 @@
             </div>
         </nav>
 
-        <section id="products">
-            <div class="container">
-                <div class="product-group">
-                    <!-- Detail Product -->
-                    <h1 class="heading-1 text-center">Detail Product</h1>
-                    <div class="card box-shadow">
-                        <div class="card-header text-center">
-                            <div class="card-img">
-                                <img class="box-shadow" src="data:image/<%= product.img.contentType %>;base64,
-                                <%= product.img.data.toString('base64') %>" alt="<%= product.name %>">
+        <main>
+            <article id="products">
+                <div class="container">
+                    <div class="product-group">
+                        <!-- Detail Product -->
+                        <h1 class="heading-1 text-center">Detail Product</h1>
+                        <div class="card box-shadow">
+                            <div class="card-header text-center">
+                                <div class="card-img">
+                                    <img class="box-shadow" src="data:image/<%= product.img.contentType %>;base64,
+                                    <%= product.img.data.toString('base64') %>" alt="<%= product.name %>">
+                                </div>
+                                <h2><%= product.name %></h2>
+                                <p class="lead text-italic"><%= product.description %></p>
                             </div>
-                            <h2><%= product.name %></h2>
-                            <p class="lead text-italic"><%= product.description %></p>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-container">
-                                <p>Harga: <span class="text-bold">$<%= product.price %></span></p>
-                                <p>Kategory: <span class="text-bold"><%= product.category %></span></p>
-                                <p>Asal: <span class="text-bold"><%= product.from %></span></p>
-                                <p>Pemilik: <span class="text-bold"><%= product.owner %></span></p>
+                            <div class="card-content">
+                                <div class="card-container">
+                                    <p>Harga: <span class="text-bold">$<%= product.price %></span></p>
+                                    <p>Kategory: <span class="text-bold"><%= product.category %></span></p>
+                                    <p>Asal: <span class="text-bold"><%= product.from %></span></p>
+                                    <p>Pemilik: <span class="text-bold"><%= product.owner %></span></p>
+                                </div>
                             </div>
+    
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </section>
+            </article>
+        </main>
 
         <!-- Footer -->
         <footer id="footer" class="box-shadow">

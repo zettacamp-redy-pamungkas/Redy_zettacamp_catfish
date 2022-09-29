@@ -296,52 +296,53 @@
             </div>
         </nav>
 
-        <section id="products">
-            <div class="container">
-                
-                <!-- Product List -->
-                <div class="product-group">
-                    <h2 class="text-center heading-1">Product List</h1>
-                    <!-- Table -->
-                    <table id="table" class="box-shadow"> 
-                        <thead class="bg-dark">
-                            <tr>
-                                <th>#</th>
-                                <th>Nama</th>
-                                <th>Gambar</th>
-                                <th>Diskripsi</th>
-                                <th>Harga</th>
-                                <th>Kategori</th>
-                                <th>Diskon</th>
-                                <th>Dari</th>
-                                <th>Pemilik</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% for (let i = 0; i < allProducts.length; i++) { %> 
-                                <% let number = i + 1 %> 
-                                <% let product = allProducts[i] %> 
+        <main>
+            <section id="products">
+                <div class="container">
+                    <!-- Product List -->
+                    <div class="product-group">
+                        <h2 class="text-center heading-1">Product List</h1>
+                        <!-- Table -->
+                        <table id="table" class="box-shadow"> 
+                            <thead class="bg-dark">
                                 <tr>
-                                    <td><%= number %></td>
-                                    <td><a href="/products/<%= product.id %>"><%= product.name %></a></td>
-                                    <td>
-                                        <img src="data:image/<%= product.img.contentType %>;base64,
-                                        <%= product.img.data.toString('base64') %>" alt="<%= product.name %>">
-                                    </td>
-                                    <td><%= product.description %></td>
-                                    <td><%= product.price %></td>
-                                    <td><a href="/products?category=<%= product.category %>"><%= product.category %></a></td>
-                                    <td><%= product.onSale %></td>
-                                    <td><%= product.from %></td>
-                                    <td><%= product.owner %></td>
+                                    <th>#</th>
+                                    <th>Nama</th>
+                                    <th>Gambar</th>
+                                    <th>Diskripsi</th>
+                                    <th>Harga</th>
+                                    <th>Kategori</th>
+                                    <th>Diskon</th>
+                                    <th>Dari</th>
+                                    <th>Pemilik</th>
                                 </tr>
-                                <% number +=1 %> 
-                            <% } %> 
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <% for (let i = 0; i < allProducts.length; i++) { %> 
+                                    <% let number = i + 1 %> 
+                                    <% let product = allProducts[i] %> 
+                                    <tr>
+                                        <td><%= number %></td>
+                                        <td><a href="/products/<%= product.id %>"><%= product.name %></a></td>
+                                        <td>
+                                            <img src="data:image/<%= product.img.contentType %>;base64,
+                                            <%= product.img.data.toString('base64') %>" alt="<%= product.name %>">
+                                        </td>
+                                        <td><%= product.description %></td>
+                                        <td><%= product.price %></td>
+                                        <td><a href="/products?category=<%= product.category %>"><%= product.category %></a></td>
+                                        <td><%= product.onSale %></td>
+                                        <td><%= product.from %></td>
+                                        <td><%= product.owner %></td>
+                                    </tr>
+                                    <% number +=1 %> 
+                                <% } %> 
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
-                </div>
+        </main>
 
         <!-- Footer -->
         <footer id="footer" class="box-shadow">

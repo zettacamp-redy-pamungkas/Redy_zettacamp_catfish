@@ -296,52 +296,55 @@
             </div>
         </nav>
 
-        <section id="products">
-            <div class="container">
-                <div class="product-group">
-                    <!-- Form Product -->
-                    <form action="/products" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="product-name">Product Name</label>
-                            <input type="text" id="product-name" name="name" placeholder="Enter Product Name" required minlength="4" maxlength="25" >
-                        </div>
-                        <div class="form-group">
-                            <label for="product-description">Product Description</label>
-                            <textarea name="description" id="product-description" required maxlength="250" minlength="5"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="product-img">Product Image</label>
-                            <input type="file" accept="image/*" id="product-img" name="img" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="product-category">Product Category</label>
-                            <select name="category" id="product-category">
-                                <% for (let category of categories) { %> 
-                                    <option value="<%= category %>"><%= category %></option>
-                                <% } %> 
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="product-price">Product Price</label>
-                            <input type="number" id="product-price" name="price" required step="0.01" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="product-from">Product From</label>
-                            <input type="text" name="from" id="product-from" minlength="4" maxlength="25">
-                        </div>
-                        <div class="form-group">
-                            <label for="product-owner">Product Owner</label>
-                            <input type="text" id="product-owner" name="owner" minlength="4" maxlength="25">
-                        </div>
-                        <div class="form-group checkbox">
-                            <input type="checkbox" name="onSale" id="product-sale" value="true">
-                            <label for="product-sale">On Sale</label>
-                        </div>
-                        <button class="btn" type="submit">Create</button>
-                    </form>
+        <main>
+
+            <section id="products">
+                <div class="container">
+                    <div class="product-group">
+                        <!-- Form Product -->
+                        <form action="/products" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="product-name">Product Name</label>
+                                <input type="text" id="product-name" name="name" placeholder="Enter Product Name" required minlength="4" maxlength="25" >
+                            </div>
+                            <div class="form-group">
+                                <label for="product-description">Product Description</label>
+                                <textarea name="description" id="product-description" required maxlength="250" minlength="5"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-img">Product Image</label>
+                                <input type="file" accept="image/*" id="product-img" name="img" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-category">Product Category</label>
+                                <select name="category" id="product-category">
+                                    <% for (let category of categories) { %> 
+                                        <option value="<%= category %>"><%= category %></option>
+                                    <% } %> 
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-price">Product Price</label>
+                                <input type="number" id="product-price" name="price" required step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-from">Product From</label>
+                                <input type="text" name="from" id="product-from" minlength="4" maxlength="25">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-owner">Product Owner</label>
+                                <input type="text" id="product-owner" name="owner" minlength="4" maxlength="25">
+                            </div>
+                            <div class="form-group checkbox">
+                                <input type="checkbox" name="onSale" id="product-sale" value="true">
+                                <label for="product-sale">On Sale</label>
+                            </div>
+                            <button class="btn" type="submit">Create</button>
+                        </form>
+                    </div>
                 </div>
             </section>
-                </div>
+        </main>
 
         <!-- Footer -->
         <footer id="footer" class="box-shadow">

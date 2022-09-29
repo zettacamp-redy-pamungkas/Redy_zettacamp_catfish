@@ -34,7 +34,7 @@ const upload = multer({
 // MongoDB connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => {
-        console.log(`MongoDB opee`);
+        console.log(`MongoDB open`);
     })
     .catch((err) => {
         console.log(err);
