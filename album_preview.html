@@ -1,28 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Album Preview</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-</head>
-<body>
-    <!-- Header -->
-    <nav class="bg-dark">
-        <div class="container">
-            <ul>
-                <li>
-                    <a href="./profile.html">Profile</a>
-                </li>
-                <li>
-                    <a href="./song_listing.html">Song Listing</a>
-                </li>
-                <li>
-                    <a href="./album_preview.html">Album Preview</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Album Preview</title>
+        <link rel="stylesheet" href="./assets/css/style.css" />
+    </head>
+    <body>
+        <!-- Header -->
+        <nav class="bg-dark">
+            <div class="container">
+                <ul>
+                    <li>
+                        <a href="./profile.html">Profile</a>
+                    </li>
+                    <li>
+                        <a href="./song_listing.html">Song Listing</a>
+                    </li>
+                    <li>
+                        <a href="./album_preview.html">Album Preview</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Album Content -->
+        <main id="album">
+            <section class="container">
+                <div class="card box-shadow">
+                    <!-- img (Left) -->
+                    <section class="album-img">
+                        <img src="./assets/img/wendi_pexels.jpeg" alt="" />
+                    </section>
+                    <!-- content (Right) -->
+                    <section class="album-content">
+                        <p class="text-center lead">25 September</p>
+                        <h1 class="text-center heading-1" id="album-title">
+                            New Album
+                        </h1>
+                        <p id="artist-name" class="text-center">Wendy Wei</p>
+                        <p id="album-description" class="text-italic text-center">
+                            "Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Omnis voluptates necessitatibus quidem doloribus harum
+                            quibusdam corrupti, provident officia tenetur maiores et
+                            quo aperiam nemo magni similique ad blanditiis in
+                            pariatur". <br>
+                            - New York -
+                        </p>
+                        <p class="text-bold text-center lead">Song list</p>
+                        <ol id="album-song">
+                            <li class="text-italic">New Year</li>
+                            <li class="text-italic">The Beginning</li>
+                        </ol>
+                        <p id="album-price">Price: <span class="text-italic">Coming Soon</span></p>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </body>
 </html>
