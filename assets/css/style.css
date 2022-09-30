@@ -89,12 +89,13 @@ p {
     text-align: center;
 }
 
-.btn a {
+a.btn {
     color: #fff;
     font-size: 1.6rem;
+    display: inline-block;
 }
 
-.btn a:hover {
+a.btn:hover {
     background-color: #555;
     color: #fc8;
 }
@@ -162,4 +163,61 @@ nav ul li a {
     height: 100vh;
     display: flex;
     align-items: center;
+}
+
+/* Register */
+#register {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#register .container {
+    max-width: 400px;
+}
+
+form {
+    padding: 15px 20px;
+}
+
+form h1 {
+    padding-top: 30px;
+}
+
+.form-group {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.form-group>label {
+    display: block;
+    padding-bottom: 5px;
+}
+
+.form-group small {
+    font-size: 1.4rem;
+    padding-bottom: 5px;
+}
+
+.form-group>input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.6rem;
+}
+
+.form-group>input:focus {
+    outline: none;
+    border-color: #fc8;
+}
+
+.radio-group {
+    padding-left: 10px;
+}
+
+#tos {
+    font-style: italic;
+    font-size: 1rem;
 }
