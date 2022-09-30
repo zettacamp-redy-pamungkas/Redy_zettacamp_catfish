@@ -54,6 +54,11 @@ p {
     color: #fff;
 }
 
+.bg-dark a:hover {
+    color: #fc8;
+    background-color: #555;
+}
+
 .lead {
     font-size: 2rem;
 }
@@ -142,6 +147,13 @@ a.btn:hover {
 .text-light {
     font-weight: 200;
 }
+
+.current {
+    background-color: #555;
+    font-weight: 700;
+}
+
+
 
 /* nav */
 nav ul {
