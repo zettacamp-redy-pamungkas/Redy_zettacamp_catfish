@@ -311,6 +311,10 @@ form h1 {
     text-transform: uppercase;
 }
 
+#profile-name {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 /* Song List */
 #song-list {
     height: 100vh;
@@ -387,10 +391,16 @@ form h1 {
 
 #album ol {
     padding: 0 5rem;
-    margin-bottom: 2rem
+    margin-bottom: 2rem;
+    opacity: .9;
 }
 
 #album-price {
     font-weight:lighter;
     text-align: right;
+    opacity: 0.3;
+}
+
+#song-name {
+    opacity: 0.8;
 }
