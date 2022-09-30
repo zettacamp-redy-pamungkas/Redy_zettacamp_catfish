@@ -34,7 +34,7 @@ h1, h2, h3 {
 
 p {
     font-size: 1.4rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 /* Utilities */
@@ -60,6 +60,19 @@ p {
 
 .text-center {
     text-align: center;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.title {
+    font-size: 2rem;
+    font-family: 700;
 }
 
 .letter-space {
@@ -105,12 +118,25 @@ a.btn:hover {
     color: #333;
 }
 
+.mt-1 {
+    margin-top: 1rem;
+}
+
+
 .m-auto {
     margin: auto;
 }
 
 .text-primary {
     color: #fc8;
+}
+
+.text-gray {
+    color: #bbb
+}
+
+.text-light {
+    font-weight: 200;
 }
 
 /* nav */
@@ -220,4 +246,63 @@ form h1 {
 #tos {
     font-style: italic;
     font-size: 1rem;
+}
+
+/* profile */
+#profile {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profile .container {
+    display: flex;
+    justify-content: center;
+}
+
+#profile .profile-card {
+    width: 400px;
+}
+
+#profile .card {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#profile .card-img {
+    height: 69%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-bottom: 1px solid #bbb;
+}
+
+#profile .profile-card img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display: block;
+    margin: auto;
+}
+
+#profile .card-content {
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#profile .card-content p {
+    padding: 0 15px;
+}
+
+#acc-plan {
+    justify-self: flex-start;
+    display: inline-block;
+    font-weight: 700;
+    letter-spacing: .5rem;
+    text-transform: uppercase;
 }
