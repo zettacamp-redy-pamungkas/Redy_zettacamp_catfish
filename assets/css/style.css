@@ -108,6 +108,10 @@ p {
     margin: auto;
 }
 
+.text-primary {
+    color: #fc8;
+}
+
 /* nav */
 nav ul {
     display: flex;
@@ -144,5 +148,18 @@ nav ul li a {
     width: 45%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+/* About Us */
+#about-us {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+#history-us {
+    height: 100vh;
+    display: flex;
     align-items: center;
 }
