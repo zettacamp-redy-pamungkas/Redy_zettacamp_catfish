@@ -61,6 +61,9 @@
         const price = document.querySelector('#price')
         const category = document.querySelector('#category');
         const options = document.querySelectorAll('option');
+
+        // get all product in localStorage
+        const productArr = JSON.parse(localStorage.getItem('productList'));
         
         // prevent submit
         form.addEventListener('submit', (evt) => {
@@ -79,22 +82,7 @@
             productArr.push(arrProduct);
             localStorage.clear()
             localStorage.setItem('productList', JSON.stringify(productArr));
-
-            // insert into table
-            const tr = document.createElement('tr');
-            for (let i=0; i < arrProduct.length; i++) {
-                const td = document.createElement('td');
-                if (i === 1) {
-                    const img = document.createElement('img')
-                    img.src = arrProduct[i];
-                    td.append(img);
-                } else {
-                    td.append(arrProduct[i]);
-                }
-                tr.append(td);
-            }
-            tbody.append(tr)
-
+            
             // Reset Value
             name.value = '';
             price.value = '';
