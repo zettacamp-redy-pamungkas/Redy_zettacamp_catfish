@@ -26,41 +26,64 @@
     <main>
         <div class="container">
             <!-- Form -->
-            <h1 class="text-center heading-1">Add New Product</h1>
-            <form action="/" method="post">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" placeholder="Enter Product Name" required>
+            <section class="form">
+                <h1 class="text-center heading-1">Add New Product</h1>
+                <form action="/" method="post">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Enter Product Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="img">Image</label>
+                        <input type="file" id="img" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Product Price</label>
+                        <input type="number" id="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select name="category" id="category">
+                            <option value="vegetable">Vegetable</option>
+                            <option value="fruit">Fruit</option>
+                            <option value="dairy">Dairy</option>
+                        </select>
+                    </div>
+                    <button class="btn" type="submit">Submit</button>
+                </form>
+            </section>
+            <!-- Detail Page -->
+            <section class="detail-page">
+                <h2 class="heading-1 text-center">Detail Page</h2>
+                <div class="card box-shadow">
+                    <div class="card-header">
+                        <img src="./img/placeholder_vege_pexels.jpeg" alt="" id="card-header-img">
+                        <h2 class="text-center">Product Name</h2>
+                    </div>
+                    <div class="card-content">
+                        <p>Harga: $<span id="product-price" class="text-bold"> - </span> </p>
+                        <p>Kategori: <span id="product-category" class="text-bold"> Belum Diisi </span></p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="img">Image</label>
-                    <input type="file" id="img" accept="image/*" required>
-                </div>
-                <div class="form-group">
-                    <label for="price">Product Price</label>
-                    <input type="number" id="price" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select name="category" id="category">
-                        <option value="vegetable">Vegetable</option>
-                        <option value="fruit">Fruit</option>
-                        <option value="dairy">Dairy</option>
-                    </select>
-                </div>
-                <button class="btn" type="submit">Submit</button>
-            </form>
+            </section>
         </div>
     </main>
     <script src="./script.js"></script>
     <script>
-        // Select element
+        // Select element form
         const form = document.querySelector('form');
         const name = document.querySelector('#name');
         const image = document.querySelector('#img');
         const price = document.querySelector('#price')
         const category = document.querySelector('#category');
         const options = document.querySelectorAll('option');
+
+        // Select element detail-page
+        const img = document.querySelector('#card-header-img');
+        const productName = document.querySelector('.card-header h2');
+        const productPrice = document.querySelector('#product-price');
+        const productCategory = document.querySelector('#product-category');
+
 
         // get all product in localStorage
         const productArr = JSON.parse(localStorage.getItem('productList'));
@@ -82,7 +105,13 @@
             productArr.push(arrProduct);
             localStorage.clear()
             localStorage.setItem('productList', JSON.stringify(productArr));
-            
+
+            // display to detail page
+            productName.innerHTML = arrProduct[0];
+            img.src = arrProduct[1];
+            productPrice.innerHTML = arrProduct[2]
+            productCategory.innerHTML = arrProduct[3]
+
             // Reset Value
             name.value = '';
             price.value = '';

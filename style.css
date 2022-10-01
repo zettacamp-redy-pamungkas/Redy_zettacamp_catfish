@@ -17,7 +17,7 @@ a {
     text-decoration: none;
 }
 
-h1 {
+h1, h2 {
     margin-bottom: 30px;
 }
 
@@ -62,6 +62,17 @@ h1 {
     background-color: #555;
 }
 
+.card {
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.box-shadow {
+    box-shadow: 0 2px 10px rgba(0,0,0, 0.3);
+}
+
 /* Nav */
 .navbar ul {
     display: flex;
@@ -97,6 +108,11 @@ table tr td img {
 }
 
 /* Form */
+.form {
+    height: 93vh;
+    border-bottom: 2px solid #333;
+    margin-bottom: 20px;
+}
 form {
     padding: 10px;
 }
@@ -147,4 +163,24 @@ form {
 .form-group option:focus {
     border-color: #fc8;
     outline: none;
+}
+
+.detail-page {
+    height: 100vh;
+    margin-bottom: 30px;
+}
+
+.detail-page .card {
+    padding: 15px 30px;
+}
+
+.detail-page .card .card-header {
+    border-bottom: 2px solid #333;
+    margin-bottom: 20px;
+}
+
+.detail-page .card .card-header img {
+    display: block;
+    margin: auto;
+    width: 50%;
 }
