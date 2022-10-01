@@ -9,6 +9,18 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
 /* utilities */
 .container {
     width: 80%;
@@ -20,6 +32,14 @@ body {
     color: #fff;
 }
 
+.bg-dark a {
+    color: #fff;
+}
+
+.bg-dark a:hover {
+    color: #fc8;
+}
+
 .btn {
     border: none;
     background-color: #333;
@@ -27,6 +47,29 @@ body {
     padding: 13px 20px;
     font-size: 16px;
     border-radius: 5px;
+}
+
+.heading-1 {
+    font-size: 60px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.current {
+    font-weight: 700;
+    background-color: #555;
+}
+
+/* Nav */
+.navbar ul {
+    display: flex;
+}
+
+.navbar ul li a {
+    display: block;
+    padding: 13px 20px;
 }
 
 /* table */

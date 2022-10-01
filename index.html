@@ -8,23 +8,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Header -->
+    <nav class="bg-dark">
+        <div class="container">
+            <div class="navbar">
+                <ul>
+                    <li>
+                        <a class="current" href="./index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="./product.html">All Product</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <main>
         <div class="container">
-            <!-- Table -->
-            <table>
-                <thead class="bg-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Gambar</th>
-                        <th>Harga</th>
-                        <th>Kategori</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
             <!-- Form -->
+            <h1 class="text-center heading-1">Add New Product</h1>
             <form action="/" method="post">
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -53,7 +55,6 @@
     <script src="./script.js"></script>
     <script>
         // Select element
-        const tbody = document.querySelector('tbody');
         const form = document.querySelector('form');
         const name = document.querySelector('#name');
         const image = document.querySelector('#img');
@@ -61,27 +62,6 @@
         const category = document.querySelector('#category');
         const options = document.querySelectorAll('option');
         
-        // get all product in localStorage
-        const productArr = JSON.parse(localStorage.getItem('productList'));
-
-        // Add to table
-        for (let arr of productArr) {
-            const tr = document.createElement('tr')
-            for (let i = 0; i < arr.length; i++) {
-                const td = document.createElement('td');
-                // Insert Img
-                if (i === 1) {
-                    const img = document.createElement('img');
-                    img.src = arr[i];
-                    td.append(img)
-                } else {
-                    td.append(arr[i]);
-                }
-                tr.append(td)
-            }
-            tbody.append(tr)
-        }
-
         // prevent submit
         form.addEventListener('submit', (evt) => {
             evt.preventDefault();

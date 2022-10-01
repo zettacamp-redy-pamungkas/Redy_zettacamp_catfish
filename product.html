@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>All Product</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <!-- Header -->
+        <nav class="bg-dark">
+            <div class="container">
+                <div class="navbar">
+                    <ul>
+                        <li>
+                            <a href="./index.html">Home</a>
+                        </li>
+                        <li>
+                            <a class="current" href="./product.html">All Product</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+            <div class="container">
+                <!-- Table -->
+                <h1 class="text-center heading-1">All Product List</h1>
+                <table>
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Gambar</th>
+                            <th>Harga</th>
+                            <th>Kategori</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+        <script src="./script.js"></script>
+        <script>
+            // Select element
+        const tbody = document.querySelector('tbody');
+        // get all product in localStorage
+        const productArr = JSON.parse(localStorage.getItem('productList'));
+
+        // Add to table
+        for (let arr of productArr) {
+            const tr = document.createElement('tr')
+            for (let i = 0; i < arr.length; i++) {
+                const td = document.createElement('td');
+                // Insert Img
+                if (i === 1) {
+                    const img = document.createElement('img');
+                    img.src = arr[i];
+                    td.append(img)
+                } else {
+                    td.append(arr[i]);
+                }
+                tr.append(td)
+            }
+            tbody.append(tr)
+        }
+
+        </script>
+    </body>
+</html>
