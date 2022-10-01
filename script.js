@@ -20,9 +20,7 @@ const tableArr = [
     ],
 ];
 
-// get all product in localStorage
-const productList = JSON.parse(localStorage.getItem('productList'));
-
-if (!productList) {
+// Cek if productList in localStorage
+if (!localStorage.getItem('productList')) {
     localStorage.setItem('productList', JSON.stringify(tableArr));
 }

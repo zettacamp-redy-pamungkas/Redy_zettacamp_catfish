@@ -64,8 +64,6 @@
         // get all product in localStorage
         const productArr = JSON.parse(localStorage.getItem('productList'));
 
-        console.log(productArr);
-
         // Add to table
         for (let arr of productArr) {
             const tr = document.createElement('tr')
