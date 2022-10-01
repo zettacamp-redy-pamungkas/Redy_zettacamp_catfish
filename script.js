@@ -19,3 +19,10 @@ const tableArr = [
         'dairy'
     ],
 ];
+
+// get all product in localStorage
+const productList = JSON.parse(localStorage.getItem('productList'));
+
+if (!productList) {
+    localStorage.setItem('productList', JSON.stringify(tableArr));
+}

@@ -50,6 +50,7 @@
             </form>
         </div>
     </main>
+    <script src="./script.js"></script>
     <script>
         // Select element
         const tbody = document.querySelector('tbody');
@@ -59,9 +60,14 @@
         const price = document.querySelector('#price')
         const category = document.querySelector('#category');
         const options = document.querySelectorAll('option');
+        
+        // get all product in localStorage
+        const productArr = JSON.parse(localStorage.getItem('productList'));
+
+        console.log(productArr);
 
         // Add to table
-        for (let arr of tableArr) {
+        for (let arr of productArr) {
             const tr = document.createElement('tr')
             for (let i = 0; i < arr.length; i++) {
                 const td = document.createElement('td');
@@ -86,12 +92,15 @@
                 name.value,
                 // img
                 // untuk OS Windows, menggunakan double backlash
-                image.value.split('\\')[2],
+                `./img/${image.value.split('\\')[2]}`,
                 price.value,
                 category.value
             ];
 
-            // console.log(arrProduct);
+            // insert into localStorage
+            productArr.push(arrProduct);
+            localStorage.clear()
+            localStorage.setItem('productList', JSON.stringify(productArr));
 
             // insert into table
             const tr = document.createElement('tr');
@@ -99,7 +108,7 @@
                 const td = document.createElement('td');
                 if (i === 1) {
                     const img = document.createElement('img')
-                    img.src = `./img/${arrProduct[i]}`;
+                    img.src = arrProduct[i];
                     td.append(img);
                 } else {
                     td.append(arrProduct[i]);
