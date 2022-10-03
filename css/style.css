@@ -86,7 +86,12 @@ p {
     object-fit: cover;
     object-position: center center;
     border-radius: 50%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     display: block;
     margin: auto;
+    margin-bottom: 30px;
+}
+
+.row .column h3 {
+    font-weight: 400;
 }
