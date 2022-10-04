@@ -217,7 +217,12 @@ img {
 @media (max-width: 728px) {
     .navbar {
         flex-direction: column;
-        height: 90px;
+        justify-content: center;
+        height: 120px;
+    }
+
+    .navbar .logo {
+        margin-bottom: 30px;
     }
 
     .flex-items {
