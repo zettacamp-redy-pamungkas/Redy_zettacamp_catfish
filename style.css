@@ -214,7 +214,7 @@ img {
 }
 
 /* Mobile */
-@media (max-width: 728px) {
+@media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         justify-content: center;
