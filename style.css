@@ -149,6 +149,7 @@ img {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .content h1 {
@@ -193,10 +194,6 @@ img {
     flex: 1;
 }
 
-.business .row .column .column-1 img {
-    display: flex;
-}
-
 .business .row .column .column-2 {
     height: 100%;
     display: flex;
@@ -214,4 +211,20 @@ img {
 
 .business .row .column .column-2 p {
     color: #fff;
+}
+
+/* Mobile */
+@media (max-width: 728px) {
+    .navbar {
+        flex-direction: column;
+        height: 90px;
+    }
+
+    .flex-items {
+        flex-direction: column;
+    }
+
+    .business .row {
+        flex-direction: column;
+    }
 }
