@@ -1,12 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Day 2</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CSS Day 2</title>
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+            integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <!-- Style -->
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <main id="home">
+            <header>
+                <div class="home">
+                    <div class="navbar">
+                        <h1 class="logo">
+                            <span class="text-primary"
+                                ><i class="fas fa-book-open"></i> Led</span
+                            >ger
+                        </h1>
+                        <nav>
+                            <ul>
+                                <li><a href="#home">Home</a></li>
+                                <li><a href="#about">About</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="content">
+                        <h1>Sky Is The Limit</h1>
+                        <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing
+                            elit. Assumenda, ullam?
+                        </p>
+                        <a href="#about" class="btn btn-primary"
+                            ><i class="fas fa-chevron-right"></i> Read More</a
+                        >
+                    </div>
+                </div>
+            </header>
+            <section id="about" class="icons">
+                <div class="flex-items">
+                    <!-- Card -->
+                    <div>
+                        <i class="fas fas fa-university fa-2x"></i>
+                        <h2>Bank Investment</h2>
+                        <p>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Ipsa, recusandae.
+                        </p>
+                    </div>
+                    <div>
+                        <i class="fas fas fa-pen-alt fa-2x"></i>
+                        <h2>Tax</h2>
+                        <p>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Ipsa, recusandae.
+                        </p>
+                    </div>
+                    <div>
+                        <i class="fas fas fa-legal fa-2x"></i>
+                        <h2>Legal</h2>
+                        <p>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Ipsa, recusandae.
+                        </p>
+                    </div>
+                    <div>
+                        <i class="fas fas fa-book-open-reader fa-2x"></i>
+                        <h2>Portofolio</h2>
+                        <p>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Ipsa, recusandae.
+                        </p>
+                    </div>
+                </div>
+                <section class="business bg-primary">
+                    <div class="row">
+                        <!-- Img Left -->
+                        <div class="column">
+                            <div class="column-1">
+                                <img src="./img/meeting_pexels.webp" alt="" />
+                            </div>
+                        </div>
+                        <!-- Content Right -->
+                        <div class="column">
+                            <div class="column-2">
+                                <h4>What we do</h4>
+                                <h2>We provide the worst solution</h2>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipisicing elit. Voluptatibus voluptas pariatur
+                                    minima suscipit labore vero, ducimus, quod error
+                                    distinctio quia earum illum non expedita!
+                                    Possimus molestiae ipsum alias magnam eaque
+                                    harum! Fugit quia molestiae distinctio.
+                                </p>
+                                <a href="#" class="btn btn-outline"><i class="fas fa-chevron-right"></i> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </body>
 </html>
