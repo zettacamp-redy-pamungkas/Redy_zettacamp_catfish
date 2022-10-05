@@ -52,7 +52,7 @@ main {
 }
 
 .flex-item .row .card:nth-child(2) {
-    margin: 0 10px;
+    margin: 0 1rem;
 }
 
 /* Card */
