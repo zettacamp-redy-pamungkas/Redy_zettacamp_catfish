@@ -3,6 +3,32 @@
     font-size: 55px;
 }
 
+/* Text Color */
+.text-primary {
+    color: #2a4;
+}
+
+.text-secondary {
+    color: #08d;
+}
+
+.text-warning {
+    color: #d34;
+}
+
+.text-white {
+    color: #fff;
+}
+
+/* Text Style */
+.text-center {
+    text-align: center;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
 /* Card */
 .card {
     background-color: #fff;
