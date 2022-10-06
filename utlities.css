@@ -25,6 +25,10 @@
     text-align: center;
 }
 
+.text-left {
+    text-align: left;
+}
+
 .text-bold {
     font-weight: 700;
 }
@@ -50,6 +54,24 @@
 
 .mt-5 {
     margin-top: 5rem;
+}
+
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+/* padding */
+.p-1 {
+    padding: 1rem;
+}
+
+.p-2 {
+    padding: 2rem;
+}
+
+/* width */
+.fullwidth {
+    width: 100%;
 }
 
 /* Card */
