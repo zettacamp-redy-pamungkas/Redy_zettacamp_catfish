@@ -32,6 +32,10 @@ img {
     width: 100%;
 }
 
+ul {
+    list-style: none;
+}
+
 /* Main */
 
 main {
@@ -194,10 +198,6 @@ footer a {
     display: flex;
     align-items: center;
     margin: 5px 0;
-}
-
-#product .row .column .card .scroll-card .card:nth-child(even) {
-    background-color: #ddd;
 }
 
 #product .row .column .card .scroll-card .card .card-img {
