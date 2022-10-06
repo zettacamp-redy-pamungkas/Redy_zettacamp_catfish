@@ -47,13 +47,13 @@ main {
     display: flex;
 }
 
-.flex-item .row:nth-child(2) {
+/* .flex-item .row:nth-child(2) {
     margin: 1rem 0;
 }
 
 .flex-item .row .card:nth-child(2) {
     margin: 0 1rem;
-}
+} */
 
 /* Card */
 .card .price-content {
