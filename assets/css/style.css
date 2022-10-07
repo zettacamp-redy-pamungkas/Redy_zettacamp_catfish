@@ -415,6 +415,15 @@ footer a:hover {
     #main-index .card-row {
         flex-direction: column;
     }
+
+    /* Shopping list */
+    #shopping-list .card-container {
+        justify-content: center;
+    }
+
+    .form-container .form-row {
+        flex-direction: column-reverse;
+    }
 }
 
 @media (min-width:769px) and (max-width: 1075px) {
