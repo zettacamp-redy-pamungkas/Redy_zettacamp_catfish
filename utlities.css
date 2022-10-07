@@ -3,6 +3,14 @@
     font-size: 55px;
 }
 
+.heading-1-absolute {
+    font-size:xx-large;
+}
+
+.lead-relative {
+    font-size:larger;
+}
+
 /* Text Color */
 .text-primary {
     color: #2a4;
