@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CSS Day 6</title>
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+            integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link rel="stylesheet" href="./assets/css/utilities.css" />
+        <link rel="stylesheet" href="./assets/css/style.css" />
+    </head>
+    <body>
+        <!-- header -->
+        <header id="header-index" class="px-2 bg-dark">
+            <h1 class="logo">
+                <span class="text-primary"
+                    ><i class="fas fa-cheese"></i> Farm</span
+                >Tile
+            </h1>
+            <!-- navbar -->
+            <nav>
+                <ul>
+                    <li><a href="">Shopping List</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main id="main-index" class="mt-2">
+            <div class="flex-items container">
+                <!-- video and description -->
+                <div class="row">
+                    <div class="flex-row">
+                        <!-- video (left) -->
+                        <div class="column" style="width: 370px;">
+                            <iframe
+                                width="360"
+                                height="240"
+                                src="https://www.youtube.com/embed/De_-bXyBBOc"
+                                title="Agriculture Stock Footage - Agriculture Free Stock Videos - Agriculture No Copyright Videos"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                        <!-- descriptions Right -->
+                        <div class="column">
+                            <h1 class="logo text-primary">Farm Tile</h1>
+                            <p class="lead">
+                                Lorem, ipsum dolor sit amet consectetur
+                                adipisicing elit. Nesciunt placeat similique
+                                non. Ipsam, cum voluptatibus!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- popular product -->
+                <div class="row">
+                    <div class="flex-column">
+                        <!-- title -->
+                        <div class="column">
+                            <h2 class="text-center">Our Most Popular Product</h2>
+                        </div>
+                        <!-- popular card product -->
+                        <div class="column">
+                            <div class="card-row">
+                                <div class="card box-shadow">
+                                    <!-- img -->
+                                    <div class="card-img">
+                                        <img class="box-shadow" src="./assets/img/cabbage_unsplash.jpg" alt="">
+                                    </div>
+                                    <div class="card-content">
+                                        <h2>Cabbage</h2>
+                                        <p>Lorem ipsum dolor sit amet.</p>
+                                    </div>
+                                </div>
+                                <div class="card box-shadow">
+                                    <!-- img -->
+                                    <div class="card-img">
+                                        <img class="box-shadow" src="./assets/img/asparagus_unsplash.jpg" alt="">
+                                    </div>
+                                    <div class="card-content">
+                                        <h2>Asparagus</h2>
+                                        <p>Lorem ipsum dolor sit amet.</p>
+                                    </div>
+                                </div>
+                                <div class="card box-shadow">
+                                    <!-- img -->
+                                    <div class="card-img">
+                                        <img class="box-shadow" src="./assets/img/spinach_unsplash.jpg" alt="">
+                                    </div>
+                                    <div class="card-content">
+                                        <h2>Spinach</h2>
+                                        <p>Lorem ipsum dolor sit amet.</p>
+                                    </div>
+                                </div>
+                                <!-- View More -->
+                                <a href="#" class="btn btn-primary"><i class="fas fa-chevron-right"></i> View More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- footer -->
+        <footer class="bg-dark mt-2">
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </footer>
+    </body>
+</html>
