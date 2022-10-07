@@ -16,6 +16,10 @@
     color: var(--color-primary);
 }
 
+.text-white {
+    color: #fff;
+}
+
 /* text weight */
 .text-normal {
     font-weight: 400;
@@ -55,6 +59,10 @@
     padding-right: 2rem;
 }
 
+.p-2 {
+    padding: 2rem;
+}
+
 /* Margin */
 .mt-2 {
     margin-top: 2rem;
@@ -88,6 +96,12 @@
 
 .btn-primary {
     background-color: var(--color-primary);
+    color: #fff;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #fff;
     color: #fff;
 }
 
