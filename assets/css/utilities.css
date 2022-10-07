@@ -16,6 +16,11 @@
     color: var(--color-primary);
 }
 
+/* text weight */
+.text-normal {
+    font-weight: 400;
+}
+
 /* text-size */
 .logo {
     font-size: 55px;
@@ -53,6 +58,15 @@
 /* Margin */
 .mt-2 {
     margin-top: 2rem;
+}
+
+.my-2 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.mb-2 {
+    margin-bottom: 2rem;
 }
 
 /* box-shadow */

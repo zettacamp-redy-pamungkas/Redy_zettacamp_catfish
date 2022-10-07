@@ -41,10 +41,39 @@
                             <h3>Shopping List</h3>
                         </div>
                         <div class="column">
-                            <a href="#" class="btn btn-primary"><i class="fas fa-add"></i> Add Item</a>
+                            <a id="add-button" href="#" class="btn btn-primary"><i class="fas fa-add"></i> Add Item</a>
                         </div>
                     </div>
                 </div>
+                <!-- add product content -->
+                <div>
+                    <!-- form container -->
+                    <div id="add-product-form" class="form-container mb-2">
+                        <h2 class="text-center text-normal my-2">Add New Item</h2>
+                        <form action="">
+                            <div class="form-row">
+                                <div class="column">
+                                    <div class="form-group">
+                                        <label for="product-name">Name</label>
+                                        <input type="text" id="product-name" required minlength="4" maxlength="25">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product-price">Price</label>
+                                        <input type="number" step="50" id="product-price" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                <div class="column">
+                                    <div class="form-group">
+                                        <label for="product-img">Image</label>
+                                        <input type="file" accept="image/*" id="product-img" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- card content -->
                 <div class="card-container">
                     <div class="card box-shadow">
@@ -83,7 +112,7 @@
                             <img class="box-shadow" src="./assets/img/template_2_unsplash.jpg" alt="">
                         </div>
                         <div class="card-content">
-                            <h2>Sayuran 2</h2>
+                            <h2>Sayuran 4</h2>
                             <p>Rp 10.000</p>
                         </div>
                     </div>
@@ -93,7 +122,7 @@
                             <img class="box-shadow" src="./assets/img/template_3_unsplash.jpg" alt="">
                         </div>
                         <div class="card-content">
-                            <h2>Sayuran 3</h2>
+                            <h2>Sayuran 5</h2>
                             <p>Rp 10.000</p>
                         </div>
                     </div>
@@ -106,4 +135,84 @@
             <a href="#">Contact</a>
         </footer>
     </body>
+    <script>
+        // Selector
+        const addButton = document.querySelector('#add-button');
+        const addProductForm = document.querySelector('#add-product-form');
+        const productName = document.querySelector('#product-name');
+        const productPrice = document.querySelector('#product-price');
+        const productImg = document.querySelector('#product-img')
+        const form = document.querySelector('form');
+        const cardContainer = document.querySelector('.card-container');
+
+        // check farmProducts
+        if(!localStorage.getItem('farmProducts')) {
+                localStorage.setItem('farmProducts', JSON.stringify([]));
+            }
+
+        // get farmProducts
+        const farmProductsArr = JSON.parse(localStorage.getItem('farmProducts'));
+
+        //
+        if (farmProductsArr.length > 0) {
+            for (let product of farmProductsArr) {
+                createCard(product);
+            }
+        }
+
+        // function create card
+        function createCard(arr) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card box-shadow';
+
+            const cardDivImg = document.createElement('div');
+            cardDivImg.className = 'card-img'
+
+            const img = document.createElement('img');
+            img.className = 'box-shadow';
+            img.src = arr[2];
+
+            cardDivImg.append(img);
+
+            const cardConten = document.createElement('div');
+            cardConten.className = 'card-content';
+            cardConten.innerHTML = `
+            <h2>${arr[0]}</h2>
+            <p>Rp. ${arr[1]}</p>
+            `;
+            cardDiv.append(cardDivImg);
+            cardDiv.append(cardConten);
+
+            // add to cardContainer
+            cardContainer.append(cardDiv);
+        }
+
+
+        // addButton clikc listener
+        addButton.addEventListener('click', (evt) => {
+            evt.preventDefault()
+            addProductForm.classList.toggle('show');
+            console.log('click')
+        });
+
+        // form prevent default
+        form.addEventListener('submit', (evt) => {
+            // prevent submit
+            evt.preventDefault();
+
+            let newProduct = [
+                productName.value, productPrice.value, `./assets/img/${productImg.value.split('\\')[2]}`
+            ];
+
+            // push new arr
+            farmProductsArr.push(newProduct);
+            localStorage.clear()
+            localStorage.setItem('farmProducts', JSON.stringify(farmProductsArr));
+
+            createCard(newProduct);
+
+            console.log(farmProductsArr);
+
+        })
+    </script>
 </html>
