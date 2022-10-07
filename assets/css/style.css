@@ -424,6 +424,10 @@ footer a:hover {
     .form-container .form-row {
         flex-direction: column-reverse;
     }
+
+    #contact .form {
+        padding: 1rem;
+    }
 }
 
 @media (min-width:769px) and (max-width: 1075px) {
