@@ -164,25 +164,16 @@
             const cardDiv = document.createElement('div');
             cardDiv.className = 'card box-shadow';
 
-            const cardDivImg = document.createElement('div');
-            cardDivImg.className = 'card-img'
-
-            const img = document.createElement('img');
-            img.className = 'box-shadow';
-            img.src = arr[2];
-
-            cardDivImg.append(img);
-
-            const cardConten = document.createElement('div');
-            cardConten.className = 'card-content';
-            cardConten.innerHTML = `
-            <h2>${arr[0]}</h2>
-            <p>Rp. ${arr[1]}</p>
+            cardDiv.innerHTML = `
+                <div class="card-img">
+                    <img class="box-shadow" src="${arr[2]}" alt="">
+                </div>
+                <div class="card-content">
+                    <h2>${arr[0]}</h2>
+                    <p>${arr[1]}</p>
+                </div>
             `;
-            cardDiv.append(cardDivImg);
-            cardDiv.append(cardConten);
-
-            // add to cardContainer
+            console.log(cardDiv.innerHTML);
             cardContainer.append(cardDiv);
         }
 
