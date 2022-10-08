@@ -170,10 +170,9 @@
                 </div>
                 <div class="card-content">
                     <h2>${arr[0]}</h2>
-                    <p>${arr[1]}</p>
+                    <p>Rp ${arr[1]}</p>
                 </div>
             `;
-            console.log(cardDiv.innerHTML);
             cardContainer.append(cardDiv);
         }
 
@@ -201,8 +200,10 @@
 
             createCard(newProduct);
 
-            console.log(farmProductsArr);
-
+            // reset value
+            productImg.value = '';
+            productName.value = '';
+            productPrice.value = '';
         })
     </script>
 </html>
