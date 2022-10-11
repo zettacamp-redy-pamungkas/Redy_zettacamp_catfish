@@ -4,7 +4,8 @@ const buku = {
     price: 10000,
     onSale: false,
     discount: 20,
-    tax: 11
+    tax: 11,
+    stock: 5
 };
 
 // Harga buku setelah di diskon
