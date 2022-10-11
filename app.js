@@ -6,7 +6,7 @@ const buku = {
     discount: 20,
     tax: 11,
     stock: 5,
-    purchased: 3
+    purchased: 0
 };
 
 // Harga buku setelah di diskon
@@ -29,13 +29,14 @@ function bookPriceAfterTax(book) {
     book.finalPrice = price + book.taxPrice;
 };
 
-function bookSold(book) {
+function bookSold(book, purchase) {
     let totalPrice = 0;
-    for (let i = 0; i < book.purchased; i++) {
+    for (let i = 0; i < purchase; i++) {
         if (book.stock > 0) {
             let price = book.finalPrice || book.price;
             totalPrice += price;
             book.stock -= 1;
+            book.purchased += 1;
         } else {
             console.log('Book out of stock');
             console.log(`Can Only Sold: ${i}`)
