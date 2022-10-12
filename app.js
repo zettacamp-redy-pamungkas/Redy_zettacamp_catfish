@@ -49,3 +49,21 @@ function bookSold(book, purchase) {
         console.log('You can purchase this book again.')
     }
 }
+
+// function credit
+function creditBook(book, amountLoan = 5) {
+    let { price } = book;
+    let priceCredit = Math.ceil(price / amountLoan);
+    book.priceCredit = priceCredit;
+    book.debt = priceCredit * amountLoan;
+    book.totalInstalment = 0;
+    let arrBook = [];
+    for (let i = 0; i < amountLoan; i++) {
+        book.debt -= priceCredit;
+        book.totalInstalment += priceCredit;
+        arrBook.push({...book});
+    }
+    console.log(arrBook);
+}
+
+creditBook(buku, 6);
