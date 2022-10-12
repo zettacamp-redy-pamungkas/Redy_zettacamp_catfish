@@ -60,11 +60,15 @@ function creditBook(book, term = 5) {
     instalment.debt = priceCredit * term;
     instalment.totalInstalment = 0;
     let arrInstalment = [];
+    // Date
+    let today = new Date();
     for (let i = 0; i < term; i++) {
-        instalment.month = `Month of ${i + 1}`;
+        const monthYear = today.toLocaleString('default', {month: 'long', year: "numeric"})
+        instalment.dueDate = `${monthYear}`;
         instalment.debt -= priceCredit;
         instalment.totalInstalment += priceCredit;
         arrInstalment.push({...instalment});
+        today = new Date(today.setMonth(today.getMonth() + 1));
     }
     console.log(arrInstalment);
     book.instalment = arrInstalment;
