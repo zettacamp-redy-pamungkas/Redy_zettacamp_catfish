@@ -51,19 +51,22 @@ function bookSold(book, purchase) {
 }
 
 // function credit
-function creditBook(book, amountLoan = 5) {
-    let { price } = book;
-    let priceCredit = Math.ceil(price / amountLoan);
-    book.priceCredit = priceCredit;
-    book.debt = priceCredit * amountLoan;
-    book.totalInstalment = 0;
-    let arrBook = [];
-    for (let i = 0; i < amountLoan; i++) {
-        book.debt -= priceCredit;
-        book.totalInstalment += priceCredit;
-        arrBook.push({...book});
+function creditBook(book, term = 5) {
+    let { price, finalPrice } = book;
+    price = finalPrice || price;
+    let priceCredit = Math.ceil(price / term);
+    const instalment = {}
+    instalment.priceCredit = priceCredit;
+    instalment.debt = priceCredit * term;
+    instalment.totalInstalment = 0;
+    let arrInstalment = [];
+    for (let i = 0; i < term; i++) {
+        instalment.month = `Month of ${i + 1}`;
+        instalment.debt -= priceCredit;
+        instalment.totalInstalment += priceCredit;
+        arrInstalment.push({...instalment});
     }
-    console.log(arrBook);
+    console.log(arrInstalment);
+    book.instalment = arrInstalment;
+    return true;
 }
-
-creditBook(buku, 6);
