@@ -148,13 +148,8 @@ function getAllSongDuration(songs) {
 function getRandomSongListUnder(songs, min = 60) {
     const copySong = [...songs];
     const songList = [];
-    const maxDuration = getAllSongDuration(copySong);
 
-    if (min >= maxDuration) {
-        return copySong
-    }
-
-    while(min < maxDuration) {
+    while(copySong.length > 0) {
         // Get Random Song From copySong
         const randomIndex = Math.floor(Math.random() * copySong.length)
         const song = copySong[randomIndex];
