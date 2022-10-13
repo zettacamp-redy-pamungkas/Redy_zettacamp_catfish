@@ -123,7 +123,7 @@ const arrSongs = [
 
 function filterSongBasedArtist(songs, artistName) {
     return songs.filter((song) => {
-        return song.artist === artistName
+        return song.artist.toLowerCase() === artistName.toLowerCase()
     });
 }
 
@@ -148,8 +148,13 @@ function getAllSongDuration(songs) {
 function getRandomSongListUnder(songs, min = 60) {
     const copySong = [...songs];
     const songList = [];
+    const maxDuration = getAllSongDuration(copySong);
 
-    while(true) {
+    if (min >= maxDuration) {
+        return copySong
+    }
+
+    while(min < maxDuration) {
         // Get Random Song From copySong
         const randomIndex = Math.floor(Math.random() * copySong.length)
         const song = copySong[randomIndex];
