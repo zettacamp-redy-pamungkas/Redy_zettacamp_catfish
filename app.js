@@ -151,16 +151,16 @@ function getRandomSongListUnder(songs, min = 60) {
 
     while(true) {
         // Get Random Song From copySong
-        const index = Math.floor(Math.random() * copySong.length)
-        const song = copySong[index];
+        const randomIndex = Math.floor(Math.random() * copySong.length)
+        const song = copySong[randomIndex];
         // Remove song from copySong
-        copySong.splice(index, 1);
+        copySong.splice(randomIndex, 1);
         // check songList duration
-        const songListuration = getAllSongDuration(songList);
-        if (songListuration + song.duration > min) {
+        const songListDuration = getAllSongDuration(songList);
+        if (songListDuration + song.duration > min) {
             break;
         }
-        if (songListuration < min) {
+        if (songListDuration < min) {
             // push song
             songList.push(song);
         } else {
