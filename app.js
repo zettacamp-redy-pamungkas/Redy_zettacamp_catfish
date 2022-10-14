@@ -172,6 +172,12 @@ app.get('/bookpriceafterdiscount', (req, res) => {
     res.send(buku);
 });
 
+// GET '/bookpriceaftertax'
+app.get('/bookpriceaftertax', basicAuth, (req, res) => {
+    bookPriceAfterDiscount(buku);
+    res.send(buku);
+});
+
 // Get 'booksold/:pruchased
 app.get('/booksold/:purchased', basicAuth, (req, res) => {
     let { purchased } = req.params;
