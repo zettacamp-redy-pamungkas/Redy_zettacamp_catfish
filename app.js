@@ -157,7 +157,6 @@ function basicAuth(req, res, next) {
         let basicPlainText = new Buffer.from(basicEncode, 'base64').toString().split(':')
         const user = basicPlainText[0];
         const password = basicPlainText[1]
-        console.log(basicEncode)
         if (user === 'zetta' && password === '123456') {
             console.log('Kamu berhak')
             next()
@@ -174,7 +173,7 @@ app.get('/bookpriceafterdiscount', (req, res) => {
 
 // GET '/bookpriceaftertax'
 app.get('/bookpriceaftertax', basicAuth, (req, res) => {
-    bookPriceAfterDiscount(buku);
+    bookPriceAfterTax(buku);
     res.send(buku);
 });
 
@@ -182,7 +181,7 @@ app.get('/bookpriceaftertax', basicAuth, (req, res) => {
 app.get('/booksold/:purchased', basicAuth, (req, res) => {
     let { purchased } = req.params;
     purchased = parseInt(purchased);
-    if (Number.isNaN(purchased || purchased < 0)) {
+    if (Number.isNaN(purchased) || purchased < 0) {
         purchased = 1
     }
     bookSold(buku, purchased);
