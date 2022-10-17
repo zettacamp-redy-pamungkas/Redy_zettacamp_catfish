@@ -165,6 +165,7 @@ function basicAuth(req, res, next) {
         }
     }
 }
+
 // GET '/bookpricediscount'
 app.get('/bookpriceafterdiscount', (req, res) => {
     bookPriceAfterDiscount(buku)
@@ -182,7 +183,8 @@ app.get('/booksold/:purchased', basicAuth, (req, res) => {
     let { purchased } = req.params;
     purchased = parseInt(purchased);
     if (Number.isNaN(purchased) || purchased < 0) {
-        purchased = 1
+        res.status(400).send('purchase invalid');
+        return true
     }
     bookSold(buku, purchased);
     res.send(buku);
@@ -216,8 +218,13 @@ app.get('/creditbook/:term',basicAuth, (req, res) => {
 // GET '/' route, redirect to '/buku'
 app.get('/', (req, res) => {
     // res.redirect('/buku');
+    // console.log(req.body);
     res.send(buku);
 });
+
+
+
+// CRUD ROUTE
 
 // GET '/buku' route
 app.get('/buku', (req, res) => {
