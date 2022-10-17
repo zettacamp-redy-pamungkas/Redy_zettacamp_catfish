@@ -152,6 +152,22 @@ async function creditBook(book, term = 5, additionalPrice = 1000) {
     return arrInstalment;
 }
 
+// function getBook
+// Simulate fetching data from DB
+function getBook(book) {
+    return new Promise((resolve, reject) => {
+        const ms = Math.floor(Math.random() * 5000) + 1;
+        console.log(ms)
+        if (ms > 3500) {
+            reject('Request too long')
+        } else {
+            setTimeout(() => {
+                resolve(book)
+            }, ms);
+        }
+    })
+}
+
 // Middleware
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
@@ -173,20 +189,6 @@ function basicAuth(req, res, next) {
             res.status(401).send('Username dan Password tidak sesuai');
         }
     }
-}
-
-// function getBook
-// Simulate fetching data from DB
-function getBook(book) {
-    return new Promise((resolve, reject) => {
-        const ms = Math.floor(Math.random() * 5000) + 1;
-        console.log(ms)
-        if (ms > 3000) {
-            reject('Request too long')
-        } else {
-            resolve(book);
-        }
-    })
 }
 
 // GET '/bookpricediscount'
