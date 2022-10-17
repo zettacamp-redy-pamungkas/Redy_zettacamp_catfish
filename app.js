@@ -118,29 +118,38 @@ function bookSold(book, purchase) {
 }
 
 // function credit
-function creditBook(book, term = 5) {
+async function creditBook(book, term = 5, additionalPrice = 1000) {
     // bookPriceAfterTax(buku);
     let { price, finalPrice } = book;
     price = finalPrice || price;
     let priceCredit = Math.ceil(price / term);
     const instalment = {}
     instalment.priceCredit = priceCredit;
-    instalment.debt = priceCredit * term;
+    instalment.debt = (priceCredit * term) + additionalPrice;
     instalment.totalInstalment = 0;
     let arrInstalment = [];
     // Date
     let today = new Date();
+    let middleIndex = Math.ceil(term / 2);
     for (let i = 0; i < term; i++) {
+        if (i === middleIndex - 1) {
+            const newPriceCredit = priceCredit + additionalPrice;
+            instalment.priceCredit = newPriceCredit;
+            instalment.debt -= newPriceCredit ;
+            instalment.totalInstalment += newPriceCredit;
+        } else {
+            instalment.priceCredit = priceCredit
+            instalment.debt -= priceCredit;
+            instalment.totalInstalment += priceCredit;
+        }
         const monthYear = today.toLocaleString('default', {month: 'long', year: "numeric"})
         instalment.dueDate = `${monthYear}`;
-        instalment.debt -= priceCredit;
-        instalment.totalInstalment += priceCredit;
         arrInstalment.push({...instalment});
         today = new Date(today.setMonth(today.getMonth() + 1));
     }
     // console.log(arrInstalment);
-    book.instalment = arrInstalment;
-    return true;
+    // Arry of Object
+    return arrInstalment;
 }
 
 // Middleware
@@ -164,6 +173,20 @@ function basicAuth(req, res, next) {
             res.status(401).send('Username dan Password tidak sesuai');
         }
     }
+}
+
+// function getBook
+// Simulate fetching data from DB
+function getBook(book) {
+    return new Promise((resolve, reject) => {
+        const ms = Math.floor(Math.random() * 5000) + 1;
+        console.log(ms)
+        if (ms > 3000) {
+            reject('Request too long')
+        } else {
+            resolve(book);
+        }
+    })
 }
 
 // GET '/bookpricediscount'
@@ -202,17 +225,25 @@ app.get('/bookrestock/:stock', basicAuth, (req, res) => {
 })
 
 // GET '/creditbook/:term' creditBook function
-app.get('/creditbook/:term',basicAuth, (req, res) => {
+app.get('/creditbook/:term',basicAuth, async (req, res) => {
     let { term } = req.params;
     term = parseInt(term);
     if (Number.isNaN(term) || term <= 0) {
-        term = 6;
+        res.status(404).send('Parameter Failed');
+        return;
     }
     if (term > 36) {
-        term = 36;
+        res.status(403).send('Parameter failed, please insert between 1 until 36')
+        return;
     }
-    creditBook(buku, term);
-    res.send(buku);
+    try {
+        let books = await getBook(buku);
+        const toatlInstalment =  await creditBook(buku, term);
+        buku.instalment = toatlInstalment
+        res.send(buku);
+    } catch (err) {
+        res.send(err)
+    }
 })
 
 // GET '/' route, redirect to '/buku'
