@@ -3,6 +3,13 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+// path
+const path = require('path');
+
+// fs
+const fs = require('fs/promises');
+const { json } = require('express');
+
 // buku object
 const buku = {
     title: 'Untitled Book',
@@ -168,6 +175,22 @@ function getBook(book) {
     })
 }
 
+// function read text
+async function readFileTextAsync(path) {
+    return fs.readFile(path, {encoding:'utf-8'})
+}
+
+// function getText
+async function readFileTextSync(path) {
+    try {
+        let data = await fs.readFile(path, {encoding: 'utf-8'})
+        data = JSON.parse(data)
+        return data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 // Middleware
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
@@ -246,14 +269,39 @@ app.get('/creditbook/:term',basicAuth, async (req, res) => {
     } catch (err) {
         res.send(err)
     }
-})
-
+});
 // GET '/' route, redirect to '/buku'
 app.get('/', (req, res) => {
     // res.redirect('/buku');
     // console.log(req.body);
     res.send(buku);
 });
+
+// GET '/bukuasync' route
+app.get('/bukuasync/:filename', (req, res, next) => {
+    const { filename = 'text.txt' } = req.params;
+    fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'})
+        .then((data) => {
+            console.log(data);
+            res.send(JSON.parse(data));
+        })
+        .catch(() => {
+            next(new Error('file not found, please check your path again'));
+        });
+});
+
+// GET '/bukusync' route
+app.get('/bukusync/:filename', async (req, res, next) => {
+    const { filename = 'text.txt' } = req.params
+    try {
+        let data = await fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'});
+        console.log(data);
+        res.send(JSON.parse(data));
+    } catch(err) {
+        next(err);
+    }
+})
+
 
 
 
@@ -337,6 +385,11 @@ app.delete('/buku/detail/:id',basicAuth, (req, res) => {
 // cannot find route
 app.use((req, res) => {
     res.send(`Cannot find ${req.method} "${req.path}" path`);
+});
+
+// Express Error Handler
+app.use((err, req, res, next) => {
+    res.status(404).send(err.message);
 })
 
 // express listen

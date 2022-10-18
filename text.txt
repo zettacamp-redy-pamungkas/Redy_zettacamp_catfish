@@ -1,0 +1,10 @@
+{
+  "title": "Untitled Book",
+  "author": "Unfamous Author",
+  "price": 10000,
+  "onSale": true,
+  "discount": 20,
+  "tax": 11,
+  "stock": 5,
+  "purchased": 0
+}
