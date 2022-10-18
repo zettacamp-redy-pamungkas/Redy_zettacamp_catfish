@@ -8,7 +8,10 @@ const path = require('path');
 
 // fs
 const fs = require('fs/promises');
-const { json } = require('express');
+
+// events
+const Events = require('events');
+const myEvent = new Events();
 
 // buku object
 const buku = {
@@ -169,7 +172,8 @@ function getBook(book) {
             reject('Request too long')
         } else {
             setTimeout(() => {
-                resolve(book)
+                let data = readFileTextSync(path.join(__dirname, 'text.txt'));
+                resolve(data)
             }, ms);
         }
     })
@@ -190,6 +194,36 @@ async function readFileTextSync(path) {
         console.log(err)
     }
 }
+
+function wrapFunction(fn) {
+    return function (req, res, next) {
+        fn(req, res, next)
+        const { filename } = req.params;
+        fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'})
+        .then((data) => {
+            console.log(data);
+            // res.send(JSON.parse(data));
+            // return data
+        })
+        .catch((err) => {
+            next(err)
+        });
+    }
+}
+
+function getBukuAsync(path) {
+    fs.readFile(path, {encoding: 'utf-8'})
+        .then((data) => {
+            console.log(data);
+            // res.send(JSON.parse(data));
+            // return data
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+}
+
+myEvent.on('bukuAsync', getBukuAsync)
 
 // Middleware
 app.use(express.urlencoded({extended:true}));
@@ -272,22 +306,14 @@ app.get('/creditbook/:term',basicAuth, async (req, res) => {
 });
 // GET '/' route, redirect to '/buku'
 app.get('/', (req, res) => {
-    // res.redirect('/buku');
-    // console.log(req.body);
     res.send(buku);
 });
 
 // GET '/bukuasync' route
 app.get('/bukuasync/:filename', (req, res, next) => {
     const { filename = 'text.txt' } = req.params;
-    fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'})
-        .then((data) => {
-            console.log(data);
-            res.send(JSON.parse(data));
-        })
-        .catch(() => {
-            next(new Error('file not found, please check your path again'));
-        });
+    myEvent.emit('bukuAsync', path.join(__dirname, filename));
+    res.send('Function bukuAsynch');
 });
 
 // GET '/bukusync' route
