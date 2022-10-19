@@ -145,16 +145,16 @@ async function creditBook(book, term = 5, additionalPrice = 1000) {
         if (i === middleIndex - 1) {
             const newPriceCredit = priceCredit + additionalPrice;
             instalment.priceCredit = newPriceCredit;
-            instalment.debt -= newPriceCredit ;
+            instalment.debt -= newPriceCredit;
             instalment.totalInstalment += newPriceCredit;
         } else {
             instalment.priceCredit = priceCredit
             instalment.debt -= priceCredit;
             instalment.totalInstalment += priceCredit;
         }
-        const monthYear = today.toLocaleString('default', {month: 'long', year: "numeric"})
+        const monthYear = today.toLocaleString('default', { month: 'long', year: "numeric" })
         instalment.dueDate = `${monthYear}`;
-        arrInstalment.push({...instalment});
+        arrInstalment.push({ ...instalment });
         today = new Date(today.setMonth(today.getMonth() + 1));
     }
     // console.log(arrInstalment);
@@ -181,13 +181,13 @@ function getBook(book) {
 
 // function read text
 async function readFileTextAsync(path) {
-    return fs.readFile(path, {encoding:'utf-8'})
+    return fs.readFile(path, { encoding: 'utf-8' })
 }
 
 // function getText
 async function readFileTextSync(path) {
     try {
-        let data = await fs.readFile(path, {encoding: 'utf-8'})
+        let data = await fs.readFile(path, { encoding: 'utf-8' })
         data = JSON.parse(data)
         return data
     } catch (err) {
@@ -199,20 +199,20 @@ function wrapFunction(fn) {
     return function (req, res, next) {
         fn(req, res, next)
         const { filename } = req.params;
-        fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'})
-        .then((data) => {
-            console.log(data);
-            // res.send(JSON.parse(data));
-            // return data
-        })
-        .catch((err) => {
-            next(err)
-        });
+        fs.readFile(path.join(__dirname, filename), { encoding: 'utf-8' })
+            .then((data) => {
+                console.log(data);
+                // res.send(JSON.parse(data));
+                // return data
+            })
+            .catch((err) => {
+                next(err)
+            });
     }
 }
 
 function getBukuAsync(path) {
-    fs.readFile(path, {encoding: 'utf-8'})
+    fs.readFile(path, { encoding: 'utf-8' })
         .then((data) => {
             console.log(data);
             // res.send(JSON.parse(data));
@@ -226,15 +226,15 @@ function getBukuAsync(path) {
 myEvent.on('bukuAsync', getBukuAsync)
 
 // Middleware
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 function basicAuth(req, res, next) {
     const authorize = req.headers.authorization;
-    
+
     if (!authorize) {
         res.status(401).send('Kamu gak berhak')
-    } else{
+    } else {
         let basicEncode = authorize.split(' ')[1];
         let basicPlainText = new Buffer.from(basicEncode, 'base64').toString().split(':')
         const user = basicPlainText[0];
@@ -284,7 +284,7 @@ app.get('/bookrestock/:stock', basicAuth, (req, res) => {
 })
 
 // GET '/creditbook/:term' creditBook function
-app.get('/creditbook/:term',basicAuth, async (req, res) => {
+app.get('/creditbook/:term', basicAuth, async (req, res) => {
     let { term } = req.params;
     term = parseInt(term);
     if (Number.isNaN(term) || term <= 0) {
@@ -297,7 +297,7 @@ app.get('/creditbook/:term',basicAuth, async (req, res) => {
     }
     try {
         let books = await getBook(buku);
-        const toatlInstalment =  await creditBook(buku, term);
+        const toatlInstalment = await creditBook(buku, term);
         buku.instalment = toatlInstalment
         res.send(buku);
     } catch (err) {
@@ -320,27 +320,27 @@ app.get('/bukuasync/:filename', (req, res, next) => {
 app.get('/bukusync/:filename', async (req, res, next) => {
     const { filename = 'text.txt' } = req.params
     try {
-        let data = await fs.readFile(path.join(__dirname, filename), {encoding: 'utf-8'});
+        let data = await fs.readFile(path.join(__dirname, filename), { encoding: 'utf-8' });
         console.log(data);
         res.send(JSON.parse(data));
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 })
 
 // Object Map
 const bookMap = new Map();
-bookMap.set('Buku 1', {...buku, title: 'Buku 1'});
-bookMap.set('Buku 2', {...buku, title: 'Buku 2'});
-bookMap.set('Buku 3', {...buku, title: 'Buku 3'});
+bookMap.set('Buku 1', { ...buku, title: 'Buku 1' });
+bookMap.set('Buku 2', { ...buku, title: 'Buku 2' });
+bookMap.set('Buku 3', { ...buku, title: 'Buku 3' });
 // Obejct Set
 const bookTitle = new Set(['Buku 1', 'Buku 2', 'Buku 3']);
 
 // GET '/bukusetmap' route
 app.get('/bukusetmap', (req, res) => {
-    const valueBookMap = [...bookMap].map((arr, index) => {return arr[1]})
+    const valueBookMap = [...bookMap].map((arr, index) => { return arr[1] })
     res.send(valueBookMap);
-})
+});
 
 // GET '/bukusetmap/:title' route
 app.get('/bukusetmap/:title', (req, res, next) => {
@@ -349,7 +349,7 @@ app.get('/bukusetmap/:title', (req, res, next) => {
         return next(new Error(`Book with title: ${title} not found`));
     }
     res.send(bookMap.get(title));
-})
+});
 
 // POST '/bukusetmap' route
 app.post('/bukusetmap', (req, res, next) => {
@@ -357,7 +357,7 @@ app.post('/bukusetmap', (req, res, next) => {
     if (!title) {
         return next(new Error('Title Empty'));
     }
-    if( bookTitle.has(title)) {
+    if (bookTitle.has(title)) {
         res.send(`You have duplicate book with title: ${title},
         ${bookMap.get(title).title}
         `);
@@ -372,6 +372,26 @@ app.post('/bukusetmap', (req, res, next) => {
     }
 })
 
+// PUT '/bukusetmap/:title' route
+app.put('/bukusetmap/:title', (req, res, next) => {
+    const { title } = req.params;
+    const { author, price } = req.body;
+    if (!title) {
+        return next(new Error('Title Empty'));
+    }
+    bookMap.set(title, {...buku,title, author, price})
+    res.send(bookMap.get(title));
+});
+
+// DELETE '/bukusetmap/:title' route
+app.delete('/bukusetmap/:title', (req, res, next) => {
+    const { title } = req.params;
+    if (!title) {
+        return next(new Error('Title Empty'));
+    }
+    bookMap.delete(title);
+    res.redirect('/bukusetmap');
+})
 
 // CRUD ROUTE
 
@@ -382,8 +402,9 @@ app.get('/buku', (req, res) => {
 
 
 // POST 
-app.post('/buku',basicAuth, (req, res) => {
-    const buku = {...req.body,
+app.post('/buku', basicAuth, (req, res) => {
+    const buku = {
+        ...req.body,
         onSale: 'false',
         discount: 20,
         tax: 11,
@@ -418,19 +439,19 @@ app.put('/buku/detail/:id', basicAuth, (req, res) => {
     let book = arrBukus.find((book) => {
         return book.id === id;
     });
-    book = {...book,...req.body};
+    book = { ...book, ...req.body };
     // update arrBukus
     arrBukus.forEach((arr, index) => {
         if (arr.id === id) {
             console.log('Terupdate');
-            arrBukus[index] = {...book};
+            arrBukus[index] = { ...book };
         }
     });
     res.send(book);
 });
 
 // DELETE '/buku/detail/:id' route
-app.delete('/buku/detail/:id',basicAuth, (req, res) => {
+app.delete('/buku/detail/:id', basicAuth, (req, res) => {
     let { id } = req.params;
     id = parseInt(id);
     if (Number.isNaN(id)) {
@@ -440,7 +461,7 @@ app.delete('/buku/detail/:id',basicAuth, (req, res) => {
         arrBukus.forEach((arr, index) => {
             if (arr.id === id) {
                 arrBukus.splice(index, 1);
-                res.send({...arr, status: 'Deleted'});
+                res.send({ ...arr, status: 'Deleted' });
                 console.log('Has Been Deleted');
                 return true;
             }
