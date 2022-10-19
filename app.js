@@ -328,7 +328,48 @@ app.get('/bukusync/:filename', async (req, res, next) => {
     }
 })
 
+// Object Map
+const bookMap = new Map();
+bookMap.set('Buku 1', {...buku, title: 'Buku 1'})
+bookMap.set('Buku 2', {...buku, title: 'Buku 2'})
+bookMap.set('Buku 3', {...buku, title: 'Buku 3'})
+// Obejct Set
+const bookTitle = new Set(['Buku 1', 'Buku 2', 'Buku 3']);
 
+// GET '/bukusetmap' route
+app.get('/bukusetmap', (req, res) => {
+    const valueBookMap = [...bookMap].map((arr, index) => {return arr[1]})
+    res.send(valueBookMap);
+})
+
+app.get('/bukusetmap/:title', (req, res, next) => {
+    const { title } = req.params;
+    if (!bookTitle.has(title)) {
+        return next(new Error(`Book with title: ${title} not found`))
+    }
+    res.send(bookMap.get(title));
+})
+
+// POST '/bukusetmap' route
+app.post('/bukusetmap', (req, res, next) => {
+    const { title } = req.body;
+    if (!title) {
+        return next(new Error('Title Empty'))
+    }
+    if( bookTitle.has(title)) {
+        res.send(`You have duplicate book with title: ${title},
+        ${bookMap.get(title).title}
+        `)
+    } else {
+        bookMap.set(title, {
+            ...buku,
+            title
+        })
+        bookTitle.add(title);
+        console.log(bookTitle)
+        res.send(bookMap.get(title));
+    }
+})
 
 
 // CRUD ROUTE
