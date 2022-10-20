@@ -157,7 +157,7 @@ function getRandomSongListUnder(songs, min = 60) {
         copySong.splice(randomIndex, 1);
         // check songList duration
         const songListDuration = getAllSongDuration(songList);
-        if (songListDuration + song.duration > min) {
+        if (songListDuration + song.duration >= min) {
             break;
         }
         if (songListDuration < min) {
@@ -183,17 +183,48 @@ const jwt = require('jsonwebtoken');
 // bcrypt
 const bcrypt = require('bcrypt');
 
+// Class Error
+class CustomError extends Error {
+    constructor(statusCode, message) {
+        super();
+        this.statusCode = statusCode;
+        this.message = message;
+    }
+}
+
 // GET 'songlist'
-app.get('/songlist', (req, res) => {
+app.get('/songlist', (req, res, next) => {
     const {artist, genre} = req.query;
     let songList = arrSongs;
     if (artist) {
-        songList = filterSongBasedArtist(arrSongs, artist)
+        songList = filterSongBasedArtist(songList, artist);
+    }
+    if (genre) {
+        songList = filterSongBasedGenre(songList, genre);
+    }
+    if (songList.length === 0) {
+        return next(new CustomError(404, 'Song list tidak ditemukan.'))
     }
     res.json(songList);
+});
+
+// GET 'randomsonglist' route
+app.get('/randomsonglist', (req, res, next) => {
+    const { min = 60 } = req.query;
+    const randomSong = getRandomSongListUnder(arrSongs, min)
+    res.json(
+        [...randomSong, {"Total Duration": getAllSongDuration(randomSong)}]
+    )
 })
 
-// GET 'songlist?
+// Express Error Handler
+app.use((err, req, res, next) => {
+    const { statusCode, message } = err;
+    res.status(statusCode).json({
+        status: statusCode,
+        message
+    })
+})
 
 // Express Listen
 app.listen(port, () => {
