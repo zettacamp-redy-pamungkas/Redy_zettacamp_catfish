@@ -158,7 +158,7 @@ function getRandomSongListUnder(songs, min = 60) {
         // check songList duration
         const songListDuration = getAllSongDuration(songList);
         if (songListDuration + song.duration >= min) {
-            break;
+            continue;
         }
         if (songListDuration < min) {
             // push song
@@ -290,13 +290,17 @@ app.post('/auth/signup', express.urlencoded({extended:true}), checkAccount, regi
 
 // GET 'songlist'
 app.get('/songlist', authenticate, (req, res, next) => {
-    const {artist, genre} = req.query;
+    const {artist, genre, min} = req.query;
     let songList = arrSongs;
     if (artist) {
         songList = filterSongBasedArtist(songList, artist);
     }
     if (genre) {
         songList = filterSongBasedGenre(songList, genre);
+    }
+    if (min) {
+        songList = getRandomSongListUnder(songList, min);
+        songList = [...songList, {"Total Duration": getAllSongDuration(songList)}]
     }
     if (songList.length === 0) {
         return next(new CustomError(404, 'Song list tidak ditemukan.'))
