@@ -122,11 +122,18 @@ let arrSongs = [
 ];
 
 function convertArrSongIntDurationToString(intDuration) {
-    let duration = intDuration * 60 + Math.ceil(Math.random() * 59);
-    return `${Math.floor(duration / 60)}:${duration%60}`
+    const duration = intDuration * 60 + Math.ceil(Math.random() * 59);
+    const min = Math.floor(duration / 60);
+    let sec = duration % 60;
+
+    if (sec < 10) {
+        sec = '0' + sec;
+    }
+    return `${min}:${sec}`
 }
 
 function convertIntDurationToString(intDuration) {
+    // Jika durasi lebih dari 1 jam
     if (intDuration > 3600) {
         const hour = Math.floor(intDuration / 3600);
 
@@ -134,11 +141,13 @@ function convertIntDurationToString(intDuration) {
         const min = Math.floor(div_for_min / 60);
 
         const div_for_second = div_for_min % 60;
-        const sec = div_for_second
+        let sec = div_for_second
+
+        if (sec < 10) {
+            sec = '0' + sec;
+        }
 
         return `${hour}:${min}:${sec}`;
-
-
     }
     return `${Math.floor(intDuration / 60)}:${intDuration%60}`
 }
