@@ -134,7 +134,7 @@ function convertIntDurationToString(intDuration) {
         const min = Math.floor(div_for_min / 60);
 
         const div_for_second = div_for_min % 60;
-        const sec = Math.ceil(div_for_second)
+        const sec = div_for_second
 
         return `${hour}:${min}:${sec}`;
 
