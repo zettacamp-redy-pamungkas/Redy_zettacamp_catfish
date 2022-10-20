@@ -1,4 +1,4 @@
-const arrSongs = [
+let arrSongs = [
     {
         name: 'Song 1',
         artist: 'Artist 1',
@@ -121,6 +121,39 @@ const arrSongs = [
     },
 ];
 
+function convertArrSongIntDurationToString(intDuration) {
+    let duration = intDuration * 60 + Math.ceil(Math.random() * 59);
+    return `${Math.floor(duration / 60)}:${duration%60}`
+}
+
+function convertIntDurationToString(intDuration) {
+    if (intDuration > 3600) {
+        const hour = Math.floor(intDuration / 3600);
+
+        const div_for_min = intDuration % (3600);
+        const min = Math.floor(div_for_min / 60);
+
+        const div_for_second = div_for_min % 60;
+        const sec = Math.ceil(div_for_second)
+
+        return `${hour}:${min}:${sec}`;
+
+
+    }
+    return `${Math.floor(intDuration / 60)}:${intDuration%60}`
+}
+
+function convertStringDurationToInt(stringDuration) {
+    let duration = stringDuration.split(':').map((el) => {return parseInt(el)});
+    return 60 * duration[0] + duration[1]
+}
+
+// Transform duration to string duration
+arrSongs = arrSongs.map((el) => {
+    el.duration = convertArrSongIntDurationToString(el.duration);
+    return el;
+})
+
 function filterSongBasedArtist(songs, artistName) {
     return songs.filter((song) => {
         return song.artist.toLowerCase() === artistName.toLowerCase()
@@ -139,7 +172,7 @@ function getAllSongDuration(songs) {
         return duration;
     }
     for (let song of songs) {
-        duration += song.duration;
+        duration += convertStringDurationToInt(song.duration);
     }
 
     return duration;
@@ -157,10 +190,10 @@ function getRandomSongListUnder(songs, min = 60) {
         copySong.splice(randomIndex, 1);
         // check songList duration
         const songListDuration = getAllSongDuration(songList);
-        if (songListDuration + song.duration >= min) {
+        if (songListDuration + convertStringDurationToInt(song.duration) >= min * 60) {
             continue;
         }
-        if (songListDuration < min) {
+        if (songListDuration < min * 60) {
             // push song
             songList.push(song);
         } else {
@@ -216,7 +249,7 @@ function getToken(req, res, next) {
             .then((result) => {
                 if(result) {
                     // Create Token
-                    jwt.sign({message: 'Welcome to my site', username}, 'secret-zetta', {expiresIn: '600s'}, (err, token) => {
+                    jwt.sign({message: 'Welcome to my site', username}, 'secret-zetta', {expiresIn: '1h'}, (err, token) => {
                         if(err) {
                             return next(new CustomError(400, err.message))
                         }
@@ -300,7 +333,7 @@ app.get('/songlist', authenticate, (req, res, next) => {
     }
     if (min) {
         songList = getRandomSongListUnder(songList, min);
-        songList = [...songList, {"Total Duration": getAllSongDuration(songList)}]
+        songList = [...songList, {"Total Duration":  convertIntDurationToString(getAllSongDuration(songList))}]
     }
     if (songList.length === 0) {
         return next(new CustomError(404, 'Song list tidak ditemukan.'))
