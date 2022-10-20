@@ -192,16 +192,43 @@ class CustomError extends Error {
     }
 }
 
+// usersMap object
+const usersMap = new Map();
+usersMap
+    .set('admin', {
+        username: 'admin',
+        password: '$2b$10$3XECZ3kkMD9kOp1LMRUIOOb6x5MEpBtxUKMoDFfjOJMP1qnssh77q'
+})
+    .set('moderator', {
+        username: 'moderator',
+        password: '$2b$10$2ZwEYFeq1Ro0xFFKdy/HQOEI97NHvfBJBK/5ecIrOt7YR7jPkKHjq'
+    });
+
+// usersSet object
+const usersSet = new Set(['admin', 'moderator'])
+
 // Express Middleware
 // getToken jwt
 function getToken(req, res, next) {
     const { username, password } = req.body;
-    jwt.sign({username, password}, 'secret-zetta', {expiresIn: '600s'}, (err, token) => {
-        if(err) {
-            return next(new CustomError(400, err.message))
-        }
-        res.json({token})
-    })
+    if (usersSet.has(username)) {
+        bcrypt.compare(password, usersMap.get(username).password)
+            .then((result) => {
+                if(result) {
+                    // Create Token
+                    jwt.sign({message: 'Welcome to my site', username}, 'secret-zetta', {expiresIn: '600s'}, (err, token) => {
+                        if(err) {
+                            return next(new CustomError(400, err.message))
+                        }
+                        res.json({token})
+                    })
+                } else {
+                    next(new CustomError(401, 'Password wrong, please try again'))
+                }
+            })
+    } else {
+        return next(new CustomError(401, 'Username not found, please signup.'))
+    }
 }
 
 // verify token jwt
@@ -216,12 +243,50 @@ function authenticate (req, res, next) {
         if (err) {
             return next(new CustomError(400, err.message))
         }
+        req.token = decode
         next()
     })
 }
 
+// checkAccount
+function checkAccount(req, res, next) {
+    const { username, password } = req.body;
+    if (!username) {
+        return next(new CustomError(400, 'Please provide username'));
+    }
+    if (!password) {
+        return next(new CustomError(400, 'Password empty'));
+    }
+    next()
+}
+
+// registerAccount
+function registerAccount(req, res, next) {
+    const { username, password } = req.body;
+    if (usersSet.has(username)) {
+        return next(new CustomError(400, `Username: ${username} has been taken, please choose different username`));
+    }
+    usersSet.add(username);
+    bcrypt.hash(password, 10)
+        .then((result) => {
+            usersMap.set(username, {
+                username,
+                password: result
+            })
+            next()
+        })
+}
+
 // POST '/auth/login' route
-app.post('/auth/login', express.urlencoded({extended:true}), getToken)
+app.post('/auth/login', express.urlencoded({extended:true}), checkAccount, getToken)
+
+// POST '/auth/signup' route
+app.post('/auth/signup', express.urlencoded({extended:true}), checkAccount, registerAccount, (req, res) => {
+    res.json({
+        status: 200,
+        message: 'Successfully register, please login to access my service.'
+    })
+})
 
 // GET 'songlist'
 app.get('/songlist', authenticate, (req, res, next) => {
@@ -245,6 +310,13 @@ app.get('/randomsonglist', authenticate, (req, res, next) => {
     const randomSong = getRandomSongListUnder(arrSongs, min)
     res.json(
         [...randomSong, {"Total Duration": getAllSongDuration(randomSong)}]
+    )
+})
+
+// GET '/users' route
+app.get('/users', (req, res) => {
+    res.json(
+        [...usersMap].map((el) => {return el[1]})
     )
 })
 
