@@ -192,8 +192,39 @@ class CustomError extends Error {
     }
 }
 
+// Express Middleware
+// getToken jwt
+function getToken(req, res, next) {
+    const { username, password } = req.body;
+    jwt.sign({username, password}, 'secret-zetta', {expiresIn: '600s'}, (err, token) => {
+        if(err) {
+            return next(new CustomError(400, err.message))
+        }
+        res.json({token})
+    })
+}
+
+// verify token jwt
+function authenticate (req, res, next) {
+    const bearerToken = req.headers.authorization
+    if(!bearerToken) {
+        return next(new CustomError(400, 'Token not provided'))
+    }
+    const tokenJWT = bearerToken.split(' ')[1]
+    // console.log(bearerToken)
+    jwt.verify(tokenJWT, 'secret-zetta', (err, decode) => {
+        if (err) {
+            return next(new CustomError(400, err.message))
+        }
+        next()
+    })
+}
+
+// POST '/auth/login' route
+app.post('/auth/login', express.urlencoded({extended:true}), getToken)
+
 // GET 'songlist'
-app.get('/songlist', (req, res, next) => {
+app.get('/songlist', authenticate, (req, res, next) => {
     const {artist, genre} = req.query;
     let songList = arrSongs;
     if (artist) {
@@ -209,7 +240,7 @@ app.get('/songlist', (req, res, next) => {
 });
 
 // GET 'randomsonglist' route
-app.get('/randomsonglist', (req, res, next) => {
+app.get('/randomsonglist', authenticate, (req, res, next) => {
     const { min = 60 } = req.query;
     const randomSong = getRandomSongListUnder(arrSongs, min)
     res.json(
@@ -219,7 +250,7 @@ app.get('/randomsonglist', (req, res, next) => {
 
 // Express Error Handler
 app.use((err, req, res, next) => {
-    const { statusCode, message } = err;
+    const { statusCode = 500, message } = err;
     res.status(statusCode).json({
         status: statusCode,
         message
