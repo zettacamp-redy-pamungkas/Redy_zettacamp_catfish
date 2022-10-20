@@ -171,3 +171,31 @@ function getRandomSongListUnder(songs, min = 60) {
     // return song
     return songList;
 }
+
+// Express
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// jwt
+const jwt = require('jsonwebtoken');
+
+// bcrypt
+const bcrypt = require('bcrypt');
+
+// GET 'songlist'
+app.get('/songlist', (req, res) => {
+    const {artist, genre} = req.query;
+    let songList = arrSongs;
+    if (artist) {
+        songList = filterSongBasedArtist(arrSongs, artist)
+    }
+    res.json(songList);
+})
+
+// GET 'songlist?
+
+// Express Listen
+app.listen(port, () => {
+    console.log(`Express listening on port: ${port}`);
+})
