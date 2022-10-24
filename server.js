@@ -91,7 +91,7 @@ app.put('/books/detail/:id', express.urlencoded({ extended: true }), async (req,
         const { id } = req.params;
         const { book } = req.body;
         book.updatedAt = new Date();
-        const updatedBook = await Book.findByIdAndUpdate(id, book, { new: true });
+        const updatedBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true });
     
         res.json({
             status: 'ok',
@@ -161,16 +161,6 @@ app.post('/authors/new', express.urlencoded({extended: true}), async (req, res) 
 app.delete('/authors/detail/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const author = await Author.findById(id);
-
-        // On Delete Cascade
-        if(author.books.length) {
-            const res = await Book.deleteMany({
-                _id: {
-                    $in: author.books
-                }
-            })
-        }
 
         await Author.findByIdAndDelete(id);
         res.json({

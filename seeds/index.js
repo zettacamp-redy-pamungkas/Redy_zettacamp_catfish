@@ -83,6 +83,17 @@ async function insertDummiesBook(dataLength = 20) {
     }
 }
 
+// function insertDummies
+async function insertDummies() {
+    await deleteAll();
+    await insertDummiesAuthor();
+    await insertDummiesBook();
+    mongoose.connection.close();
+    console.log('Dummies data has been inserted');
+}
+
+insertDummies()
+
 // insertDummiesAuthor();
 // insertDummiesBook();
 // deleteAll();

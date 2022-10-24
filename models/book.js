@@ -2,13 +2,16 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const Author = require('./author');
+
 // book schema
 const bookSchema = new Schema({
     title: {
         type: String,
         required: true,
         minLength: 5,
-        maxLength: 50
+        maxLength: 50,
+        unique: true
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -32,6 +35,15 @@ const bookSchema = new Schema({
         type: Date,
     }
 });
+
+bookSchema.post('findOneAndDelete', async(book) => {
+    const author = await Author.findById(book.author);
+    await author.update({
+        $pull: {
+            books: book.id
+        }
+    })
+})
 
 // mongoose model
 module.exports = mongoose.model('Book', bookSchema);
