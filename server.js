@@ -8,8 +8,9 @@ const mongoose = require('mongoose')
 const dbName = 'bookStore';
 
 // Book, Author
-const Book = require('./models/book');
-const Author = require('./models/author');
+const { Book, Author } = require('./models/allModels');
+// const Book = require('./models/book');
+// const Author = require('./models/author');
 
 // mongoose connections
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
@@ -106,6 +107,17 @@ app.put('/books/detail/:id', express.urlencoded({ extended: true }), async (req,
 app.delete('/books/detail/:id', async(req, res, next) => {
     try {
         const { id } = req.params;
+
+        // Pull Book from author.books
+        const book = await Book.findById(id);
+        const author = await Author.findById(book.author);
+        await author.update({
+        $pull: {
+            books: book.id
+        }
+        })
+
+        // Delete Book
         await Book.findByIdAndDelete(id);
         res.json({
             status: 'ok',
@@ -161,6 +173,16 @@ app.post('/authors/new', express.urlencoded({extended: true}), async (req, res) 
 app.delete('/authors/detail/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
+
+        // On Delete, Delete All Books with
+        const author = await Author.findById(id);
+        if (author.books.length) {
+            await Book.deleteMany({
+                _id : {
+                    $in: author.books
+                }
+            })
+        }
 
         await Author.findByIdAndDelete(id);
         res.json({

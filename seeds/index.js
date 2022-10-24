@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const dbName = 'bookStore';
 
 // Book, Author
-const Book = require('../models/book');
-const Author = require('../models/author');
+const { Book, Author } = require('../models/allModels');
 
 // mongoose connections
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
