@@ -184,6 +184,14 @@ app.delete('/authors/detail/:id', async (req, res, next) => {
 
 // END AUTHOR ROUTE
 
+// Express Not Found Route
+app.use((req, res, next) => {
+    res.json({
+        status: 404,
+        message: `Cannot find ${req.method} ${req.path} route`
+    });
+});
+
 
 // Express Error Handler
 app.use((err, req, res, next) => {
