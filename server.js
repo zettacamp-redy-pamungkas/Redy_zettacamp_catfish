@@ -140,6 +140,48 @@ app.get('/authors/detail/:id', async (req, res, next) => {
     }
 })
 
+// POST '/authors/new' route
+app.post('/authors/new', express.urlencoded({extended: true}), async (req, res) => {
+    try {
+        const { author } = req.body;
+        const randomDOB = `${getRandomMinMax(1975, 1985)}-${getRandomMinMax(1, 12)}-${getRandomMinMax(1, 30)}`;
+        author.dob = new Date(randomDOB);
+        const newAuthor = new Author(author);
+        await newAuthor.save();
+        res.json({
+            status: 'ok',
+            message: newAuthor
+        })
+    } catch (err) {
+        next(err)
+    }
+});
+
+// DELETE '/authors/detail/:id' route
+app.delete('/authors/detail/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const author = await Author.findById(id);
+
+        // On Delete Cascade
+        if(author.books.length) {
+            const res = await Book.deleteMany({
+                _id: {
+                    $in: author.books
+                }
+            })
+        }
+
+        await Author.findByIdAndDelete(id);
+        res.json({
+            status: 'ok',
+            message: `Author with id: ${id} has been deleted.`,
+        })
+    } catch (err) {
+        next(err)
+    }
+})
+
 // END AUTHOR ROUTE
 
 
