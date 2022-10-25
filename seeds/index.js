@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const dbName = 'bookStore';
 
 // Book, Author
-const { Book, Author } = require('../models/allModels');
+const { Book, Author, Bookshelf } = require('../models/allModels');
 
 // mongoose connections
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
@@ -22,10 +22,15 @@ const authorLastName = ['Doe', 'Morgan', 'Traversary'];
 const bookseeds = require('./randomBook');
 
 // function getRandom
-function getRandom(arr) {
+function getRandom(arr, isUnique = false) {
     const randomIndex = Math.floor(Math.random() * arr.length);
+    const el = arr[randomIndex];
 
-    return arr[randomIndex];
+    if (isUnique) {
+        arr.splice(randomIndex, 1);
+    }
+
+    return el;
 }
 
 // funtion getRandomMinMax
@@ -40,6 +45,7 @@ function getRandomMinMax(min, max) {
 async function deleteAll() {
     await Book.deleteMany({});
     await Author.deleteMany({});
+    await Bookshelf.deleteMany({});
 }
 
 // function insert random author
@@ -82,11 +88,31 @@ async function insertDummiesBook(dataLength = 20) {
     }
 }
 
+// function insert bookshelf
+async function insertDummiesBookshelf(shelfLength = 7) {
+    for (let i = 0; i < shelfLength; i++) {
+        const shelfName = `shelf ${i+1}`;
+        const books = await Book.find({});
+        const bookArr = [];
+        const maxBookLength = getRandomMinMax(5, books.length);
+        for (let y = 0; y < maxBookLength; y++) {
+            bookArr.push(getRandom(books, true));
+        }
+        const bookshelf = new Bookshelf({
+            name: shelfName,
+            books: bookArr
+        });
+        await bookshelf.save();
+    }
+    console.log('Bookshelf dummies has been inserted');
+}
+
 // function insertDummies
 async function insertDummies() {
     await deleteAll();
     await insertDummiesAuthor();
     await insertDummiesBook();
+    await insertDummiesBookshelf();
     mongoose.connection.close();
     console.log('Dummies data has been inserted');
 }

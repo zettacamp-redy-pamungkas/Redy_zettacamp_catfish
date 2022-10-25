@@ -44,27 +44,24 @@ const bookSchema = new Schema({
     }
 });
 
+// Bookshelf Schema
+const bookshelfSchema = new Schema([
+    {
+        name: {
+            type: String,
+            required: true
+        },
+        books: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Book'
+            }
+        ]
+    }
+])
+
 module.exports.Book = mongoose.model('Book', bookSchema);
 module.exports.Author = mongoose.model('Author', authorSchema);
-
-bookSchema.post('findOneAndDelete', async(book) => {
-    const author = await Author.findById(book.author);
-    await author.update({
-        $pull: {
-            books: book.id
-        }
-    })
-})
-
-// Books on delete cascade
-authorSchema.post('findOneAndDelete', async(author) => {
-    if (author.books.length) {
-        await Book.deleteMany({
-            _id : {
-                $in: author.books
-            }
-        })
-    }
-})
+module.exports.Bookshelf = mongoose.model('Bookshelf', bookshelfSchema);
 
 

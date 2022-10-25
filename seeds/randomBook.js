@@ -9,5 +9,16 @@ module.exports = [
     'Spare Girl',
     'Lacy and Racy',
     'Mermaids and Siren',
-    'Clue of the 13 Violins'
+    'Clue of the 13 Violins',
+    'Tried for Carnage',
+    'Eclipse of Uranus',
+    'The Colossus in the Vale',
+    'Sky Full of Starts',
+    'White Noon',
+    'Built for Error',
+    'The Raven Daemon',
+    'Metal Colony',
+    '2099: Extinction',
+    'Atlantis Recoiling',
+    'Case of the Prize Boa',
 ]

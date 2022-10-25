@@ -5,10 +5,11 @@ const port = 3000;
 
 // mongoose
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Types;
 const dbName = 'bookStore';
 
 // Book, Author
-const { Book, Author } = require('./models/allModels');
+const { Book, Author, Bookshelf } = require('./models/allModels');
 // const Book = require('./models/book');
 // const Author = require('./models/author');
 
@@ -93,7 +94,7 @@ app.put('/books/detail/:id', express.urlencoded({ extended: true }), async (req,
         const { book } = req.body;
         book.updatedAt = new Date();
         const updatedBook = await Book.findByIdAndUpdate(id, book, { new: true, runValidators: true });
-    
+
         res.json({
             status: 'ok',
             message: updatedBook
@@ -104,7 +105,7 @@ app.put('/books/detail/:id', express.urlencoded({ extended: true }), async (req,
 });
 
 // DELETE '/buku/detail/:id' route
-app.delete('/books/detail/:id', async(req, res, next) => {
+app.delete('/books/detail/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -112,9 +113,9 @@ app.delete('/books/detail/:id', async(req, res, next) => {
         const book = await Book.findById(id);
         const author = await Author.findById(book.author);
         await author.update({
-        $pull: {
-            books: book.id
-        }
+            $pull: {
+                books: book.id
+            }
         })
 
         // Delete Book
@@ -153,7 +154,7 @@ app.get('/authors/detail/:id', async (req, res, next) => {
 })
 
 // POST '/authors/new' route
-app.post('/authors/new', express.urlencoded({extended: true}), async (req, res) => {
+app.post('/authors/new', express.urlencoded({ extended: true }), async (req, res) => {
     try {
         const { author } = req.body;
         const randomDOB = `${getRandomMinMax(1975, 1985)}-${getRandomMinMax(1, 12)}-${getRandomMinMax(1, 30)}`;
@@ -178,7 +179,7 @@ app.delete('/authors/detail/:id', async (req, res, next) => {
         const author = await Author.findById(id);
         if (author.books.length) {
             await Book.deleteMany({
-                _id : {
+                _id: {
                     $in: author.books
                 }
             })
@@ -193,8 +194,141 @@ app.delete('/authors/detail/:id', async (req, res, next) => {
         next(err)
     }
 })
-
 // END AUTHOR ROUTE
+
+// BOOKSHELF ROUTER
+// GET '/bookshelfes' route
+app.get('/bookshelfes', async (req, res, next) => {
+    try {
+        const { _id, bookId } = req.query;
+        let bookshelfes = await Bookshelf.find({
+        }).populate({
+            path: 'books',
+            select: 'title',
+            populate: {
+                path: 'author',
+                model: 'Author',
+                select: 'firstName lastName'
+            }
+        });
+
+        // Find bookshelf by id
+        if (_id) {
+            bookshelfes = await Bookshelf.findById(_id)
+                .populate({
+                    path: 'books',
+                    select: 'title',
+                    populate: {
+                        path: 'author',
+                        model: 'Author',
+                        select: 'firstName lastName'
+                    }
+                });
+        }
+
+        // Find Books with id
+        if (bookId) {
+            bookshelfes = await Bookshelf.find({
+                books: {
+                    $all: bookId.split(' ').map((el) => { return ObjectId(el) })
+                }
+            }).populate({
+                path: 'books',
+                select: 'title',
+                populate: {
+                    path: 'author',
+                    model: 'Author',
+                    select: 'firstName lastName'
+                }
+            });
+        }
+
+        res.json({
+            status: 200,
+            message: bookshelfes
+        })
+    } catch (err) {
+        next(err)
+    }
+});
+
+// POST '/bookshelfes/create' route
+app.post('/bookshelfes/create', express.urlencoded({ extended: true }), async (req, res, next) => {
+    try {
+        let { shelfes } = req.body;
+        shelfes.books = shelfes.books.split(' ');
+        const newShelf = new Bookshelf(shelfes);
+        await newShelf.save()
+        res.send({
+            status: 201,
+            message: newShelf
+        })
+    } catch (err) {
+        next(err)
+    }
+});
+
+// PUT add
+app.put('/bookshelfes/addbooks', express.urlencoded({ extended: true }), async (req, res, next) => {
+    try {
+        const { shelf } = req.body;
+        const bookshelf = await Bookshelf.findById(shelf.id);
+        const books = shelf.books.split(' ').map((el) => { return ObjectId(el) });
+
+        // check if duplicate
+        for (let book of books) {
+            console.log(book)
+            if (bookshelf.books.includes(book)) {
+                next(new Error(`${book} sudah ada.`))
+            } else {
+                bookshelf.books.push(book);
+                await bookshelf.save();
+            }
+        }
+        res.json({
+            status: 200,
+            message: bookshelf
+        })
+    } catch (err) {
+        next(err)
+    }
+});
+
+// PUT delete book id
+app.put('/bookshelfes/deletebooks', express.urlencoded({ extended: true }), async (req, res, next) => {
+    try {
+        const { shelf } = req.body;
+        const bookshelf = await Bookshelf.findById(shelf.id);
+        const books = shelf.books.split(' ').map((el) => { return ObjectId(el) });
+        const updatedBookshelf = await bookshelf.update({
+            $pullAll: {
+                books: books
+            }
+        }, {
+            new: true
+        })
+        res.json({
+            status: 201,
+            message: updatedBookshelf
+        })
+    } catch (err) {
+        next(err);
+    }
+})
+
+app.delete('/bookshelfes/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await Bookshelf.findByIdAndDelete(id);
+        res.json({
+            status: 200,
+            message: `Bookshelf with id: ${id} has been deleted`
+        });
+    } catch (err) {
+        next(err);
+    }
+})
+// END BOOKSHELF ROUTER
 
 // Express Not Found Route
 app.use((req, res, next) => {
