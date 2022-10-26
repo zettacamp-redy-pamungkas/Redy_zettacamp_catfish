@@ -54,7 +54,7 @@ const bookshelfSchema = new Schema([
         books: [
             {
                 _id: false,
-                object_id: {
+                book_id: {
                     type: Schema.Types.ObjectId,
                     ref: 'Book'
                 },

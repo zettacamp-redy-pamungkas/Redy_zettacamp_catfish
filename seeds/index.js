@@ -99,7 +99,7 @@ async function insertDummiesBookshelf(shelfLength = 7) {
             const randomStock = getRandomMinMax(2, 8);
             const bookId = getRandom(books, true);
             bookArr.push({
-                object_id: bookId,
+                book_id: bookId,
                 stock: randomStock
             });
         }
@@ -107,7 +107,8 @@ async function insertDummiesBookshelf(shelfLength = 7) {
         const randomDateArr = [];
         for (let j = 0; j < 5; j++) {
             randomDateArr.push({
-                date: new Date(`${getRandomMinMax(2015, 2022)}-10-26`)
+                date: new Date(`${getRandomMinMax(2015, 2022)}-10-26`),
+                time: `${getRandomMinMax(0, 24)}:${getRandomMinMax(0, 59)}`
             })
         }
 

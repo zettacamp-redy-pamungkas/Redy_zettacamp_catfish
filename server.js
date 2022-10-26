@@ -267,13 +267,23 @@ app.post('/bookshelfes/create', express.urlencoded({ extended: true }), async (r
         const bookArr = [];
         shelvesBookArr.forEach((book, index) => {
             bookArr.push({
-                object_id: ObjectId(book),
+                book_id: ObjectId(book),
                 stock: shelvesStockArr[index]
             });
         });
         shelfes.books = bookArr;
+
+        // random date
+        const randomDateArr = [];
+        for (let j = 0; j < 5; j++) {
+            randomDateArr.push({
+                date: new Date(`${getRandomMinMax(2015, 2022)}-10-26`),
+                time: `${getRandomMinMax(0, 24)}:${getRandomMinMax(0, 59)}`
+            })
+        }
+        shelfes.date = randomDateArr;
         const newShelf = new Bookshelf(shelfes);
-        // await newShelf.save()
+        await newShelf.save()
         res.send({
             status: 201,
             message: newShelf
@@ -358,7 +368,7 @@ app.put('/bookshelfes/:id/:key', express.urlencoded({ extended: true }), async (
                     status: 201,
                     message: shelf
                 })
-        }
+        } else
 
         if (key === 'books') {
             const shelf = await Bookshelf.updateOne({
@@ -381,7 +391,13 @@ app.put('/bookshelfes/:id/:key', express.urlencoded({ extended: true }), async (
                     status: 201,
                     message: shelf
                 })
+        } else {
+            res.json({
+                status: 400,
+                message: `${key} is not defined, please use shelf or books`
+            })
         }
+
     } catch (err) {
         next(err)
     }
