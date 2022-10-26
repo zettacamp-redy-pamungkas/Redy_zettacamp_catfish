@@ -53,10 +53,28 @@ const bookshelfSchema = new Schema([
         },
         books: [
             {
-                type: Schema.Types.ObjectId,
-                ref: 'Book'
+                object_id: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Book'
+                },
+                added: {
+                    type: Date
+                },
+                stock: {
+                    type: Number,
+                    min: 0,
+                    required: true
+                }
             }
-        ]
+        ],
+        date: {
+            date: {
+                type: Date
+            },
+            time: {
+                type: String
+            }
+        }
     }
 ])
 
