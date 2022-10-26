@@ -94,7 +94,7 @@ async function insertDummiesBookshelf(shelfLength = 7) {
         const shelfName = `shelf ${i+1}`;
         const books = await Book.find({});
         const bookArr = [];
-        const maxBookLength = getRandomMinMax(5, books.length);
+        const maxBookLength = getRandomMinMax(2, 5);
         for (let y = 0; y < maxBookLength; y++) {
             const randomStock = getRandomMinMax(2, 8);
             const bookId = getRandom(books, true);
@@ -110,7 +110,7 @@ async function insertDummiesBookshelf(shelfLength = 7) {
                 date: new Date(`${getRandomMinMax(2015, 2022)}-10-26`)
             })
         }
-        
+
         const bookshelf = new Bookshelf({
             name: shelfName,
             books: bookArr,

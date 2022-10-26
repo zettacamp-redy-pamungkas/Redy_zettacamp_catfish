@@ -210,27 +210,49 @@ app.get('/bookshelfes', async (req, res, next) => {
             },
         });
 
+        // find bookshelf by id
+        if (_id) {
+            bookshelfes = await Bookshelf.findById(_id).populate({
+                path: 'books',
+                populate: {
+                    path: 'object_id',
+                    select: 'title'
+                },
+            });
+        }
+
         // Find Books with id
         if (bookId) {
             bookshelfes = await Bookshelf.find({
                 books: {
-                    $all: bookId.split(' ').map((el) => { return ObjectId(el) })
+                    $elemMatch: {
+                        object_id: {
+                            $eq: ObjectId(bookId)
+                        }
+                    }
+                    // $all: bookId.split(' ').map((el) => { return ObjectId(el) })
                 }
             }).populate({
                 path: 'books',
-                select: 'title',
                 populate: {
-                    path: 'author',
-                    model: 'Author',
-                    select: 'firstName lastName'
-                }
+                    path: 'object_id',
+                    select: 'title'
+                },
             });
         }
 
-        res.json({
-            status: 200,
-            message: bookshelfes
-        })
+        if (bookshelfes.length === 0) {
+            res.json({
+                status: 404,
+                message: 'Bookshelf not found'
+            });
+        } else {
+            res.json({
+                status: 200,
+                message: bookshelfes
+            });
+        }
+
     } catch (err) {
         next(err)
     }
@@ -241,21 +263,15 @@ app.post('/bookshelfes/create', express.urlencoded({ extended: true }), async (r
     try {
         let { shelfes } = req.body;
         const shelvesBookArr = shelfes.books.split(' ');
-        const shelvesStockArr = shelfes.stock.split(' ').map((el) => {return parseInt(el)});
+        const shelvesStockArr = shelfes.stock.split(' ').map((el) => { return parseInt(el) });
         const bookArr = [];
-        // for (let book of shelvesBookArr) {
-        //     bookArr.push({
-        //         object_id: ObjectId(book),
-        //         stock: getRandomMinMax(2, 8)
-        //     })
-        // }
         shelvesBookArr.forEach((book, index) => {
             bookArr.push({
                 object_id: ObjectId(book),
                 stock: shelvesStockArr[index]
             });
         });
-        shelfes.books =  bookArr;
+        shelfes.books = bookArr;
         const newShelf = new Bookshelf(shelfes);
         // await newShelf.save()
         res.send({
@@ -313,6 +329,63 @@ app.put('/bookshelfes/deletebooks', express.urlencoded({ extended: true }), asyn
     } catch (err) {
         next(err);
     }
+});
+
+// Update shelf date
+app.put('/bookshelfes/:id/:key', express.urlencoded({ extended: true }), async (req, res, next) => {
+    try {
+        const { id, key } = req.params;
+        let { date, updatedDate } = req.body;
+
+        if (key === 'shelf') {
+            const shelf = await Bookshelf.updateOne({
+                "_id": ObjectId(id)
+            },
+                {
+                    $set: {
+                        "date.$[index].date": new Date(updatedDate),
+                        updatedAt: new Date()
+                    }
+                },
+                {
+                    arrayFilters: [{
+                        "index.date": {
+                            $lt : new Date(date)
+                        }
+                    }]
+                })
+                res.json({
+                    status: 201,
+                    message: shelf
+                })
+        }
+
+        if (key === 'books') {
+            const shelf = await Bookshelf.updateOne({
+                "_id": ObjectId(id)
+            },
+                {
+                    $set: {
+                        "books.$[index].added": new Date(updatedDate),
+                        updatedAt: new Date()
+                    }
+                },
+                {
+                    arrayFilters: [{
+                        "index.added": {
+                            $gte : new Date(date)
+                        }
+                    }]
+                })
+                res.json({
+                    status: 201,
+                    message: shelf
+                })
+        }
+    } catch (err) {
+        next(err)
+    }
+
 })
 
 app.delete('/bookshelfes/:id', async (req, res, next) => {
