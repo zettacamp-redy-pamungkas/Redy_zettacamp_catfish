@@ -96,12 +96,28 @@ async function insertDummiesBookshelf(shelfLength = 7) {
         const bookArr = [];
         const maxBookLength = getRandomMinMax(5, books.length);
         for (let y = 0; y < maxBookLength; y++) {
-            bookArr.push(getRandom(books, true));
+            const randomStock = getRandomMinMax(2, 8);
+            const bookId = getRandom(books, true);
+            bookArr.push({
+                object_id: bookId,
+                stock: randomStock
+            });
         }
+
+        const randomDateArr = [];
+        for (let j = 0; j < 5; j++) {
+            randomDateArr.push({
+                date: new Date(`${getRandomMinMax(2015, 2022)}-10-26`)
+            })
+        }
+        
         const bookshelf = new Bookshelf({
             name: shelfName,
-            books: bookArr
+            books: bookArr,
+            date: randomDateArr,
+            createdAt: new Date()
         });
+        // bookshelf.createdAt = Date.now()
         await bookshelf.save();
     }
     console.log('Bookshelf dummies has been inserted');

@@ -53,30 +53,34 @@ const bookshelfSchema = new Schema([
         },
         books: [
             {
+                _id: false,
                 object_id: {
                     type: Schema.Types.ObjectId,
                     ref: 'Book'
                 },
                 added: {
-                    type: Date
+                    type: Date,
+                    default: Date.now
                 },
                 stock: {
                     type: Number,
                     min: 0,
-                    required: true
+                    required: true,
+                    default: 0
                 }
             }
         ],
-        date: {
+        date: [{
+            _id: false,
             date: {
                 type: Date
             },
             time: {
                 type: String
             }
-        }
+        }]
     }
-])
+], { strict: false})
 
 module.exports.Book = mongoose.model('Book', bookSchema);
 module.exports.Author = mongoose.model('Author', authorSchema);

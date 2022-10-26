@@ -204,27 +204,11 @@ app.get('/bookshelfes', async (req, res, next) => {
         let bookshelfes = await Bookshelf.find({
         }).populate({
             path: 'books',
-            select: 'title',
             populate: {
-                path: 'author',
-                model: 'Author',
-                select: 'firstName lastName'
-            }
+                path: 'object_id',
+                select: 'title'
+            },
         });
-
-        // Find bookshelf by id
-        if (_id) {
-            bookshelfes = await Bookshelf.findById(_id)
-                .populate({
-                    path: 'books',
-                    select: 'title',
-                    populate: {
-                        path: 'author',
-                        model: 'Author',
-                        select: 'firstName lastName'
-                    }
-                });
-        }
 
         // Find Books with id
         if (bookId) {
@@ -256,9 +240,24 @@ app.get('/bookshelfes', async (req, res, next) => {
 app.post('/bookshelfes/create', express.urlencoded({ extended: true }), async (req, res, next) => {
     try {
         let { shelfes } = req.body;
-        shelfes.books = shelfes.books.split(' ');
+        const shelvesBookArr = shelfes.books.split(' ');
+        const shelvesStockArr = shelfes.stock.split(' ').map((el) => {return parseInt(el)});
+        const bookArr = [];
+        // for (let book of shelvesBookArr) {
+        //     bookArr.push({
+        //         object_id: ObjectId(book),
+        //         stock: getRandomMinMax(2, 8)
+        //     })
+        // }
+        shelvesBookArr.forEach((book, index) => {
+            bookArr.push({
+                object_id: ObjectId(book),
+                stock: shelvesStockArr[index]
+            });
+        });
+        shelfes.books =  bookArr;
         const newShelf = new Bookshelf(shelfes);
-        await newShelf.save()
+        // await newShelf.save()
         res.send({
             status: 201,
             message: newShelf
