@@ -32,9 +32,39 @@ function getRandomMinMax(min, max) {
 
 // BOOK ROUTE
 // GET '/books/' route
-app.get('/books', async (req, res) => {
-    let allBooks = await Book.find({}).populate('author', 'firstName lastName');
-    res.json(allBooks);
+app.get('/books', async (req, res, next) => {
+    // let allBooks = await Book.find({}).populate('author', 'firstName lastName');
+    try {
+        const {rating = 5} = req.query;
+        let allBooks = await Book.aggregate([
+            {
+                $addFields: {
+                    avgRating: {
+                        $avg: "$reviews.rating"
+                    }
+                }
+            },
+            {
+                $match: {
+                    avgRating: {
+                        $gte: parseFloat(rating)
+                    }
+                }
+            },
+            {
+                $project: {
+                    title: 1,
+                    price: 1,
+                    datePublished: 1,
+                    reviews: 1,
+                    avgRating: 1
+                }
+            }
+        ])
+        res.json(allBooks);
+    } catch (err) {
+        next(err);
+    }
 });
 
 // GET '/books/detail/:id' route
@@ -200,15 +230,16 @@ app.delete('/authors/detail/:id', async (req, res, next) => {
 // GET '/bookshelfes' route
 app.get('/bookshelfes', async (req, res, next) => {
     try {
+        // aggregate
         const { _id, bookId } = req.query;
-        let bookshelfes = await Bookshelf.find({
-        }).populate({
-            path: 'books',
-            populate: {
-                path: 'object_id',
-                select: 'title'
-            },
-        });
+        let bookshelfes = await Bookshelf.aggregate([{
+            $project: {
+                "name": 1,
+                "books.book_id": 1,
+                "books.added": 1,
+                "books.stock": 1
+            }
+        }])
 
         // find bookshelf by id
         if (_id) {
@@ -360,43 +391,43 @@ app.put('/bookshelfes/:id/:key', express.urlencoded({ extended: true }), async (
                 {
                     arrayFilters: [{
                         "index.date": {
-                            $lt : new Date(date)
+                            $lt: new Date(date)
                         }
                     }]
                 })
-                res.json({
-                    status: 201,
-                    message: shelf
-                })
+            res.json({
+                status: 201,
+                message: shelf
+            })
         } else
 
-        if (key === 'books') {
-            const shelf = await Bookshelf.updateOne({
-                "_id": ObjectId(id)
-            },
-                {
-                    $set: {
-                        "books.$[index].added": new Date(updatedDate),
-                        updatedAt: new Date()
-                    }
+            if (key === 'books') {
+                const shelf = await Bookshelf.updateOne({
+                    "_id": ObjectId(id)
                 },
-                {
-                    arrayFilters: [{
-                        "index.added": {
-                            $gte : new Date(date)
+                    {
+                        $set: {
+                            "books.$[index].added": new Date(updatedDate),
+                            updatedAt: new Date()
                         }
-                    }]
-                })
+                    },
+                    {
+                        arrayFilters: [{
+                            "index.added": {
+                                $gte: new Date(date)
+                            }
+                        }]
+                    })
                 res.json({
                     status: 201,
                     message: shelf
                 })
-        } else {
-            res.json({
-                status: 400,
-                message: `${key} is not defined, please use shelf or books`
-            })
-        }
+            } else {
+                res.json({
+                    status: 400,
+                    message: `${key} is not defined, please use shelf or books`
+                })
+            }
 
     } catch (err) {
         next(err)

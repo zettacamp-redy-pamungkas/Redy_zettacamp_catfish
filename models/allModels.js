@@ -35,6 +35,17 @@ const bookSchema = new Schema({
         type: Date,
         required: true
     },
+    reviews: [
+        {
+            _id: false,
+            name: {
+                type: String
+            },
+            rating: {
+                type: Number
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now

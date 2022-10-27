@@ -21,6 +21,10 @@ const authorLastName = ['Doe', 'Morgan', 'Traversary'];
 // const Random Book
 const bookseeds = require('./randomBook');
 
+// const Random Reviewer
+const reviewerSeeds = require('./randomName');
+console.log( reviewerSeeds[0])
+
 // function getRandom
 function getRandom(arr, isUnique = false) {
     const randomIndex = Math.floor(Math.random() * arr.length);
@@ -38,7 +42,7 @@ function getRandomMinMax(min, max) {
     if (min > max) {
         [min, max] = [max, min];
     }
-    return Math.floor(Math.random() * (max - min)) + min;
+    return Math.floor(Math.random() * (max - min)) + min + 1;
 }
 
 // function DeleteAll
@@ -71,10 +75,21 @@ async function insertDummiesBook(dataLength = 20) {
     for (let book of bookseeds) {
         const author = getRandom(authors);
         const publishDate = `${getRandomMinMax(2002, 2015)}-${getRandomMinMax(1, 12)}-${getRandomMinMax(1, 30)}`
+        const reviews = [];
+        const seedreviewer = [...reviewerSeeds];
+        for (let i = 0; i < 5; i++) {
+            const randomReviewer = getRandom(seedreviewer, true);
+            // console.log(randomReviewer);
+            reviews.push({
+                name: randomReviewer,
+                rating: getRandomMinMax(5, 10)
+            });
+        }
         const newBook = new Book({
             title: book,
             author: author.id,
             price: getRandomMinMax(5, 20),
+            reviews,
             datePublished: publishDate
         })
         // Add New book to author
