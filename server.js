@@ -231,7 +231,7 @@ app.delete('/authors/detail/:id', async (req, res, next) => {
 app.get('/bookshelfes', async (req, res, next) => {
     try {
         // aggregate
-        const { _id, bookId } = req.query;
+        const { _id, bookId, shelf } = req.query;
         let bookshelfes = await Bookshelf.aggregate([{
             $project: {
                 "name": 1,
@@ -251,6 +251,30 @@ app.get('/bookshelfes', async (req, res, next) => {
                 },
             });
         }
+
+        // find bookshelf by name
+        if (shelf) {
+            bookshelfes = await Bookshelf.aggregate(
+                [
+                    {
+                        $match: {
+                            name: shelf
+                        }
+                    },
+                    {
+                        $unwind: "$books"
+                    },
+                    {
+                        $project: {
+                            name: 1,
+                            books: 1
+                        }
+                    }
+                ]
+            )
+        }
+
+
 
         // Find Books with id
         if (bookId) {
