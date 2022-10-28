@@ -57,7 +57,41 @@ app.get('/books', async (req, res, next) => {
                     price: 1,
                     datePublished: 1,
                     reviews: 1,
-                    avgRating: 1
+                    avgRating: 1,
+                    author: 1
+                }
+            },
+            {
+                $lookup: {
+                    'from': 'authors',
+                    'localField': 'author',
+                    'foreignField': '_id',
+                    'as': 'author_populate'
+                }
+            },
+            {
+                $project: {
+                    'author_populate.books': 0,
+                    'author': 0
+                }
+            },
+            {
+                $set: {
+                    "author_populate": {
+                        $arrayElemAt: ['$author_populate', 0]
+                    }
+                }
+            },
+            {
+                $set: {
+                    "author_populate.fullname": {
+                        $concat: ["$author_populate.firstName", " ", "$author_populate.lastName"]
+                    }
+                }
+            },
+            {
+                $sort: {
+                    "avgRating": -1
                 }
             }
         ])
@@ -268,6 +302,11 @@ app.get('/bookshelfes', async (req, res, next) => {
                         $project: {
                             name: 1,
                             books: 1
+                        }
+                    },
+                    {
+                        $sort: {
+                            "books.stock": -1
                         }
                     }
                 ]
