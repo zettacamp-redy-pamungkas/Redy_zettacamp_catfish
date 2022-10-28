@@ -273,15 +273,59 @@ app.get('/bookshelfes', async (req, res, next) => {
                 "books.added": 1,
                 "books.stock": 1
             }
-        }])
+        }, 
+        {
+            $lookup: {
+                from: 'books',
+                localField: 'books.book_id',
+                foreignField: '_id',
+                as: 'books_populate'
+            }
+        },
+        {
+            $project: {
+                "books": 0,
+                "books_populate.reviews": 0,
+                // "books_populate.author": 0,
+                "books_populate.createdAt": 0,
+            }
+        },
+        {
+            $addFields: {
+                "total_price": {
+                    $sum: "$books_populate.price"
+                }
+            }
+        }
+        ])
+
+        // Using Populate
+        bookshelfes = await Bookshelf.populate(bookshelfes, {
+            path: 'books_populate.author',
+            model: 'Author',
+            select: 'firstName lastName',
+        });
+
+        // display full name
+        // NOTASI N2, VERY BADDDDDDDD
+        for (let shelf of bookshelfes) {
+            for (let book of shelf.books_populate) {
+                book.author = `${book.author.firstName} ${book.author.lastName}`
+            }
+        }
 
         // find bookshelf by id
         if (_id) {
             bookshelfes = await Bookshelf.findById(_id).populate({
                 path: 'books',
                 populate: {
-                    path: 'object_id',
-                    select: 'title'
+                    path: 'book_id',
+                    // model: 'books',
+                    select: 'title author',
+                    populate: {
+                        path: 'author',
+                        select: 'firstName lastName'
+                    }
                 },
             });
         }
