@@ -35,66 +35,83 @@ function getRandomMinMax(min, max) {
 app.get('/books', async (req, res, next) => {
     // let allBooks = await Book.find({}).populate('author', 'firstName lastName');
     try {
-        const {rating = 5} = req.query;
+        const { rating = 5 } = req.query;
+        // let allBooks = await Book.aggregate([
+        //     {
+        //         $addFields: {
+        //             avgRating: {
+        //                 $avg: "$reviews.rating"
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $match: {
+        //             avgRating: {
+        //                 $gte: parseFloat(rating)
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             title: 1,
+        //             price: 1,
+        //             datePublished: 1,
+        //             reviews: 1,
+        //             avgRating: 1,
+        //             author: 1
+        //         }
+        //     },
+        //     {
+        //         $lookup: {
+        //             'from': 'authors',
+        //             'localField': 'author',
+        //             'foreignField': '_id',
+        //             'as': 'author_populate'
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             'author_populate.books': 0,
+        //             'author': 0
+        //         }
+        //     },
+        //     {
+        //         $set: {
+        //             "author_populate": {
+        //                 $arrayElemAt: ['$author_populate', 0]
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $set: {
+        //             "author_populate.fullname": {
+        //                 $concat: ["$author_populate.firstName", " ", "$author_populate.lastName"]
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             "avgRating": -1
+        //         }
+        //     }
+        // ]);
         let allBooks = await Book.aggregate([
             {
                 $addFields: {
-                    avgRating: {
-                        $avg: "$reviews.rating"
-                    }
+                    "avgReview": { $avg: "$reviews.rating" }
                 }
             },
             {
-                $match: {
-                    avgRating: {
-                        $gte: parseFloat(rating)
-                    }
-                }
-            },
-            {
-                $project: {
-                    title: 1,
-                    price: 1,
-                    datePublished: 1,
-                    reviews: 1,
-                    avgRating: 1,
-                    author: 1
-                }
-            },
-            {
-                $lookup: {
-                    'from': 'authors',
-                    'localField': 'author',
-                    'foreignField': '_id',
-                    'as': 'author_populate'
-                }
-            },
-            {
-                $project: {
-                    'author_populate.books': 0,
-                    'author': 0
-                }
-            },
-            {
-                $set: {
-                    "author_populate": {
-                        $arrayElemAt: ['$author_populate', 0]
-                    }
-                }
-            },
-            {
-                $set: {
-                    "author_populate.fullname": {
-                        $concat: ["$author_populate.firstName", " ", "$author_populate.lastName"]
-                    }
-                }
-            },
-            {
-                $sort: {
-                    "avgRating": -1
-                }
+                $sort: { 'avgReview': -1 }
             }
-        ])
+        ]);
+        allBooks = await Book.populate(allBooks, {
+            path: 'author',
+            select: 'firstName lastName'
+        })
+        allBooks.forEach((el) => {
+            el.author = `${el.author.firstName} ${el.author.lastName}`
+        })
         res.json(allBooks);
     } catch (err) {
         next(err);
@@ -105,7 +122,10 @@ app.get('/books', async (req, res, next) => {
 app.get('/books/detail/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const book = await Book.findById(id).populate('author', 'firstName lastName dob');
+        let book = await Book.findById(id).populate({
+            path: 'author',
+            select: 'firstName lastName',
+        })
         if (book) {
             res.json(book);
         } else {
@@ -266,53 +286,62 @@ app.get('/bookshelfes', async (req, res, next) => {
     try {
         // aggregate
         const { _id, bookId, shelf } = req.query;
-        let bookshelfes = await Bookshelf.aggregate([{
-            $project: {
-                "name": 1,
-                "books.book_id": 1,
-                "books.added": 1,
-                "books.stock": 1
-            }
-        }, 
-        {
-            $lookup: {
-                from: 'books',
-                localField: 'books.book_id',
-                foreignField: '_id',
-                as: 'books_populate'
-            }
-        },
-        {
-            $project: {
-                "books": 0,
-                "books_populate.reviews": 0,
-                // "books_populate.author": 0,
-                "books_populate.createdAt": 0,
-            }
-        },
-        {
-            $addFields: {
-                "total_price": {
-                    $sum: "$books_populate.price"
-                }
-            }
-        }
-        ])
+        // let bookshelfes = await Bookshelf.aggregate([{
+        //     $project: {
+        //         "name": 1,
+        //         "books.book_id": 1,
+        //         "books.added": 1,
+        //         "books.stock": 1
+        //     }
+        // }, 
+        // {
+        //     $lookup: {
+        //         from: 'books',
+        //         localField: 'books.book_id',
+        //         foreignField: '_id',
+        //         as: 'books_populate'
+        //     }
+        // },
+        // {
+        //     $project: {
+        //         "books": 0,
+        //         "books_populate.reviews": 0,
+        //         // "books_populate.author": 0,
+        //         "books_populate.createdAt": 0,
+        //     }
+        // },
+        // {
+        //     $addFields: {
+        //         "total_price": {
+        //             $sum: "$books_populate.price"
+        //         }
+        //     }
+        // }
+        // ])
 
-        // Using Populate
-        bookshelfes = await Bookshelf.populate(bookshelfes, {
-            path: 'books_populate.author',
-            model: 'Author',
-            select: 'firstName lastName',
-        });
+        let bookshelfes = await Bookshelf.find({}, '-date').lean()
+            .populate({
+            path: 'books.book_id',
+            select: 'title author price -_id',
+            populate: {
+                path: 'author',
+                model: 'Author',
+                select: 'firstName lastName -_id',
+            }
+        })
 
         // display full name
         // NOTASI N2, VERY BADDDDDDDD
-        for (let shelf of bookshelfes) {
-            for (let book of shelf.books_populate) {
-                book.author = `${book.author.firstName} ${book.author.lastName}`
-            }
-        }
+        bookshelfes.forEach((el, index) => {
+            let totalPrice = 0
+            el.books.forEach((book) => {
+                const { firstName, lastName } = book.book_id.author;
+                const author = `${firstName} ${lastName}`;
+                book.book_id.author.fullname = author;
+                totalPrice += book.book_id.price
+            });
+            el.totalPrice = totalPrice
+        });
 
         // find bookshelf by id
         if (_id) {
