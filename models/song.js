@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Artist Model
+const ArtistModel = require('./artist');
+
 // Song Schema
 const songSchema = new Schema({
     'title': String,
@@ -13,8 +16,24 @@ const songSchema = new Schema({
         type: String,
         enum: ['Pop', 'Rock', 'Jazz']
     },
-    'duration': String
+    'duration': Number
 });
+
+songSchema
+    .post('save', async(song) => {
+    const artist = await ArtistModel.findById(song.artist);
+    artist.songs.push(song);
+    await artist.save();
+})
+// on delete cascade
+    // .post('deleteOne', async(song) => {
+    //     const artist = await ArtistModel.findById(song.artist);
+    //     artist.update({
+    //         songs: {
+    //             $pull: song.id
+    //         }
+    //     })
+    // })
 
 // Song Model
 const SongModel = mongoose.model('Song', songSchema);

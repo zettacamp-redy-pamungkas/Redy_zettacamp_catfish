@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const artistSchema = new Schema({
     'first-name': String,
     'last-name': String,
+    'gender': String,
     'songs': [
         {
             type: Schema.Types.ObjectId,
@@ -13,6 +14,15 @@ const artistSchema = new Schema({
         }
     ]
 });
+
+// on delete cascade
+// artistSchema.post('findOneAndDelete', async (artist) => {
+//     await SongModel.deleteMany({
+//         _id: {
+//             $in: artist.songs
+//         }
+//     })
+// })
 
 // Artist Model
 const ArtistModel = mongoose.model('Artist', artistSchema);
