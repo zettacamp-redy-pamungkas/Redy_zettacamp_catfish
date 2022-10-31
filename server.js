@@ -34,41 +34,110 @@ function getRandomMinMax(min, max) {
 // GET '/books/' route
 app.get('/books', async (req, res, next) => {
     try {
-        let {page = 0, limit = 5} = req.query;
-        let books = await Book.find({});
-        page = parseInt(page) - 1
-        if (page < 0) {
-            page = 0
-        }
-        let allBooks = await Book.aggregate([
-            {
-                $project: {
-                    'reviews': 0
-                }
-            },
-            {
-                $skip: parseInt(page) * limit
-            },
-            {
-                $limit: parseInt(limit)
-            },
-        ]);
-        allBooks = await Book.populate(allBooks, {
-            path: 'author',
-            select: 'firstName lastName'
-        })
-        allBooks.forEach((el) => {
-            el.author = `${el.author.firstName} ${el.author.lastName}`
-        })
-        res.json({
-            pages:  `${page + 1} / ${Math.ceil(books.length / limit)}`,
-            message: allBooks.length > 0 ? allBooks : "Books Empty",
-            totalDocs: books.length
-        });
+            // paginate
+            let { page = 0, limit = 5 } = req.query;
+            let books = await Book.find({});
+            page = parseInt(page) - 1
+            if (page < 0) {
+                page = 0
+            }
+            let allBooks = await Book.aggregate([
+                {
+                    $project: {
+                        'reviews': 0
+                    }
+                },
+                {
+                    $skip: parseInt(page) * limit
+                },
+                {
+                    $limit: parseInt(limit)
+                },
+            ]);
+            allBooks = await Book.populate(allBooks, {
+                path: 'author',
+                select: 'firstName lastName'
+            })
+            allBooks.forEach((el) => {
+                el.author = `${el.author.firstName} ${el.author.lastName}`
+                el.totalDocs = books.length
+            })
+            res.json({
+                pages: `${page + 1} / ${Math.ceil(books.length / limit)}`,
+                message: allBooks.length > 0 ? allBooks : "Books Empty",
+                // totalDocs: books.length
+            });
     } catch (err) {
         next(err);
     }
 });
+
+// GET '/booksfacet' route
+app.get('/booksfacet', async (req, res) => {
+    try {
+        const books = await Book.aggregate([
+            {
+                $lookup: {
+                    from: 'authors',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author_populated'
+                }
+            },
+            {
+                $set: {
+                    "author": { $arrayElemAt: ["$author_populated", 0] }
+                }
+            },
+            {
+                $set: {
+                    "author": {
+                        $concat: ["$author.firstName", " ", "$author.lastName"]
+                    }
+                }
+            },
+            {
+                $project: {
+                    "reviews": 0,
+                    "author_populated": 0
+                }
+            },
+            {
+                $facet: {
+                    "categorizedByPrice": [
+                        {
+                            $bucket: {
+                                groupBy: "$price",
+                                boundaries: [5, 10, 15, 20, 25],
+                                output: {
+                                    "count": { $sum: 1 },
+                                    "titles": { $push: "$title" }
+                                }
+                            }
+                        }
+                    ],
+                    "categorizedByAuthor": [
+                        {
+                            $group: {
+                                _id: "$author",
+                                title: {
+                                    $push: "$title"
+                                },
+                                count: { $sum: 1}
+                            }
+                        }
+                    ]
+                }
+            }
+        ])
+        res.json({ msg: books });
+    } catch (err) {
+        res.json({
+            status: 400,
+            msg: err
+        });
+    }
+})
 
 // GET '/books/detail/:id' route
 app.get('/books/detail/:id', async (req, res, next) => {
@@ -289,14 +358,14 @@ app.get('/bookshelfes', async (req, res, next) => {
 
         let bookshelfes = await Bookshelf.find({}, '-date').lean()
             .populate({
-            path: 'books.book_id',
-            select: 'title author price -_id',
-            populate: {
-                path: 'author',
-                model: 'Author',
-                select: 'firstName lastName -_id',
-            }
-        })
+                path: 'books.book_id',
+                select: 'title author price -_id',
+                populate: {
+                    path: 'author',
+                    model: 'Author',
+                    select: 'firstName lastName -_id',
+                }
+            })
 
         // display full name
         // NOTASI N2, VERY BADDDDDDDD
