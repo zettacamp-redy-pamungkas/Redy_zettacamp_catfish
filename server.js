@@ -34,39 +34,43 @@ function getRandomMinMax(min, max) {
 // GET '/books/' route
 app.get('/books', async (req, res, next) => {
     try {
-            // paginate
-            let { page = 0, limit = 5 } = req.query;
-            let books = await Book.find({});
-            page = parseInt(page) - 1
-            if (page < 0) {
-                page = 0
-            }
-            let allBooks = await Book.aggregate([
-                {
-                    $project: {
-                        'reviews': 0
-                    }
-                },
-                {
-                    $skip: parseInt(page) * limit
-                },
-                {
-                    $limit: parseInt(limit)
-                },
-            ]);
-            allBooks = await Book.populate(allBooks, {
-                path: 'author',
-                select: 'firstName lastName'
-            })
-            allBooks.forEach((el) => {
-                el.author = `${el.author.firstName} ${el.author.lastName}`
-                el.totalDocs = books.length
-            })
-            res.json({
-                pages: `${page + 1} / ${Math.ceil(books.length / limit)}`,
-                message: allBooks.length > 0 ? allBooks : "Books Empty",
-                // totalDocs: books.length
-            });
+        // paginate
+        let { page = 0, limit = 5 } = req.query;
+        let books = await Book.find({});
+        page = parseInt(page) - 1;
+        if (page < 0) {
+            page = 0
+        }
+        limit = parseInt(limit);
+        if (limit <= 0) {
+            limit = 5
+        }
+        let allBooks = await Book.aggregate([
+            {
+                $project: {
+                    'reviews': 0
+                }
+            },
+            {
+                $skip: parseInt(page) * limit
+            },
+            {
+                $limit: limit
+            },
+        ]);
+        allBooks = await Book.populate(allBooks, {
+            path: 'author',
+            select: 'firstName lastName'
+        })
+        allBooks.forEach((el) => {
+            el.author = `${el.author.firstName} ${el.author.lastName}`
+            el.totalDocs = books.length
+        })
+        res.json({
+            pages: `${page + 1} / ${Math.ceil(books.length / limit)}`,
+            message: allBooks.length > 0 ? allBooks : "Books Empty",
+            // totalDocs: books.length
+        });
     } catch (err) {
         next(err);
     }
@@ -123,7 +127,7 @@ app.get('/booksfacet', async (req, res) => {
                                 title: {
                                     $push: "$title"
                                 },
-                                count: { $sum: 1}
+                                count: { $sum: 1 }
                             }
                         }
                     ]
