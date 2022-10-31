@@ -11,10 +11,15 @@ const dbName = 'bonanza';
 const SongModel = require('./models/song');
 const ArtistModel = require('./models/artist');
 
+// Custom Error Handler
+const CustomErrorHandler = require('./utils/CustomErrorHandler');
+
 // mongoose connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open.') })
     .catch((err) => { console.log(err) });
+
+const bodyParse = express.urlencoded({extended:true});
 
 // GET '/' route
 app.get('/', (req, res) => {
@@ -67,6 +72,26 @@ app.get('/songs', async (req, res, next) => {
     }
 });
 
+// POST '/songs' route
+app.post('/songs', bodyParse, async (req, res, next) => {
+    try {
+        const { song } = req.body;
+        const newSong = new SongModel(song);
+        const artist = await ArtistModel.findById(song.artist);
+        if (!artist) {
+            return next(new CustomErrorHandler(404, 'Artist not found'))
+        }
+        await newSong.save();
+        res.status(201).json({
+            status: 201,
+            message: newSong
+        });
+    } catch (err) {
+        next(err);
+    }
+
+})
+
 // GET '/artist' route
 app.get('/artists', async (req, res, next) => {
     try {
@@ -100,7 +125,7 @@ app.get('/artists', async (req, res, next) => {
 // Error Handler
 app.use((err, req, res, next) => {
     const { status = 500, message } = err;
-    res.json({
+    res.status(status).json({
         status,
         message
     })

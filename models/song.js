@@ -33,14 +33,14 @@ songSchema
     next()
 })
 // on delete cascade
-    // .post('deleteOne', async(song) => {
-    //     const artist = await ArtistModel.findById(song.artist);
-    //     artist.update({
-    //         songs: {
-    //             $pull: song.id
-    //         }
-    //     })
-    // })
+    .post('deleteOne', async(song) => {
+        const artist = await ArtistModel.findById(song.artist);
+        artist.update({
+            songs: {
+                $pull: song.id
+            }
+        })
+    })
 
 // Song Model
 const SongModel = mongoose.model('Song', songSchema);
