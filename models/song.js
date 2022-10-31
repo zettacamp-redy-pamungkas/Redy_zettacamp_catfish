@@ -20,10 +20,17 @@ const songSchema = new Schema({
 });
 
 songSchema
-    .post('save', async(song) => {
+.post('save', async(song) => {
     const artist = await ArtistModel.findById(song.artist);
     artist.songs.push(song);
     await artist.save();
+})
+.pre('find', function(next) {
+    this.populate({
+        path: 'artist',
+        select: 'first-name last-name'
+    })
+    next()
 })
 // on delete cascade
     // .post('deleteOne', async(song) => {
