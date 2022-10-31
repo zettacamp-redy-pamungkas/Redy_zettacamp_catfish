@@ -12,6 +12,38 @@ const authorSchema = new Schema({
     }]
 });
 
+// function 
+function autoPopulateBooks(next) {
+    this.populate({
+        path: 'books',
+        select: '-author'
+    });
+    next();
+}
+
+// function
+function autoLookUpBooks(next) {
+    this.aggregate([
+        {
+            $lookup: {
+                from: 'books',
+                localField: 'books',
+                foreignField: '_id',
+                as: 'books_populated'
+            }
+        }
+    ]);
+    next();
+}
+
+// mongoose middleware
+authorSchema
+    .pre('find', autoPopulateBooks)
+    .pre('findOne', autoPopulateBooks)
+    // .post('aggregate', async(authors) => {
+
+    // })
+
 // book schema
 const bookSchema = new Schema({
     title: {
@@ -54,6 +86,19 @@ const bookSchema = new Schema({
         type: Date,
     }
 });
+
+bookSchema
+    .post('findOneAndDelete', async (book) => {
+        const Author = mongoose.model('Author', authorSchema);
+        const author = await Author.findById(book.author);
+        author.update(
+            {
+                $pull: {
+                    books: book._id
+                }
+            }
+        )
+    })
 
 // Bookshelf Schema
 const bookshelfSchema = new Schema([

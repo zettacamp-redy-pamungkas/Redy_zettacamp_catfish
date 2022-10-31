@@ -33,77 +33,25 @@ function getRandomMinMax(min, max) {
 // BOOK ROUTE
 // GET '/books/' route
 app.get('/books', async (req, res, next) => {
-    // let allBooks = await Book.find({}).populate('author', 'firstName lastName');
     try {
-        const { rating = 5 } = req.query;
-        // let allBooks = await Book.aggregate([
-        //     {
-        //         $addFields: {
-        //             avgRating: {
-        //                 $avg: "$reviews.rating"
-        //             }
-        //         }
-        //     },
-        //     {
-        //         $match: {
-        //             avgRating: {
-        //                 $gte: parseFloat(rating)
-        //             }
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             title: 1,
-        //             price: 1,
-        //             datePublished: 1,
-        //             reviews: 1,
-        //             avgRating: 1,
-        //             author: 1
-        //         }
-        //     },
-        //     {
-        //         $lookup: {
-        //             'from': 'authors',
-        //             'localField': 'author',
-        //             'foreignField': '_id',
-        //             'as': 'author_populate'
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             'author_populate.books': 0,
-        //             'author': 0
-        //         }
-        //     },
-        //     {
-        //         $set: {
-        //             "author_populate": {
-        //                 $arrayElemAt: ['$author_populate', 0]
-        //             }
-        //         }
-        //     },
-        //     {
-        //         $set: {
-        //             "author_populate.fullname": {
-        //                 $concat: ["$author_populate.firstName", " ", "$author_populate.lastName"]
-        //             }
-        //         }
-        //     },
-        //     {
-        //         $sort: {
-        //             "avgRating": -1
-        //         }
-        //     }
-        // ]);
+        let {page = 0, limit = 5} = req.query;
+        let books = await Book.find({});
+        page = parseInt(page) - 1
+        if (page < 0) {
+            page = 0
+        }
         let allBooks = await Book.aggregate([
             {
-                $addFields: {
-                    "avgReview": { $avg: "$reviews.rating" }
+                $project: {
+                    'reviews': 0
                 }
             },
             {
-                $sort: { 'avgReview': -1 }
-            }
+                $skip: parseInt(page) * limit
+            },
+            {
+                $limit: parseInt(limit)
+            },
         ]);
         allBooks = await Book.populate(allBooks, {
             path: 'author',
@@ -112,7 +60,11 @@ app.get('/books', async (req, res, next) => {
         allBooks.forEach((el) => {
             el.author = `${el.author.firstName} ${el.author.lastName}`
         })
-        res.json(allBooks);
+        res.json({
+            pages:  `${page + 1} / ${Math.ceil(books.length / limit)}`,
+            message: allBooks.length > 0 ? allBooks : "Books Empty",
+            totalDocs: books.length
+        });
     } catch (err) {
         next(err);
     }
@@ -220,7 +172,23 @@ app.delete('/books/detail/:id', async (req, res, next) => {
 // AUTHOR ROUTE
 // GET '/authors' route
 app.get('/authors', async (req, res) => {
-    const allAuthors = await Author.find({}).populate('books', 'title');
+    // let allAuthors = await Author.find({});
+    let allAuthors = await Author.aggregate([
+        {
+            $lookup: {
+                from: 'books',
+                localField: 'books',
+                foreignField: '_id',
+                as: 'books_populate'
+            }
+        },
+        {
+            $project: {
+                'books_populate.author': 0,
+                'books': 0
+            }
+        }
+    ])
     res.json(allAuthors);
 });
 
