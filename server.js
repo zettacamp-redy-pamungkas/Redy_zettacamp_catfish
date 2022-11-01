@@ -19,7 +19,7 @@ mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open.') })
     .catch((err) => { console.log(err) });
 
-const bodyParse = express.urlencoded({extended:true});
+const bodyParse = express.urlencoded({ extended: true });
 
 // GET '/' route
 app.get('/', (req, res) => {
@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 // GET '/songs' route
 app.get('/songs', async (req, res, next) => {
     try {
+        const { title, artist, genre } = req.query;
         const queryAggregateSongs = [
             {
                 $lookup: {
@@ -62,10 +63,30 @@ app.get('/songs', async (req, res, next) => {
             },
         ];
 
+        const query = { $and: [] };
+
+        if (title) {
+            query.$and.push({title});
+        }
+
+        if (artist) {
+            query.$and.push({artist});
+        }
+
+        if (genre) {
+            query.$and.push({genre});
+        }
+
+        if(query.$and.length) {
+            queryAggregateSongs.push({
+                $match: query
+            })
+        }
+
         const songs = await SongModel.aggregate(queryAggregateSongs)
         res.json({
-            status: 200,
-            message: songs
+            status: songs.length > 0 ? 200 : 404,
+            message: songs.length > 0 ? songs : 'Songs not found'
         })
     } catch (err) {
         next(err)
@@ -89,8 +110,9 @@ app.post('/songs', bodyParse, async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+});
 
-})
+// PUT 'songs/detail/:id' route
 
 // GET '/artist' route
 app.get('/artists', async (req, res, next) => {
