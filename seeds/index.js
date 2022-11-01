@@ -39,6 +39,23 @@ function getRandom(arr, isUnique = false) {
     return result;
 }
 
+// function convertDuration
+function convertDuration(duration) {
+    duration = parseInt(duration);
+    if (typeof duration === 'number') {
+        if (duration < 10) {
+            return duration *= 60
+        }
+    } else {
+        const durArr = duration.split(':');
+        if (durArr.length > 0) {
+            const min = durArr[0] * 60;
+            const sec = durArr[1]
+            return min + sec
+        }
+    }
+}
+
 // function getRandomMinMax
 function getRandomMinMax(min, max) {
     if (min > max) {
@@ -71,7 +88,7 @@ async function insertArtistDummies() {
 async function insertSongDummies() {
     const artists = await ArtistModel.find({});
     for (let song of songSeeds) {
-        const duration = getRandomMinMax(3, 8);
+        const duration = convertDuration(getRandomMinMax(3, 8));
         const artist = getRandom(artists);
         const genre = getRandom(genreList);
         const newSong = new SongModel({

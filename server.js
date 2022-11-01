@@ -14,6 +14,28 @@ const ArtistModel = require('./models/artist');
 // Custom Error Handler
 const CustomErrorHandler = require('./utils/CustomErrorHandler');
 
+// function convertDuration
+function convertDuration(duration) {
+    const durArr = duration.split(':').map(el => parseInt(el));
+    duration = 0
+    durArr.forEach((el, index) => {
+        if (index === 0) {
+            el *= 60
+        }
+        duration += el
+    })
+    return duration;
+}
+
+// function convertDurationToString
+function convertDurationToString(duration) {
+    let sec = duration % 60;
+    if (sec < 10) {
+        sec = `0${sec}`;
+    }
+    return `0${Math.floor(duration / 60)}:${sec}`;
+}
+
 // mongoose connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open.') })
@@ -32,7 +54,7 @@ app.get('/', (req, res) => {
 // GET '/songs' route
 app.get('/songs', async (req, res, next) => {
     try {
-        let { title, artist, genre, page, limit = 5 } = req.query;
+        let { title, artist, genre, page, limit = 5, convertdur } = req.query;
         let facetAggregate = {
             $facet: {
                 count: [
@@ -107,6 +129,11 @@ app.get('/songs', async (req, res, next) => {
                 page = 0;
             }
 
+            limit = parseInt(limit);
+            if (Number.isNaN(limit) || limit < 0) {
+                limit = 5
+            }
+
             queryAggregateSongs.push(
                 {
                     $skip: page * limit
@@ -120,6 +147,14 @@ app.get('/songs', async (req, res, next) => {
         facetAggregate.$facet.data = queryAggregateSongs
 
         const songs = await SongModel.aggregate([facetAggregate])
+
+        if (convertdur) {
+            songs[0].data.map((el) => {
+                el.duration = convertDurationToString(el.duration);
+                return el
+            })
+        }
+
         res.json({
             status: songs[0].data.length > 0 ? 200 : 404,
             message: songs[0].data.length > 0 ? songs : 'Songs not found'
@@ -133,6 +168,7 @@ app.get('/songs', async (req, res, next) => {
 app.post('/songs', bodyParse, async (req, res, next) => {
     try {
         const { song } = req.body;
+        song.duration = convertDuration(song.duration);
         const newSong = new SongModel(song);
         const artist = await ArtistModel.findById(song.artist);
         if (!artist) {
