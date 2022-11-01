@@ -82,6 +82,8 @@ app.get('/songs', async (req, res, next) => {
     try {
         let { title, artist, genre, page, limit = 5, convertdur, duration } = req.query;
 
+        const allSongs = await SongModel.find({});
+
         const queryAggregateSongs = [
             {
                 $lookup: {
@@ -159,6 +161,13 @@ app.get('/songs', async (req, res, next) => {
                     $limit: limit
                 }
             );
+            queryAggregateSongs.push(
+                {
+                    $addFields: {
+                        pages: `${page + 1} / ${Math.ceil(allSongs.length / limit)}`
+                    }
+                }
+            )
         }
 
         facetAggregate.$facet.data = queryAggregateSongs
@@ -206,22 +215,24 @@ app.put('/songs/detail/:id', bodyParse, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { song } = req.body;
-        const oldSong = await SongModel.findById(id);
         const updatedSong = await SongModel.findByIdAndUpdate(id, song, { new: true, runValidators: true });
-
-        if (song.artist !== oldSong.artist.toString()) {
-            const oldArtist = await ArtistModel.findById(oldSong.artist);
-            await oldArtist.updateOne({
-                $pull: {
-                    songs: updatedSong.id
-                }
-            })
-            const artist = await ArtistModel.findById(song.artist);
-            await artist.updateOne({
-                $push: {
-                    songs: updatedSong.id
-                }
-            })
+        
+        if (song.artist) {
+            const oldSong = await SongModel.findById(id);
+            if (song.artist !== oldSong.artist.toString()) {
+                const oldArtist = await ArtistModel.findById(oldSong.artist);
+                await oldArtist.updateOne({
+                    $pull: {
+                        songs: updatedSong.id
+                    }
+                })
+                const artist = await ArtistModel.findById(song.artist);
+                await artist.updateOne({
+                    $push: {
+                        songs: updatedSong.id
+                    }
+                })
+            }
         }
 
         res.json(

@@ -20,7 +20,7 @@ const songSchema = new Schema({
     'genre': {
         type: String,
         required: true,
-        enum: ['Pop', 'Rock', 'Jazz']
+        // enum: ['Pop', 'Rock', 'Jazz']
     },
     'duration': {
         type: Number,
