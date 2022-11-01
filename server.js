@@ -39,7 +39,7 @@ app.get('/songs', async (req, res, next) => {
                     {
                         $group: {
                             _id: null,
-                            totalDocs: { $sum: 1}
+                            totalDocs: { $sum: 1 }
                         }
                     },
                     {
@@ -84,18 +84,18 @@ app.get('/songs', async (req, res, next) => {
         const query = { $and: [] };
 
         if (title) {
-            query.$and.push({title});
+            query.$and.push({ title });
         }
 
         if (artist) {
-            query.$and.push({artist});
+            query.$and.push({ artist });
         }
 
         if (genre) {
-            query.$and.push({genre});
+            query.$and.push({ genre });
         }
 
-        if(query.$and.length) {
+        if (query.$and.length) {
             queryAggregateSongs.push({
                 $match: query
             })
@@ -154,8 +154,8 @@ app.put('/songs/detail/:id', bodyParse, async (req, res, next) => {
         const { id } = req.params;
         const { song } = req.body;
         const oldSong = await SongModel.findById(id);
-        const updatedSong = await SongModel.findByIdAndUpdate(id, song, {new: true, runValidators: true});
-    
+        const updatedSong = await SongModel.findByIdAndUpdate(id, song, { new: true, runValidators: true });
+
         if (song.artist !== oldSong.artist.toString()) {
             const oldArtist = await ArtistModel.findById(oldSong.artist);
             await oldArtist.updateOne({
@@ -170,13 +170,27 @@ app.put('/songs/detail/:id', bodyParse, async (req, res, next) => {
                 }
             })
         }
-    
+
         res.json(
             {
                 status: 201,
                 message: updatedSong
             }
         )
+    } catch (err) {
+        next(err)
+    }
+});
+
+// DELETE '/songs/detail/:id' route
+app.delete('/songs/detail/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const deletedSong = await SongModel.findByIdAndDelete(id);
+        res.json({
+            status: deletedSong ? 200 : 404,
+            message: deletedSong ?`Song with ID: ${id} has been deleted` : `ID: ${id} not found`
+        })
     } catch (err) {
         next(err)
     }
