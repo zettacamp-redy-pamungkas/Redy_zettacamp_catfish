@@ -366,6 +366,15 @@ app.put('/playlist/addsongs/:id', bodyParse, async (req, res, next) => {
         songs = songs.split(' ').map(el => mongoose.Types.ObjectId(el));
 
         const playlist = await PlaylistModel.findById(id);
+
+        // duplicate validation
+        songs = songs.filter((el) => {
+            if (playlist.songs.indexOf(el) === -1) {
+                return el
+            }
+            return false
+        })
+
         await playlist.updateOne({
             $push: {
                 songs: { $each: songs }
