@@ -13,6 +13,9 @@ const ArtistModel = require('../models/artist');
 // Song Model
 const SongModel = require('../models/song');
 
+// playlist model
+const PlaylistModel = require('../models/playlist')
+
 // song seeds
 const songSeeds = require('./songseeds');
 
@@ -107,11 +110,32 @@ async function deleteArtistById(_id) {
     console.log(`Artist with id ${_id} has been deleted.`);
 }
 
+// function insertPlaylistDummies
+async function insertPlaylistDummies() {
+    const songs = await SongModel.find({});
+    for (let i = 1; i <= 3; i++) {
+        const randomLength = getRandomMinMax(3, 6);
+        const songList = []
+        for (let y = 0; y < randomLength; y++) {
+            songList.push(getRandom([...songs], true));
+        }
+        const newPlaylist = new PlaylistModel({
+            name: 'Playlist ' + i,
+            songs: songList
+        })
+
+        await newPlaylist.save()
+    }
+
+    console.log('Playlist dummies has been inserted');
+}
+
 // function seeds
 async function seeds() {
     await deleteAll();
     await insertArtistDummies();
     await insertSongDummies();
+    await insertPlaylistDummies();
     mongoose.connection.close();
     console.log('Seeds has been inserted');
 }
