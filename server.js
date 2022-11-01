@@ -32,7 +32,25 @@ app.get('/', (req, res) => {
 // GET '/songs' route
 app.get('/songs', async (req, res, next) => {
     try {
-        const { title, artist, genre } = req.query;
+        let { title, artist, genre, page, limit = 5 } = req.query;
+        let facetAggregate = {
+            $facet: {
+                count: [
+                    {
+                        $group: {
+                            _id: null,
+                            totalDocs: { $sum: 1}
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0
+                        }
+                    }
+                ],
+                data: []
+            }
+        }
         const queryAggregateSongs = [
             {
                 $lookup: {
@@ -83,10 +101,28 @@ app.get('/songs', async (req, res, next) => {
             })
         }
 
-        const songs = await SongModel.aggregate(queryAggregateSongs)
+        if (page) {
+            page = parseInt(page) - 1;
+            if (Number.isNaN(page) || page < 0) {
+                page = 0;
+            }
+
+            queryAggregateSongs.push(
+                {
+                    $skip: page * limit
+                },
+                {
+                    $limit: limit
+                }
+            );
+        }
+
+        facetAggregate.$facet.data = queryAggregateSongs
+
+        const songs = await SongModel.aggregate([facetAggregate])
         res.json({
-            status: songs.length > 0 ? 200 : 404,
-            message: songs.length > 0 ? songs : 'Songs not found'
+            status: songs[0].data.length > 0 ? 200 : 404,
+            message: songs[0].data.length > 0 ? songs : 'Songs not found'
         })
     } catch (err) {
         next(err)
@@ -113,6 +149,38 @@ app.post('/songs', bodyParse, async (req, res, next) => {
 });
 
 // PUT 'songs/detail/:id' route
+app.put('/songs/detail/:id', bodyParse, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { song } = req.body;
+        const oldSong = await SongModel.findById(id);
+        const updatedSong = await SongModel.findByIdAndUpdate(id, song, {new: true, runValidators: true});
+    
+        if (song.artist !== oldSong.artist.toString()) {
+            const oldArtist = await ArtistModel.findById(oldSong.artist);
+            await oldArtist.updateOne({
+                $pull: {
+                    songs: updatedSong.id
+                }
+            })
+            const artist = await ArtistModel.findById(song.artist);
+            await artist.updateOne({
+                $push: {
+                    songs: updatedSong.id
+                }
+            })
+        }
+    
+        res.json(
+            {
+                status: 201,
+                message: updatedSong
+            }
+        )
+    } catch (err) {
+        next(err)
+    }
+})
 
 // GET '/artist' route
 app.get('/artists', async (req, res, next) => {

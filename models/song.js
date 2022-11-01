@@ -35,9 +35,9 @@ songSchema
 // on delete cascade
     .post('deleteOne', async(song) => {
         const artist = await ArtistModel.findById(song.artist);
-        artist.update({
-            songs: {
-                $pull: song.id
+        await artist.update({
+            $pull: {
+                songs: song.id
             }
         })
     })
