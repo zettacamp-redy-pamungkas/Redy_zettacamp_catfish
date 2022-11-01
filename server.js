@@ -132,7 +132,7 @@ app.get('/songs', async (req, res, next) => {
             })
         }
 
-        if(duration) {
+        if (duration) {
             queryAggregateSongs.push({
                 $sort: {
                     duration: parseInt(duration)
@@ -288,7 +288,7 @@ app.get('/playlist', async (req, res, next) => {
             })
         }
 
-        if(duration) {
+        if (duration) {
             queryAggregatePlaylist.push({
                 $sort: {
                     totalDuration: parseInt(duration)
@@ -339,7 +339,72 @@ app.get('/playlist', async (req, res, next) => {
     catch (err) {
         next(err);
     }
-})
+});
+
+// POST '/playlist' route
+app.post('/playlist', bodyParse, async (req, res, next) => {
+    try {
+        let { playlist } = req.body;
+        playlist.songs = playlist.songs.split(' ').map(el => mongoose.Types.ObjectId(el));
+        const newPlaylist = new PlaylistModel(playlist);
+        await newPlaylist.save();
+        res.json({
+            status: 201,
+            message: newPlaylist
+        })
+    } catch (err) {
+        next(err);
+    }
+
+});
+
+// PUT '/playlist/addsongs/:id' route
+app.put('/playlist/addsongs/:id', bodyParse, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        let { songs } = req.body;
+        songs = songs.split(' ').map(el => mongoose.Types.ObjectId(el));
+
+        const playlist = await PlaylistModel.findById(id);
+        await playlist.updateOne({
+            $push: {
+                songs: { $each: songs }
+            }
+        }, { new: true, runValidators: true });
+
+        res.json({
+            status: 201,
+            message: playlist
+        })
+    } catch (err) {
+        next(err)
+    }
+});
+
+// PUT '/playlist/deletesongs/:id' route
+app.put('/playlist/deletesongs/:id', bodyParse, async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        let { songs } = req.body;
+        songs = songs.split(' ').map(el => mongoose.Types.ObjectId(el));
+
+        const playlist = await PlaylistModel.findById(id);
+
+        await playlist.updateOne({
+            $pullAll: {
+                songs: songs
+            }
+        });
+
+        res.json({
+            status: 201,
+            message: `songs with ID: ${songs} has been deleted from ${playlist.name}`
+        })
+
+    } catch (err) {
+        next(err);
+    }
+});
 
 // GET '/artist' route
 app.get('/artists', async (req, res, next) => {
