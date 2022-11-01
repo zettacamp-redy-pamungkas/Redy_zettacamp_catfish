@@ -4,7 +4,12 @@ const { Schema } = mongoose;
 
 // playlist schema
 const playlistSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: 3,
+        maxLength: 25,
+        required: true
+    },
     songs: [
         {
             type: Schema.Types.ObjectId,

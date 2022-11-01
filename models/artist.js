@@ -4,9 +4,24 @@ const { Schema } = mongoose;
 
 // Artist Schema
 const artistSchema = new Schema({
-    'first-name': String,
-    'last-name': String,
-    'gender': String,
+    'first-name': {
+        type: String,
+        minLength: 3,
+        maxLength: 25,
+        required: true
+    },
+    'last-name': {
+        type: String,
+        minLength: 3,
+        maxLength: 25,
+        required: true
+    },
+    'gender': {
+        type: String,
+        minLength: 3,
+        maxLength: 25,
+        required: true
+    },
     'songs': [
         {
             type: Schema.Types.ObjectId,

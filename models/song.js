@@ -7,16 +7,26 @@ const ArtistModel = require('./artist');
 
 // Song Schema
 const songSchema = new Schema({
-    'title': String,
+    'title': {
+        type: String,
+        minLength: 3,
+        maxLength: 25,
+        required: true
+    },
     'artist': {
         type: Schema.Types.ObjectId,
         ref: 'Artist'
     },
     'genre': {
         type: String,
+        required: true,
         enum: ['Pop', 'Rock', 'Jazz']
     },
-    'duration': Number
+    'duration': {
+        type: Number,
+        min: 0,
+        required: true
+    }
 });
 
 songSchema
