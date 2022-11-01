@@ -30,11 +30,15 @@ function convertDuration(duration) {
 
 // function convertDurationToString
 function convertDurationToString(duration) {
+    let min = Math.floor(duration / 60);
+    if (min < 10) {
+        min = `0${min}`
+    }
     let sec = duration % 60;
     if (sec < 10) {
         sec = `0${sec}`;
     }
-    return `0${Math.floor(duration / 60)}:${sec}`;
+    return `${min}:${sec}`;
 }
 
 // mongoose connect
@@ -42,7 +46,28 @@ mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open.') })
     .catch((err) => { console.log(err) });
 
+// Body Parse
 const bodyParse = express.urlencoded({ extended: true });
+
+// facet aggregate
+let facetAggregate = {
+    $facet: {
+        count: [
+            {
+                $group: {
+                    _id: null,
+                    totalDocs: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            }
+        ],
+        data: []
+    }
+}
 
 // GET '/' route
 app.get('/', (req, res) => {
@@ -55,25 +80,8 @@ app.get('/', (req, res) => {
 // GET '/songs' route
 app.get('/songs', async (req, res, next) => {
     try {
-        let { title, artist, genre, page, limit = 5, convertdur } = req.query;
-        let facetAggregate = {
-            $facet: {
-                count: [
-                    {
-                        $group: {
-                            _id: null,
-                            totalDocs: { $sum: 1 }
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0
-                        }
-                    }
-                ],
-                data: []
-            }
-        }
+        let { title, artist, genre, page, limit = 5, convertdur, duration } = req.query;
+
         const queryAggregateSongs = [
             {
                 $lookup: {
@@ -121,6 +129,14 @@ app.get('/songs', async (req, res, next) => {
         if (query.$and.length) {
             queryAggregateSongs.push({
                 $match: query
+            })
+        }
+
+        if(duration) {
+            queryAggregateSongs.push({
+                $sort: {
+                    duration: parseInt(duration)
+                }
             })
         }
 
@@ -226,7 +242,7 @@ app.delete('/songs/detail/:id', async (req, res, next) => {
         const deletedSong = await SongModel.findByIdAndDelete(id);
         res.json({
             status: deletedSong ? 200 : 404,
-            message: deletedSong ?`Song with ID: ${id} has been deleted` : `ID: ${id} not found`
+            message: deletedSong ? `Song with ID: ${id} has been deleted` : `ID: ${id} not found`
         })
     } catch (err) {
         next(err)
@@ -236,10 +252,88 @@ app.delete('/songs/detail/:id', async (req, res, next) => {
 // GET '/playlist' route
 app.get('/playlist', async (req, res, next) => {
     try {
-        const playlist = await PlaylistModel.find({});
+        let { convertdur, name, page, limit = 1, duration } = req.query;
+        const query = { $and: [] }
+        const querySongs = { songs: { $and: [] } }
+        const queryAggregatePlaylist = [
+            {
+                $lookup: {
+                    from: 'songs',
+                    localField: 'songs',
+                    foreignField: '_id',
+                    as: 'songs'
+                }
+            },
+            {
+                $project: {
+                    'songs.artist': 0
+                }
+            },
+            {
+                $addFields: {
+                    'totalDuration': {
+                        $sum: '$songs.duration'
+                    }
+                }
+            }
+        ]
+
+        if (name) {
+            query.$and.push({ name })
+        }
+
+        if (query.$and.length > 0) {
+            queryAggregatePlaylist.push({
+                $match: query
+            })
+        }
+
+        if(duration) {
+            queryAggregatePlaylist.push({
+                $sort: {
+                    totalDuration: parseInt(duration)
+                }
+            })
+        }
+
+        if (page) {
+            console.log('Hello page')
+            page = parseInt(page) - 1;
+            if (Number.isNaN(page) || page < 0) {
+                page = 0;
+            }
+
+            limit = parseInt(limit);
+            if (Number.isNaN(limit) || limit < 0) {
+                limit = 1
+            }
+
+            queryAggregatePlaylist.push(
+                {
+                    $skip: page * limit
+                },
+                {
+                    $limit: limit
+                }
+            );
+        }
+
+        facetAggregate.$facet.data = queryAggregatePlaylist;
+        const playlist = await PlaylistModel.aggregate([facetAggregate]);
+
+        if (convertdur) {
+            playlist[0].data.map((el) => {
+                el.songs.map((arr) => {
+                    arr.duration = convertDurationToString(arr.duration);
+                    return arr;
+                })
+                el.totalDuration = convertDurationToString(el.totalDuration);
+                return el;
+            })
+        }
         res.json({
-            status: 200,
-            message: playlist
+            status: playlist[0].data.length > 0 ? 200 : 404,
+            message: playlist[0].data.length > 0 ? playlist : 'Playlist empty'
         })
     }
     catch (err) {
