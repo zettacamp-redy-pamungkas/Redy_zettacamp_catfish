@@ -7,9 +7,10 @@ const port = 3000;
 const mongoose = require('mongoose');
 const dbName = 'bonanza';
 
-// Artist and Song model
+// Artist, Song, Playlist model
 const SongModel = require('./models/song');
 const ArtistModel = require('./models/artist');
+const PlaylistModel = require('./models/playlist');
 
 // Custom Error Handler
 const CustomErrorHandler = require('./utils/CustomErrorHandler');
@@ -229,6 +230,20 @@ app.delete('/songs/detail/:id', async (req, res, next) => {
         })
     } catch (err) {
         next(err)
+    }
+});
+
+// GET '/playlist' route
+app.get('/playlist', async (req, res, next) => {
+    try {
+        const playlist = await PlaylistModel.find({});
+        res.json({
+            status: 200,
+            message: playlist
+        })
+    }
+    catch (err) {
+        next(err);
     }
 })
 
