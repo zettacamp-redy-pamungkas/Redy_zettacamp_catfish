@@ -406,6 +406,16 @@ app.put('/playlist/deletesongs/:id', bodyParse, async (req, res, next) => {
     }
 });
 
+// DELETE '/playlist/delete/:id' route
+app.delete('/playlist/delete/:id', async (req, res, next) => {
+    const { id } = req.params;
+    await PlaylistModel.findByIdAndDelete(id);
+    res.json({
+        status: 201,
+        message: `Playlist with ID: ${id}, has been deleted.`
+    })
+})
+
 // GET '/artist' route
 app.get('/artists', async (req, res, next) => {
     try {
