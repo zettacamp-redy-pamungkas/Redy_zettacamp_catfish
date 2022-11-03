@@ -48,7 +48,7 @@ const resolvers = {
 
                 if (aggregateBook.length > 0) {
                     books = (await Book.aggregate(aggregateBook)).map((el) => {
-                        el.id = mongoose.Types.ObjectId(el.id);
+                        el.id = mongoose.Types.ObjectId(el._id);
                         if (page >= 0) {
                             el.countDocs = books.length
                         }
