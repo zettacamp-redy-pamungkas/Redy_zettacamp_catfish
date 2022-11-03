@@ -47,12 +47,13 @@ const resolvers = {
                 }
 
                 if (aggregateBook.length > 0) {
-                    books = (await Book.aggregate(aggregateBook)).map((el) => { 
-                        el.id = mongoose.Types.ObjectId(el.id); 
+                    books = (await Book.aggregate(aggregateBook)).map((el) => {
+                        el.id = mongoose.Types.ObjectId(el.id);
                         if (page >= 0) {
                             el.countDocs = books.length
                         }
-                        return el })
+                        return el
+                    })
                 }
                 return books;
             } catch (err) {
@@ -62,10 +63,59 @@ const resolvers = {
         authors: async () => {
             try {
                 const authors = await Author.find({})
-                                    .populate({
-                                        path: 'books'
-                                    });
+                    .populate({
+                        path: 'books'
+                    });
                 return authors
+            } catch (err) {
+                throw new ApolloError(err)
+            }
+        }
+    },
+    Mutation: {
+        insertOneBook: async (root, args) => {
+            // check book is present
+            try {
+                const book = await Book.find({
+                    title: args.title
+                })
+                if (book.length) {
+                    // check author
+                    book.forEach((el) => {
+                        if (el.author.toString() === args.author) {
+                            throw new ApolloError('Book Has Been present')
+                        }
+                    })
+                    const newBook = new Book(args);
+                    // check if author exist
+                    const author = await Author.findById(newBook.author);
+                    if (author) {
+                        await newBook.save();
+                        await author.updateOne({
+                            $push: {
+                                books: newBook.id
+                            }
+                        })
+                    } else {
+                        throw new ApolloError('Author Doesnt Exist')
+                    }
+                    return newBook;
+                } else {
+                    const newBook = new Book(args);
+                    // check if author exist
+                    const author = await Author.findById(newBook.author);
+                    if (author) {
+                        await newBook.save();
+                        await author.updateOne({
+                            $push: {
+                                books: newBook.id
+                            }
+                        })
+                    } else {
+                        throw new ApolloError('Author Doesnt Exist')
+                    }
+                    return newBook;
+                }
             } catch (err) {
                 throw new ApolloError(err)
             }

@@ -51,7 +51,6 @@ const bookSchema = new Schema({
         required: true,
         minLength: 5,
         maxLength: 50,
-        unique: true
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -68,8 +67,7 @@ const bookSchema = new Schema({
         min: 0
     },
     datePublished: {
-        type: Date,
-        required: true
+        type: Date
     },
     reviews: [
         {

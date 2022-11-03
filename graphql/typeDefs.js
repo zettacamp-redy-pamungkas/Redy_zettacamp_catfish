@@ -25,7 +25,7 @@ const typeDefs = gql`
 
     
     type Mutation {
-        insertOnebook(title: String! author: ID!, price: Int!, stock: Int): Book
+        insertOneBook(title: String! author: ID!, price: Int!, stock: Int): Book
     }
 `
 
