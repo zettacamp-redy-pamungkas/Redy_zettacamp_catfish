@@ -55,6 +55,7 @@ const resolvers = {
                         return el
                     })
                 }
+                books = await Book.populate(books, 'author')
                 return books;
             } catch (err) {
                 throw new ApolloError(err)
@@ -86,7 +87,7 @@ const resolvers = {
                             throw new ApolloError('Book Has Been present')
                         }
                     })
-                    const newBook = new Book(args);
+                    let newBook = new Book(args);
                     // check if author exist
                     const author = await Author.findById(newBook.author);
                     if (author) {
@@ -99,9 +100,10 @@ const resolvers = {
                     } else {
                         throw new ApolloError('Author Doesnt Exist')
                     }
+                    newBook = await Book.populate(newBook, 'author');
                     return newBook;
                 } else {
-                    const newBook = new Book(args);
+                    let newBook = new Book(args);
                     // check if author exist
                     const author = await Author.findById(newBook.author);
                     if (author) {
@@ -114,9 +116,46 @@ const resolvers = {
                     } else {
                         throw new ApolloError('Author Doesnt Exist')
                     }
+                    newBook = await Book.populate(newBook, 'author');
                     return newBook;
                 }
             } catch (err) {
+                throw new ApolloError(err)
+            }
+        },
+        updateOneBook: async (root, args) => {
+            try {
+                // check if author exist
+                if (args.author) {
+                    const author = await Author.findById(args.author);
+                    if (!author) {
+                        throw new ApolloError('Author Doesnt Exist');
+                    }
+
+                    const oldBook = await Book.findById(args.id);
+
+                    if (oldBook.author.toString() !== args.author) {
+                        const oldAuthor = await Author.findById(oldBook.author.toString());
+                        const newAuthor = await Author.findById(args.author)
+
+                        await oldAuthor.updateOne({
+                            $pull: {
+                                books: mongoose.Types.ObjectId(args.id)
+                            }
+                        })
+                        await newAuthor.updateOne({
+                            $push: {
+                                books: mongoose.Types.ObjectId(args.id)
+                            }
+                        })
+                    }
+                }
+
+                const book = await Book.findByIdAndUpdate(args.id, args, { new: true, runValidators: true });
+                return book.populate('author');
+
+            }
+            catch (err) {
                 throw new ApolloError(err)
             }
         }
