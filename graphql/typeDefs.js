@@ -15,6 +15,15 @@ const typeDefs = gql`
         book: Book
     }
 
+    type BookBough {
+        book: Book
+        book_bough: Int
+        discount: Int
+        book_price: Int
+        tax: Int
+        final_price: Int
+    }
+
     type Author {
         id: ID!
         firstName: String!
@@ -33,6 +42,7 @@ const typeDefs = gql`
         insertOneBook(title: String! author: ID!, price: Int!, stock: Int): Book
         updateOneBook(id: ID!, title: String, author: ID, price: Int, stock: Int): Book
         deleteOneBook(id: ID!): BookDeleted
+        buyBook(id: ID!, total: Int, discount: Int, tax: Int): BookBough
     }
 `
 

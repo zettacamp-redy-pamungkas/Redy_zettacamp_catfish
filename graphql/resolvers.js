@@ -173,7 +173,35 @@ const resolvers = {
             } catch (err) {
                 throw new ApolloError(err)
             }
-
+        },
+        buyBook: async (root, {id, total = 1, discount, tax = 10}) => {
+            try {
+                const book = await Book.findById(id);
+                if (book) {
+                    if (book.stock < total) {
+                        throw new ApolloError('Book Stock not enough')
+                    }
+                    book.stock -= total;
+                    if (total > 4) {
+                        discount = 20;
+                    }
+                    const price_discount = discount ? book.price - (book.price * (discount / 100)) : book.price;
+                    const price_tax = price_discount + ( price_discount * (tax / 100));
+                    await book.save();
+                    return {
+                        book,
+                        book_bough: total,
+                        discount: discount || 0,
+                        book_price: price_discount,
+                        tax,
+                        final_price: price_tax * total
+                    }
+                } else {
+                    throw new ApolloError('Book not found');
+                }
+            } catch (err) {
+                throw new ApolloError(err)
+            }
         }
     }
 }
