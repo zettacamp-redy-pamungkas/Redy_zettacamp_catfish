@@ -88,7 +88,8 @@ async function insertDummiesBook(dataLength = 20) {
         const newBook = new Book({
             title: book,
             author: author.id,
-            price: getRandomMinMax(5, 20),
+            price: 10000 + (getRandomMinMax(5, 20) * 1000),
+            stock: getRandomMinMax(4, 10),
             reviews,
             datePublished: publishDate
         })

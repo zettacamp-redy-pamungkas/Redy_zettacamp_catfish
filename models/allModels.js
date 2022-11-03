@@ -63,6 +63,10 @@ const bookSchema = new Schema({
         required: true,
         min: 0
     },
+    stock: {
+        type: Number,
+        min: 0
+    },
     datePublished: {
         type: Date,
         required: true
