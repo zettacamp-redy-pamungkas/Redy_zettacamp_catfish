@@ -58,6 +58,17 @@ const resolvers = {
             } catch (err) {
                 throw new ApolloError(err)
             }
+        },
+        authors: async () => {
+            try {
+                const authors = await Author.find({})
+                                    .populate({
+                                        path: 'books'
+                                    });
+                return authors
+            } catch (err) {
+                throw new ApolloError(err)
+            }
         }
     }
 }

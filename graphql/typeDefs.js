@@ -20,6 +20,12 @@ const typeDefs = gql`
 
     type Query {
         books(id: ID, title: String, page: Int, limit: Int): [Book]
+        authors: [Author]
+    }
+
+    
+    type Mutation {
+        insertOnebook(title: String! author: ID!, price: Int!, stock: Int): Book
     }
 `
 
