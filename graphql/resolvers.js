@@ -38,7 +38,8 @@ const resolvers = {
                         })
                 }
 
-                let books = await Book.find({})
+                let books = await Book.find({});
+                const totalDocs = books.length;
 
                 if (matchQuery.$and.length > 0) {
                     aggregateBook.push({
@@ -56,7 +57,12 @@ const resolvers = {
                     })
                 }
                 books = await Book.populate(books, 'author')
-                return books;
+                return {
+                    books,
+                    page: page >= 0 ? `${page + 1} / ${Math.ceil(totalDocs / limit)}` : null,
+                    currentDocs: books.length,
+                    totalDocs
+                };
             } catch (err) {
                 throw new ApolloError(err)
             }

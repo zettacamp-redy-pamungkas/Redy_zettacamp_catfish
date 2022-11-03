@@ -10,6 +10,13 @@ const typeDefs = gql`
         countDocs: Int
     }
 
+    type Books {
+        books: [Book]
+        page: String
+        totalDocs: Int
+        currentDocs: Int
+    }
+
     type BookDeleted {
         status: String
         book: Book
@@ -33,7 +40,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        books(id: ID, title: String, page: Int, limit: Int): [Book]
+        books(id: ID, title: String, page: Int, limit: Int): Books
         authors: [Author]
     }
 
