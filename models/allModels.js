@@ -92,14 +92,16 @@ const bookSchema = new Schema({
 bookSchema
     .post('findOneAndDelete', async (book) => {
         const Author = mongoose.model('Author', authorSchema);
-        const author = await Author.findById(book.author);
-        author.update(
-            {
-                $pull: {
-                    books: book._id
+        if (book) {
+            const author = await Author.findById(book.author);
+            author.updateOne(
+                {
+                    $pull: {
+                        books: book._id
+                    }
                 }
-            }
-        )
+            )
+        }
     })
 
 // Bookshelf Schema

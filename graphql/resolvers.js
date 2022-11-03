@@ -158,6 +158,22 @@ const resolvers = {
             catch (err) {
                 throw new ApolloError(err)
             }
+        },
+        deleteOneBook: async (root, { id }) => {
+            try {
+                const book = await Book.findByIdAndDelete(id);
+                if (book) {
+                    return {
+                        status: 'Book has been deleted',
+                        book
+                    }
+                } else {
+                    throw new ApolloError('Book not found')
+                }
+            } catch (err) {
+                throw new ApolloError(err)
+            }
+
         }
     }
 }
