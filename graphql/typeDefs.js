@@ -7,6 +7,7 @@ const typeDefs = gql`
         price: Int
         stock: Int
         author: Author
+        datePublished: String
         countDocs: Int
     }
 
@@ -40,6 +41,7 @@ const typeDefs = gql`
     }
 
     type Query {
+        getOneBook(id: ID!) : Book
         books(id: ID, title: String, page: Int, limit: Int): Books
         authors: [Author]
     }

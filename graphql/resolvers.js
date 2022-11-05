@@ -5,6 +5,20 @@ const { default: mongoose } = require('mongoose');
 
 const resolvers = {
     Query: {
+        getOneBook: async (root, { id }) => {
+            try {
+                const book = await Book.findById(id).lean();
+                book.id = mongoose.Types.ObjectId(book._id);
+                book.datePublished = book.datePublished.toLocaleString('default', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: '2-digit'
+                })
+                return book;
+            } catch (err) {
+                throw new ApolloError(err)
+            }
+        },
         books: async (root, { id, title, page, limit = 5 }) => {
             try {
                 const aggregateBook = [];
@@ -189,7 +203,7 @@ const resolvers = {
                     }
                     book.stock -= total;
                     if (total > 4) {
-                        discount = 20;
+                        discount = discount || 20;
                     }
                     const price_discount = discount ? book.price - (book.price * (discount / 100)) : book.price;
                     const price_tax = price_discount + ( price_discount * (tax / 100));
