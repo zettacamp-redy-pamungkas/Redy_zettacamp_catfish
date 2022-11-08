@@ -50,6 +50,27 @@ module.exports = {
             } catch (err) {
                 throw new ApolloError(err);
             }
+        },
+        getOneUser: async (_, { id, email }) => {
+            try {
+                if (id) {
+                    const user = await UserModel.findById(id)
+                    if (!user) {
+                        throw new ApolloError(`User with ID: ${id} not found`);
+                    }
+                    return user
+                }
+
+                if (email) {
+                    const user = await UserModel.findOne({ email });
+                    if (!user) {
+                        throw new ApolloError(`User with email: ${email} not found.`);
+                    }
+                    return user
+                }
+            } catch (err) {
+                throw new ApolloError(err)
+            }
         }
     },
     Mutation: {

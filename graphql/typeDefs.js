@@ -16,6 +16,7 @@ module.exports = gql`
 
     type Query {
         getAllUsers(email: String, last_name: String, first_name: String) : [User]
+        getOneUser(id: ID, email: String) : User
     }
 
     type Mutation {
