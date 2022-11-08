@@ -7,11 +7,23 @@ module.exports = gql`
         password: String
         first_name: String!
         last_name: String!
-        status: String
+        status: Status
     }
 
     type Login {
         token: String
+    }
+
+    type Ingredient {
+        id: ID!
+        name: String!
+        stock: Int!
+        status: Status
+    }
+
+    enum Status {
+        active
+        deleted
     }
 
     type Query {
