@@ -99,6 +99,22 @@ module.exports = {
                 throw new ApolloError(err);
             }
         },
+        updateUser: async (_, args) => {
+            try {
+                const user = await UserModel.findById(args.id);
+                if (!user) {
+                    throw new ApolloError(`User with id: ${args.id} not found`);
+                }
+                const isValidEmail = emailValidator.validate(args.email);
+                if (!isValidEmail) {
+                    throw new ApolloError(`Email: ${args.email} not valid`);
+                }
+                await UserModel.findByIdAndUpdate(args.id, args, { new: true, runValidators: true });
+                return await UserModel.findById(args.id)
+            } catch (err) {
+                throw new ApolloError(err)
+            }
+        },
         login: async (_, { email, password }, context) => {
             try {
                 const user = await UserModel.findOne({ email });
