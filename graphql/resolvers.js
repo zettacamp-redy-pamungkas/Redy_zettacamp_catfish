@@ -9,7 +9,7 @@ const resolvers = {
             try {
                 const book = await Book.findById(id).lean();
                 book.id = mongoose.Types.ObjectId(book._id);
-                book.datePublished = book.datePublished.toLocaleString('default', {
+                book.datePublished = book.datePublished.toLocaleString('en-UK', {
                     year: 'numeric',
                     month: 'long',
                     day: '2-digit'
