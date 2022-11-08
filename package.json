@@ -1,0 +1,24 @@
+{
+  "name": "redy_zettacamp_catfish",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-zettacamp-redy-pamungkas:zettacamp-redy-pamungkas/Redy_zettacamp_catfish.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.11.1",
+    "bcrypt": "^5.1.0",
+    "email-validator": "^2.0.4",
+    "graphql": "^16.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.2"
+  }
+}
