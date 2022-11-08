@@ -105,14 +105,37 @@ module.exports = {
                 if (!user) {
                     throw new ApolloError(`User with id: ${args.id} not found`);
                 }
-                const isValidEmail = emailValidator.validate(args.email);
-                if (!isValidEmail) {
-                    throw new ApolloError(`Email: ${args.email} not valid`);
+
+                if (args.email) {
+                    const isValidEmail = emailValidator.validate(args.email);
+                    if (!isValidEmail) {
+                        throw new ApolloError(`Email: ${args.email} not valid`);
+                    }
                 }
+
+                // check password length
+                if (args.password && args.password.length <=5) {
+                    throw new ApolloError('Password length must greater than 5 digits.')
+                } else if (args.password && args.password.length > 5) {
+                    args.password = await bcrypt.hash(args.password, 10);
+                }
+
+
                 await UserModel.findByIdAndUpdate(args.id, args, { new: true, runValidators: true });
                 return await UserModel.findById(args.id)
             } catch (err) {
                 throw new ApolloError(err)
+            }
+        },
+        deleteUser: async (_, { id, status = 'deleted' }) => {
+            try {
+                const user = await UserModel.findByIdAndUpdate(id, {status: status}, { runValidators: true });
+                if (!user) {
+                    throw new ApolloError(`User with: ${id} not found`);
+                }
+                return await UserModel.findById(id);
+            } catch (err) {
+                throw new ApolloError(err);
             }
         },
         login: async (_, { email, password }, context) => {

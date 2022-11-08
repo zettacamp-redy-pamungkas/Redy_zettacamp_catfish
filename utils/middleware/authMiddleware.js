@@ -23,6 +23,11 @@ async function authMiddleware(resolve, parent, args, context, info) {
 
 module.exports = {
     Query: {
-        getAllUsers: authMiddleware
+        getAllUsers: authMiddleware,
+        getOneUser: authMiddleware
+    },
+    Mutation: {
+        updateUser: authMiddleware,
+        deleteUser: authMiddleware,
     }
 }
