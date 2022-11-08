@@ -12,10 +12,45 @@ const emailValidator = require('email-validator');
 
 // jsonwebtoken
 const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose');
 
 module.exports = {
     Query: {
+        getAllUsers: async (_, { email, first_name, last_name }, context) => {
+            try {
+                const aggregateUsers = [];
+                const matchQuery = { $and: [] };
+                if (email) {
+                    matchQuery.$and.push({ email });
+                }
 
+                if (first_name) {
+                    matchQuery.$and.push({ "first_name": first_name });
+                }
+
+                if (last_name) {
+                    matchQuery.$and.push({ "last_name": last_name });
+                }
+
+                if (matchQuery.$and.length) {
+                    aggregateUsers.push({
+                        $match: matchQuery
+                    })
+                }
+
+                let users = await UserModel.find({});
+                if (aggregateUsers.length) {
+                    users = await UserModel.aggregate(aggregateUsers);
+                    users.map((user) => {
+                        user.id = mongoose.Types.ObjectId(user._id);
+                    })
+                }
+
+                return users
+            } catch (err) {
+                throw new ApolloError(err);
+            }
+        }
     },
     Mutation: {
         createOneUser: async (_, args,) => {
@@ -59,7 +94,7 @@ module.exports = {
 
                 const token = await jwt.sign({
                     user_id: user.id
-                }, 'privateKey', { expiresIn: '5m' })
+                }, 'privateKey', { expiresIn: '1h' })
 
                 return {
                     token

@@ -10,10 +10,19 @@ const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
 
 // makeExecutableSchema
-const { makeExecutableSchema } = require('@graphql-tools/schema')
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+
+// applySchemaMiddleware
+const { applyMiddleware } = require('graphql-middleware');
+
+// authMiddleware
+const authMiddleware = require('./utils/middleware/authMiddleware');
 
 // schema
 const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+// schema with middleware
+const schemaMiddleware = applyMiddleware(schema, authMiddleware)
 
 // mongoose connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
@@ -22,7 +31,7 @@ mongoose.connect(`mongodb://localhost:27017/${dbName}`)
 
 // server
 const server = new ApolloServer({
-    schema,
+    schema: schemaMiddleware,
     context: ({ req }) => {
         return {
             req: req
