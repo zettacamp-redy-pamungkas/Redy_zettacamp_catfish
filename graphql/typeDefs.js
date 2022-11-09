@@ -47,6 +47,7 @@ module.exports = gql`
     type Query {
         ${userQuery}
         getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
+        getOneIngredient(id: ID): Ingredient
     }
 
     type Mutation {

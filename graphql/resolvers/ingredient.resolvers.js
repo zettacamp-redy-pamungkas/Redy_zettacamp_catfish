@@ -31,7 +31,7 @@ module.exports.ingredientQuery = {
                 if (Number.isNaN(page) || page < 0) {
                     page = 0;
                 }
-                
+
                 limit = parseInt(limit || 5);
                 if (Number.isNaN(limit) || limit < 0) {
                     limit = 5
@@ -65,6 +65,15 @@ module.exports.ingredientQuery = {
                 currentDocs: ingredients.length,
                 totalDocs
             }
+        } catch (err) {
+            throw new ApolloError(err);
+        }
+    },
+    getOneIngredient: async(_, {id}) => {
+        try {
+            const ingredient = await IngredientModel.findById(id);
+            if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found.`);
+            return ingredient;
         } catch (err) {
             throw new ApolloError(err);
         }
