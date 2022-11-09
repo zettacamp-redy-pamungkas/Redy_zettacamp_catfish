@@ -53,6 +53,7 @@ module.exports = gql`
     type Mutation {
         ${userMutation}
         createIngredient(name: String, stock: Int, status: Status) : Ingredient
-        updateIngredient(id: ID, stock: Int): Ingredient
+        updateIngredient(id: ID, stock: Int, status: String): Ingredient
+        deleteIngredient(id: ID): Ingredient
     }
 `
