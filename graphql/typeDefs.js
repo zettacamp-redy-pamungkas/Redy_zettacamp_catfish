@@ -1,5 +1,7 @@
 const { gql } = require('apollo-server');
 
+const { userQuery, userMutation } = require('./typeDefs/user.typeDefs')
+
 module.exports = gql`
     type User {
         id: ID!
@@ -35,14 +37,10 @@ module.exports = gql`
     }
 
     type Query {
-        getAllUsers(email: String, last_name: String, first_name: String, page: Int, limit: Int) : Users
-        getOneUser(id: ID, email: String) : User
+        ${userQuery}
     }
 
     type Mutation {
-        createOneUser(email: String, last_name: String, first_name: String, password: String, confirmPassword: String, status: String): User
-        updateUser(id: ID, first_name: String, last_name: String, email: String, password: String, oldPassword: String): User
-        deleteUser(id: ID): User
-        login(email: String, password: String): Login
+        ${userMutation}
     }
 `
