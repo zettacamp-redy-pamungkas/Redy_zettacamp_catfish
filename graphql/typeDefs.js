@@ -10,6 +10,14 @@ module.exports = gql`
         status: Status
     }
 
+    type Users {
+        users: [User]
+        page: Int
+        maxPage: Int
+        currentDocs: Int
+        totalDocs: Int
+    }
+
     type Login {
         token: String
     }
@@ -27,7 +35,7 @@ module.exports = gql`
     }
 
     type Query {
-        getAllUsers(email: String, last_name: String, first_name: String) : [User]
+        getAllUsers(email: String, last_name: String, first_name: String, page: Int, limit: Int) : Users
         getOneUser(id: ID, email: String) : User
     }
 

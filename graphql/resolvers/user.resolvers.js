@@ -19,7 +19,7 @@ const status_code = require('../../utils/status_code');
 
 
 module.exports.userQuery = {
-    getAllUsers: async (_, { email, first_name, last_name }, context) => {
+    getAllUsers: async (_, { email, first_name, last_name, page, limit = 5 }, context) => {
         try {
             const aggregateUsers = [];
             const matchQuery = { $and: [] };
@@ -41,7 +41,30 @@ module.exports.userQuery = {
                 })
             }
 
+            // pagination
+            if (page) {
+                page = parseInt(page) - 1;
+                if (Number.isNaN(page) || page < 0) {
+                    page = 0;
+                }
+
+                limit = parseInt(limit);
+                if (Number.isNaN(limit) || limit < 0) {
+                    limit = 5
+                }
+
+                aggregateUsers.push(
+                    {
+                        $skip: page * limit
+                    },
+                    {
+                        $limit: limit
+                    }
+                )
+            }
+
             let users = await UserModel.find({});
+            let totalDocs = users.length
             if (aggregateUsers.length) {
                 users = await UserModel.aggregate(aggregateUsers);
                 users.map((user) => {
@@ -49,7 +72,13 @@ module.exports.userQuery = {
                 })
             }
 
-            return users
+            return {
+                users,
+                page: page >= 0 ? page + 1 : 1,
+                maxPage: Math.ceil(users.length / limit),
+                currentDocs: users.length,
+                totalDocs
+            }
         } catch (err) {
             throw new ApolloError(err);
         }
