@@ -19,7 +19,7 @@ const status_code = require('../../utils/status_code');
 
 
 module.exports.userQuery = {
-    getAllUsers: async (_, { email, first_name, last_name, page, limit = 5 }, context) => {
+    getAllUsers: async (_, { email, first_name, last_name, page, limit}, context) => {
         try {
             const aggregateUsers = [];
             const matchQuery = { $and: [] };
@@ -48,7 +48,7 @@ module.exports.userQuery = {
                     page = 0;
                 }
 
-                limit = parseInt(limit);
+                limit = parseInt(limit || 5);
                 if (Number.isNaN(limit) || limit < 0) {
                     limit = 5
                 }
@@ -72,10 +72,12 @@ module.exports.userQuery = {
                 })
             }
 
+            console.log(limit)
+
             return {
                 users,
                 page: page >= 0 ? page + 1 : 1,
-                maxPage: Math.ceil(users.length / limit),
+                maxPage: Math.ceil(totalDocs / (limit || users.length)),
                 currentDocs: users.length,
                 totalDocs
             }

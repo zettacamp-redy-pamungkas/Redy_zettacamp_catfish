@@ -31,6 +31,14 @@ module.exports = gql`
         status: Status
     }
 
+    type Ingredients {
+        ingredients: [Ingredient]
+        page: Int
+        maxPage: Int
+        currentDocs: Int
+        totalDocs: Int
+    }
+
     enum Status {
         active
         deleted
@@ -38,6 +46,7 @@ module.exports = gql`
 
     type Query {
         ${userQuery}
+        getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
     }
 
     type Mutation {
