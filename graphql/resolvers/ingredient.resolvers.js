@@ -69,7 +69,7 @@ module.exports.ingredientQuery = {
             throw new ApolloError(err);
         }
     },
-    getOneIngredient: async(_, {id}) => {
+    getOneIngredient: async (_, { id }) => {
         try {
             const ingredient = await IngredientModel.findById(id);
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found.`);
@@ -90,5 +90,14 @@ module.exports.ingredientMutation = {
             throw new ApolloError(err);
         }
 
+    },
+    updateIngredient: async (_, { id, stock }) => {
+        try {
+            const ingredient = await IngredientModel.findByIdAndUpdate(id, { stock: stock }, { runValidators: true });
+            if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
+            return await IngredientModel.findById(id);
+        } catch (err) {
+            throw new ApolloError(err)
+        }
     }
 }
