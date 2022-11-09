@@ -25,9 +25,9 @@ module.exports = gql`
     }
 
     type Ingredient {
-        id: ID!
-        name: String!
-        stock: Int!
+        id: ID
+        name: String
+        stock: Int
         status: Status
     }
 
@@ -39,10 +39,15 @@ module.exports = gql`
         totalDocs: Int
     }
 
+    type IngredientForRecipe {
+        ingredient_id: Ingredient
+        stock_used: Int
+    }
+
     type Recipe {
         id: ID
         recipe_name: String
-        ingredients: [Ingredient]
+        ingredients: [IngredientForRecipe]
         status: Status
     }
 
@@ -68,6 +73,7 @@ module.exports = gql`
         ${userQuery}
         getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
+        getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
     }
 
     type Mutation {

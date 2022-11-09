@@ -24,6 +24,12 @@ const schema = makeExecutableSchema({ typeDefs, resolvers });
 // schema with middleware
 const schemaMiddleware = applyMiddleware(schema, authMiddleware)
 
+// DataLoader
+const DataLoader = require('dataloader');
+
+// ingredient loader
+const ingredientLoader = require('./utils/loaders/ingredient.loader');
+
 // mongoose connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open') })
@@ -34,7 +40,8 @@ const server = new ApolloServer({
     schema: schemaMiddleware,
     context: ({ req }) => {
         return {
-            req: req
+            req,
+            ingredientLoader
         }
     }
 });

@@ -55,6 +55,7 @@ module.exports.ingredientQuery = {
 
             if (aggregateIngredients.length) {
                 ingredients = await IngredientModel.aggregate(aggregateIngredients);
+                if (!ingredients.length) { throw new ApolloError('not found') }
                 ingredients = ingredients.map((ingredient) => {
                     ingredient.id = mongoose.Types.ObjectId(ingredient._id);
                     return ingredient

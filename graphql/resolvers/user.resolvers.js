@@ -67,6 +67,7 @@ module.exports.userQuery = {
             let totalDocs = users.length
             if (aggregateUsers.length) {
                 users = await UserModel.aggregate(aggregateUsers);
+                if (!users.length) { throw new ApolloError('not found') }
                 users.map((user) => {
                     user.id = mongoose.Types.ObjectId(user._id);
                 })
