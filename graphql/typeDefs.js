@@ -42,5 +42,6 @@ module.exports = gql`
 
     type Mutation {
         ${userMutation}
+        createIngredient(name: String, stock: Int, status: Status) : Ingredient
     }
 `
