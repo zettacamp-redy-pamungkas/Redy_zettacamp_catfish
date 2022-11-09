@@ -17,6 +17,9 @@ module.exports.ingredientQuery = {
 
             if (stock) {
                 matchQuery.$and.push({ stock });
+                aggregateIngredients.push({
+                    $match: { stock: { $gt: 0 } }
+                })
             }
 
             if (matchQuery.$and.length) {
@@ -102,7 +105,7 @@ module.exports.ingredientMutation = {
     },
     deleteIngredient: async (_, { id }) => {
         try {
-            const ingredient = await IngredientModel.findByIdAndUpdate(id, { status: 'deleted' }, {new:true, runValidators: true});
+            const ingredient = await IngredientModel.findByIdAndUpdate(id, { status: 'deleted' }, { new: true, runValidators: true });
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
             return ingredient;
         } catch (err) {
