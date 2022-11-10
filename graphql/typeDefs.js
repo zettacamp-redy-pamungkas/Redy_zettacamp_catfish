@@ -59,6 +59,21 @@ module.exports = gql`
         totalDocs: Int
     }
 
+    type Menu {
+        recipe_id: Recipe
+        amount: Int
+        note: String
+    }
+
+    type Transaction {
+        id: ID
+        user_id: User
+        menu: [Menu]
+        order_status: OrderStatus
+        order_date: String
+        status: Status
+    }
+
     input RecipeIngredient {
         ingredient_id: ID
         stock_used: Int
@@ -69,12 +84,18 @@ module.exports = gql`
         deleted
     }
 
+    enum OrderStatus {
+        success,
+        failed
+    }
+
     type Query {
         ${userQuery}
         getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
         getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
+        getAllTransaction: [Transaction]
     }
 
     type Mutation {
