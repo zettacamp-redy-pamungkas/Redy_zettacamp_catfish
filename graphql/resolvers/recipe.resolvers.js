@@ -119,5 +119,16 @@ module.exports.recipeMutation = {
         } catch (error) {
             throw new ApolloError(error)
         }
+    },
+    deleteRecipe: async (_, { id }) => {
+        try {
+            const deletedRecipe = await RecipeModel.findByIdAndUpdate(id, {
+                status: 'deleted'
+            }, { new: true, runValidators: true })
+            if (!deletedRecipe) throw new ApolloError(`Recipe with ID: ${id} not found`);
+            return deletedRecipe;
+        } catch (error) {
+            throw new ApolloError(error);
+        }
     }
 }
