@@ -8,6 +8,22 @@ const IngredientModel = require('../../models/ingredient.model');
 const { ApolloError } = require('apollo-server');
 const { default: mongoose } = require('mongoose');
 
+// function check duplicate
+async function checkIngredient(input) {
+    let arrInputIngredientIds = input.map((el) => el.ingredient_id);
+
+    // check if ingredient not found
+    let ingredients = await IngredientModel.find({});
+    ingredients = ingredients.map((el) => el.id);
+    arrInputIngredientIds.forEach((el) => {
+        if (ingredients.indexOf(el) === -1) throw new ApolloError(`Ingredient with ID: ${el} not found`);
+    });
+
+    // check if ingredient duplicate
+    if (new Set(arrInputIngredientIds).size !== arrInputIngredientIds.length) throw new ApolloError('Ingredient duplicate');
+    return this
+}
+
 module.exports.recipeQuery = {
     getAllRecipe: async (_, { recipe_name, page, limit }) => {
         try {
@@ -82,22 +98,26 @@ module.exports.recipeQuery = {
 module.exports.recipeMutation = {
     createRecipe: async (_, { recipe_name, input }) => {
         try {
-            // check if ingredient not found
-            let ingredients = await IngredientModel.find({});
-            ingredients = ingredients.map((el) => el.id);
-            let inputIngredient = input.map((el) => el.ingredient_id);
-            inputIngredient.forEach((el) => {
-                if (ingredients.indexOf(el) === -1) throw new ApolloError(`Ingredient with ID: ${el} not found`);
-            });
-
-            // check if ingredient duplicate
-            if (new Set(inputIngredient).size !== inputIngredient.length) throw new ApolloError('Ingredient duplicate');
+            checkIngredient(input);
 
             const newRecipe = new RecipeModel({ recipe_name, ingredients: input });
             await newRecipe.save()
             return newRecipe;
         } catch (err) {
             throw new ApolloError(err);
+        }
+    },
+    updateRecipe: async (_, { id, recipe_name, input }) => {
+        try {
+            await checkIngredient(input);
+            const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, {
+                recipe_name,
+                ingredients: input
+            }, { new: true, runValidators: true });
+
+            return updatedRecipe;
+        } catch (error) {
+            throw new ApolloError(error)
         }
     }
 }

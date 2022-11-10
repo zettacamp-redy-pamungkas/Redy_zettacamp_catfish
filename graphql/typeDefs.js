@@ -83,5 +83,6 @@ module.exports = gql`
         updateIngredient(id: ID, stock: Int, status: String): Ingredient
         deleteIngredient(id: ID): Ingredient
         createRecipe(recipe_name: String, input: [RecipeIngredient]): Recipe
+        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient]): Recipe
     }
 `
