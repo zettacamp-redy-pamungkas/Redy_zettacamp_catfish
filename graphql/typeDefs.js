@@ -74,6 +74,7 @@ module.exports = gql`
         getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
         getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
+        getOneRecipe(id: ID): Recipe
     }
 
     type Mutation {

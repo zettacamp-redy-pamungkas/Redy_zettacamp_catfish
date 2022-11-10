@@ -22,8 +22,6 @@ module.exports.recipeQuery = {
                 })
             }
 
-            console.log(aggregateQuery, aggregateQuery.length)
-
             // pagination
             if (page) {
                 page = parseInt(page) - 1;
@@ -50,17 +48,14 @@ module.exports.recipeQuery = {
 
             if (aggregateQuery.length) {
                 recipes = await RecipeModel.aggregate(aggregateQuery);
-                console.log(recipes, recipes.length);
-                if (!recipes.length) { 
-                    console.log('Hello')
-                    throw new ApolloError(`Recipe name: ${recipe_name} not found`) }
+                if (!recipes.length) {
+                    throw new ApolloError(`Recipe name: ${recipe_name} not found`)
+                }
                 recipes = recipes.map((resep) => {
                     resep.id = mongoose.Types.ObjectId(resep._id);
                     return resep
                 })
             }
-
-            console.log(recipes);
 
             return {
                 recipes,
@@ -72,14 +67,33 @@ module.exports.recipeQuery = {
         } catch (err) {
             throw new ApolloError(err);
         }
+    },
+    getOneRecipe: async (_, { id }) => {
+        try {
+            const recipe = await RecipeModel.findById(id);
+            if (!recipe) throw new ApolloError(`Recipe With ID: ${id} not found.`);
+            return recipe;
+        } catch (err) {
+            throw new ApolloError(err)
+        }
     }
 }
 
 module.exports.recipeMutation = {
     createRecipe: async (_, { recipe_name, input }) => {
         try {
+            // check if ingredient not found
+            let ingredients = await IngredientModel.find({});
+            ingredients = ingredients.map((el) => el.id);
+            let inputIngredient = input.map((el) => el.ingredient_id);
+            inputIngredient.forEach((el) => {
+                if (ingredients.indexOf(el) === -1) throw new ApolloError(`Ingredient with ID: ${el} not found`);
+            });
+
+            // check if ingredient duplicate
+            if (new Set(inputIngredient).size !== inputIngredient.length) throw new ApolloError('Ingredient duplicate');
+
             const newRecipe = new RecipeModel({ recipe_name, ingredients: input });
-            console.log(newRecipe);
             await newRecipe.save()
             return newRecipe;
         } catch (err) {
