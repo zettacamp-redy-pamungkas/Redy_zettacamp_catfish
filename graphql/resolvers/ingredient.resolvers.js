@@ -15,11 +15,8 @@ module.exports.ingredientQuery = {
                 matchQuery.$and.push({ name: new RegExp(name, "i") });
             }
 
-            if (stock) {
+            if (stock >= 0) {
                 matchQuery.$and.push({ stock });
-                aggregateIngredients.push({
-                    $match: { stock: { $gt: 0 } }
-                })
             }
 
             if (matchQuery.$and.length) {
@@ -60,6 +57,7 @@ module.exports.ingredientQuery = {
                     ingredient.id = mongoose.Types.ObjectId(ingredient._id);
                     return ingredient
                 })
+                ingredients = ingredients.filter((el) => el.stock > 0)
             }
 
             return {
