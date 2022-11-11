@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// moment
+const moment = require('moment');
+
 // transaction model
 const transactionSchema = new Schema({
     user_id: {
@@ -28,15 +31,17 @@ const transactionSchema = new Schema({
     ],
     order_status: {
         type: String,
-        enum: ['success', 'failed']
+        enum: ['success', 'failed'],
+        default: 'success'
     },
     order_date: {
-        type: Date,
-        default: new Date
+        type: String,
+        default: moment(new Date()).locale('id-ID').format('LL')
     },
     status: {
         type: String,
-        enum: ['active', 'deleted']
+        enum: ['active', 'deleted'],
+        default: 'active'
     }
 });
 

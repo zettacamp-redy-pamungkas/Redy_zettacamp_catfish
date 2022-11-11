@@ -21,6 +21,7 @@ const status_code = require('../../utils/status_code');
 module.exports.userQuery = {
     getAllUsers: async (_, { email, first_name, last_name, page, limit}, context) => {
         try {
+            console.log(context.req.user_id)
             const aggregateUsers = [];
             const matchQuery = { $and: [] };
             if (email) {
@@ -72,8 +73,6 @@ module.exports.userQuery = {
                     user.id = mongoose.Types.ObjectId(user._id);
                 })
             }
-
-            console.log(limit)
 
             return {
                 users,
@@ -201,7 +200,7 @@ module.exports.userMutation = {
 
             const token = await jwt.sign({
                 user_id: user.id
-            }, 'privateKey', { expiresIn: '1h' })
+            }, 'privateKey', { expiresIn: '1d' })
 
             return {
                 token

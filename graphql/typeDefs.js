@@ -79,6 +79,12 @@ module.exports = gql`
         stock_used: Int
     }
 
+    input MenuInput {
+        recipe_id: ID
+        amount: Int
+        note: String
+    }
+
     enum Status {
         active
         deleted
@@ -95,7 +101,7 @@ module.exports = gql`
         getOneIngredient(id: ID): Ingredient
         getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
-        getAllTransaction: [Transaction]
+        getAllTransaction(last_name: String, recipe_name: String, order_date: String): [Transaction]
     }
 
     type Mutation {
@@ -106,5 +112,6 @@ module.exports = gql`
         createRecipe(recipe_name: String, input: [RecipeIngredient]): Recipe
         updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient]): Recipe
         deleteRecipe(id: ID): Recipe
+        createTransaction(user_id: String, menu:[MenuInput]): Transaction
     }
 `

@@ -30,6 +30,12 @@ const DataLoader = require('dataloader');
 // ingredient loader
 const ingredientLoader = require('./utils/loaders/ingredient.loader');
 
+// recipe loader
+const recipeLoader = require('./utils/loaders/menu.recipe_id.loader');
+
+// user loader
+const userLoader = require('./utils/loaders/transaction.user_id.loader');
+
 // mongoose connect
 mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open') })
@@ -41,7 +47,9 @@ const server = new ApolloServer({
     context: ({ req }) => {
         return {
             req,
-            ingredientLoader
+            ingredientLoader,
+            recipeLoader,
+            userLoader
         }
     }
 });

@@ -32,5 +32,6 @@ module.exports = {
     Mutation: {
         updateUser: authMiddleware,
         deleteUser: authMiddleware,
+        createTransaction: authMiddleware,
     }
 }
