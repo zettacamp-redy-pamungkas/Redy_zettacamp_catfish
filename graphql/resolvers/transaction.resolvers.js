@@ -7,6 +7,9 @@ const UserModel = require('../../models/user.model');
 // Recipe Model
 const RecipeModel = require('../../models/recipes.model');
 
+// Ingredient Model
+const IngredientModel = require('../../models/ingredient.model');
+
 // Apollo Error
 const { ApolloError } = require('apollo-server');
 const { default: mongoose } = require('mongoose');
@@ -16,6 +19,15 @@ const moment = require('moment');
 
 // set locale to ID - Indonesia
 moment.locale('id-ID');
+
+// reduce stock
+async function ReduceIngredient(arrIngredient) {
+    for (let ingredient of arrIngredient) {
+        // console.log(ingredient)
+        await IngredientModel.findByIdAndUpdate(ingredient.ingredient_id, { stock: ingredient.stock });
+    }
+}
+
 
 // validate stock ingredient
 async function validateStockIngredient(user_id, menu) {
@@ -28,13 +40,20 @@ async function validateStockIngredient(user_id, menu) {
             }
         });
 
+        const ingredientMap = []
         for (let el of transaction.menu) {
             const amount = el.amount;
             for (let ingredient of el.recipe_id.ingredients) {
+                ingredientMap.push({
+                    ingredient_id: ingredient.ingredient_id._id,
+                    stock: ingredient.ingredient_id.stock - (ingredient.stock_used * amount),
+                })
+                // ingredientMap[ingredient.ingredient_id._id] = ingredient.ingredient_id.stock - (ingredient.stock_used * amount)
                 if (ingredient.ingredient_id.stock < (ingredient.stock_used * amount)) return new TransactionModel({ user_id, menu, order_status: 'failed' });
             }
         }
 
+        ReduceIngredient(ingredientMap);
         return new TransactionModel({ user_id, menu });
     } catch (err) {
         throw new ApolloError(err)
@@ -105,7 +124,8 @@ async function createTransaction(parent, { menu }, context) {
         if (!user) throw new ApolloError(`User with ID: ${user_id} not found`);
 
         const newTransaction = await validateStockIngredient(user_id, menu)
-        // console.log(newTransaction);
+
+        await newTransaction.save();
 
         return newTransaction;
     } catch (err) {
