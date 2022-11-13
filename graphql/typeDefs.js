@@ -74,6 +74,14 @@ module.exports = gql`
         status: Status
     }
 
+    type Transactions {
+        transactions: [Transaction]
+        page: Int
+        maxPage: Int
+        currentDocs: Int
+        totalDocs: Int
+    }
+
     input RecipeIngredient {
         ingredient_id: ID
         stock_used: Int
@@ -101,7 +109,8 @@ module.exports = gql`
         getOneIngredient(id: ID): Ingredient
         getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
-        getAllTransaction(last_name: String, recipe_name: String, order_date: String): [Transaction]
+        getAllTransaction(last_name: String, recipe_name: String, order_date: String): Transactions
+        getOneTransaction(id: ID): Transaction
     }
 
     type Mutation {
@@ -113,5 +122,6 @@ module.exports = gql`
         updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient]): Recipe
         deleteRecipe(id: ID): Recipe
         createTransaction(user_id: String, menu:[MenuInput]): Transaction
+        deleteTransaction(id: ID): Transaction
     }
 `

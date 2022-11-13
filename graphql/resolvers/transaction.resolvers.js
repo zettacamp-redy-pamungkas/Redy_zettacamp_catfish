@@ -60,7 +60,7 @@ async function validateStockIngredient(user_id, menu) {
     }
 }
 
-async function getAllTransaction(parent, { last_name, recipe_name, order_date }) {
+async function getAllTransaction(parent, { last_name, recipe_name, order_date, page, limit }) {
     try {
         const aggregateQuery = [];
         const matchQuery = { $and: [] };
@@ -98,7 +98,31 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date })
                 $match: matchQuery
             })
         }
+
+        // pagination
+        if (page) {
+            page = parseInt(page) - 1;
+            if (Number.isNaN(page) || page < 0) {
+                page = 0;
+            }
+
+            limit = parseInt(limit || 5);
+            if (Number.isNaN(limit) || limit < 0) {
+                limit = 5
+            }
+
+            aggregateQuery.push(
+                {
+                    $skip: page * limit
+                },
+                {
+                    $limit: limit
+                }
+            )
+        }
+
         let transactions = await TransactionModel.find({});
+        let totalDocs = transactions.length;
 
         if (aggregateQuery.length) {
             transactions = await TransactionModel.aggregate(aggregateQuery);
@@ -110,9 +134,26 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date })
 
         if (!transactions.length) throw new ApolloError('Transaction not found');
 
-        return transactions;
+        return {
+            transactions,
+            page: page >= 0 ? page + 1 : 1,
+            maxPage: Math.ceil(totalDocs / (limit || transactions.length)),
+            currentDocs: transactions.length,
+            totalDocs
+        };
     } catch (error) {
         throw new ApolloError(error);
+    }
+}
+
+// Get One Transaction by id
+async function getOneTransaction(parent, { id }) {
+    try {
+        const transaction = await TransactionModel.findById(id);
+        if (!transaction) throw new ApolloError(`Transaction with ID: ${id} not found`);
+        return transaction;
+    } catch (err) {
+        throw new ApolloError(err);
     }
 }
 
@@ -133,10 +174,27 @@ async function createTransaction(parent, { menu }, context) {
     }
 }
 
+// Delete transaction
+async function deleteTransaction(parent, { id }) {
+    try {
+        const transaction = await TransactionModel.findByIdAndUpdate(id,
+            { status: 'deleted' },
+            { new: true, runValidators: true }
+        );
+
+        if (!transaction) throw new ApolloError(`transaction with id: ${id} not found.`)
+        return transaction;
+    } catch (error) {
+        throw new ApolloError(error);
+    }
+}
+
 module.exports.transactionQuery = {
-    getAllTransaction
+    getAllTransaction,
+    getOneTransaction,
 }
 
 module.exports.transactionMutation = {
-    createTransaction
+    createTransaction,
+    deleteTransaction,
 }

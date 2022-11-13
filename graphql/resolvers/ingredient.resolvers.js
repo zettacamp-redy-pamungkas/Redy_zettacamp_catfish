@@ -8,6 +8,7 @@ const { default: mongoose } = require('mongoose');
 module.exports.ingredientQuery = {
     getAllIngredient: async (_, { name, stock, page, limit }) => {
         try {
+            const tick = Date.now();
             const aggregateIngredients = [];
             const matchQuery = { $and: [] };
 
@@ -59,7 +60,8 @@ module.exports.ingredientQuery = {
                 })
                 ingredients = ingredients.filter((el) => el.stock > 0)
             }
-
+            
+            console.log(`Time: ${Date.now() - tick} ms`)
             return {
                 ingredients,
                 page: page >= 0 ? page + 1 : 1,
