@@ -188,7 +188,7 @@ module.exports.userMutation = {
         try {
             const user = await UserModel.findOne({ email });
 
-            if (!user) {
+            if (!user || user.status === "deleted") {
                 throw new ApolloError('User not found');
             }
 

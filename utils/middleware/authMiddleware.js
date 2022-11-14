@@ -27,11 +27,24 @@ async function authMiddleware(resolve, parent, args, context, info) {
 module.exports = {
     Query: {
         getAllUsers: authMiddleware,
-        getOneUser: authMiddleware
+        getOneUser: authMiddleware,
+        getAllIngredient: authMiddleware,
+        getOneIngredient: authMiddleware,
+        getAllRecipe: authMiddleware,
+        getOneRecipe: authMiddleware,
+        getOneTransaction: authMiddleware,
+
     },
     Mutation: {
         updateUser: authMiddleware,
         deleteUser: authMiddleware,
         createTransaction: authMiddleware,
+        deleteTransaction: authMiddleware,
+        createIngredient: authMiddleware,
+        updateIngredient: authMiddleware,
+        deleteIngredient: authMiddleware,
+        createRecipe: authMiddleware,
+        updateRecipe: authMiddleware,
+        deleteRecipe: authMiddleware,
     }
 }

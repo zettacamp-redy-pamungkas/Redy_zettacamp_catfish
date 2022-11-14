@@ -42,18 +42,19 @@ async function validateStockIngredient(user_id, menu) {
 
         const ingredientMap = []
         for (let el of transaction.menu) {
+            if (el.recipe_id.status === 'deleted') throw new ApolloError(`Recipe: ${el.recipe_id.recipe_name} has been deleted`);
             const amount = el.amount;
             for (let ingredient of el.recipe_id.ingredients) {
                 ingredientMap.push({
                     ingredient_id: ingredient.ingredient_id._id,
                     stock: ingredient.ingredient_id.stock - (ingredient.stock_used * amount),
                 })
-                // ingredientMap[ingredient.ingredient_id._id] = ingredient.ingredient_id.stock - (ingredient.stock_used * amount)
+                if (ingredient.ingredient_id.status === "deleted") throw new ApolloError('Ingredient has been deleted');
                 if (ingredient.ingredient_id.stock < (ingredient.stock_used * amount)) return new TransactionModel({ user_id, menu, order_status: 'failed' });
             }
         }
 
-        ReduceIngredient(ingredientMap);
+        // ReduceIngredient(ingredientMap);
         return new TransactionModel({ user_id, menu });
     } catch (err) {
         throw new ApolloError(err)
@@ -166,7 +167,7 @@ async function createTransaction(parent, { menu }, context) {
 
         const newTransaction = await validateStockIngredient(user_id, menu)
 
-        await newTransaction.save();
+        // await newTransaction.save();
 
         return newTransaction;
     } catch (err) {
