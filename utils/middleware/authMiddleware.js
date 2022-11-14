@@ -19,6 +19,7 @@ async function authMiddleware(resolve, parent, args, context, info) {
             throw new ApolloError(err, status_code[401]);
         }
         context.req.user_id = decoded.user_id;
+        context.req.user_role = decoded.user_role;
     });
 
     return resolve(parent, args, context, info);

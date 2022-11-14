@@ -199,7 +199,8 @@ module.exports.userMutation = {
             }
 
             const token = await jwt.sign({
-                user_id: user.id
+                user_id: user.id,
+                user_role: user.role,
             }, 'privateKey', { expiresIn: '1d' })
 
             return {

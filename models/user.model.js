@@ -29,6 +29,7 @@ const userSchema = new Schema({
         required: true,
         minLength: 5
     },
+    role: { type: String, enum: ['admin', 'user'], default: "user" },
     status: {
         type: String,
         enum: ['active', 'deleted'],

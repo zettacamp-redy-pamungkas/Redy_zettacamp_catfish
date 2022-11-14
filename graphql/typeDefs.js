@@ -10,6 +10,7 @@ module.exports = gql`
         first_name: String!
         last_name: String!
         status: Status
+        role: String
     }
 
     type Users {

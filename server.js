@@ -18,11 +18,14 @@ const { applyMiddleware } = require('graphql-middleware');
 // authMiddleware
 const authMiddleware = require('./utils/middleware/authMiddleware');
 
+// authorizationMiddleware
+const authorizationMiddleware = require('./utils/middleware/authorizationMiddleware');
+
 // schema
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 // schema with middleware
-const schemaMiddleware = applyMiddleware(schema, authMiddleware)
+const schemaMiddleware = applyMiddleware(schema, authMiddleware, authorizationMiddleware)
 
 // DataLoader
 const DataLoader = require('dataloader');
