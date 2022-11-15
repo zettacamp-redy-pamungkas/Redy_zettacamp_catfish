@@ -23,6 +23,7 @@ module.exports = gql`
 
     type Login {
         token: String
+        user: User
     }
 
     type Ingredient {

@@ -54,7 +54,7 @@ async function validateStockIngredient(user_id, menu) {
             }
         }
 
-        // ReduceIngredient(ingredientMap);
+        ReduceIngredient(ingredientMap);
         return new TransactionModel({ user_id, menu });
     } catch (err) {
         throw new ApolloError(err)
@@ -167,7 +167,7 @@ async function createTransaction(parent, { menu }, context) {
 
         const newTransaction = await validateStockIngredient(user_id, menu)
 
-        // await newTransaction.save();
+        await newTransaction.save();
 
         return newTransaction;
     } catch (err) {

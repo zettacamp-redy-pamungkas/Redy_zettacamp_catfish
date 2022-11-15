@@ -204,7 +204,9 @@ module.exports.userMutation = {
             }, 'privateKey', { expiresIn: '1d' })
 
             return {
-                token
+                token,
+                user_id: user.id,
+                role: user.role
             }
 
             // 

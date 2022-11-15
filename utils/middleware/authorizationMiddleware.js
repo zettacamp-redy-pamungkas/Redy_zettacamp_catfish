@@ -3,7 +3,7 @@ const { ApolloError } = require('apollo-server');
 
 function authorizationMiddleware(resolvers, parent, args, context, info) {
     console.log(context.req.user_role)
-    if (context.req.user_role !== "admin") throw new ApolloError('Forbidden');
+    if (context.req.user_role !== "admin") throw new ApolloError('Forbidden', "403");
     return resolvers(parent, args, context, info)
 }
 
