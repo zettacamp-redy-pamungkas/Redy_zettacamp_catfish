@@ -10,6 +10,9 @@ const { recipeQuery, recipeMutation, Recipe } = require('../graphql/resolvers/re
 // RecipeForIngredient
 const { IngredientForRecipe } = require('./resolvers/ingredientForRecipe.resolvers');
 
+// Recipe available
+const { recipe_available } = require('../graphql/resolvers/recipe.available.resolvers');
+
 //  Menu -> recipe_id
 const { recipe_id } = require('./resolvers/menu.ingredient_id.resolvers');
 
@@ -40,5 +43,8 @@ module.exports = {
     },
     Transaction: {
         ...user_id
-    }
+    },
+    Recipe: {
+        ...recipe_available
+    },
 }

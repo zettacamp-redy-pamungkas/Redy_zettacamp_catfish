@@ -50,6 +50,8 @@ module.exports = gql`
         id: ID
         recipe_name: String
         ingredients: [IngredientForRecipe]
+        price: Int
+        available: Int
         status: Status
     }
 
