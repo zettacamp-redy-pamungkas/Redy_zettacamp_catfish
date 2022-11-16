@@ -22,7 +22,7 @@ const ingredientSchema = new Schema({
         enum: ['active', 'deleted'],
         default: 'active'
     }
-});
+}, {timestamps: true});
 
 // ingredient model
 module.exports = mongoose.model('Ingredient', ingredientSchema);

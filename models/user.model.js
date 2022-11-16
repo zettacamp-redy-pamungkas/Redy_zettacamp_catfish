@@ -29,7 +29,20 @@ const userSchema = new Schema({
         required: true,
         minLength: 5
     },
-    role: { type: String, enum: ['admin', 'user'], default: "user" },
+    role: {
+        _id: false,
+        user_type: { type: String, minlength: 3, trim: true, required: true, default: 'user' },
+        view_permission: [
+            {
+                _id: false,
+                name: { type: String, minlength: 3, required: true, trim: true },
+                access: Boolean
+            }
+        ]
+    },
+    // cart: [
+    //     {}
+    // ],
     status: {
         type: String,
         enum: ['active', 'deleted'],

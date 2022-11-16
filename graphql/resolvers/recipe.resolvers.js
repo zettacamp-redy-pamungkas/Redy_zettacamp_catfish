@@ -38,14 +38,18 @@ module.exports.recipeQuery = {
                 })
             }
 
+
+            let recipes = await RecipeModel.find({}).sort({ createdAt: -1 });
+            const totalDocs = recipes.length;
+
             // pagination
-            if (page) {
+            if (page >= 0) {
                 page = parseInt(page) - 1;
                 if (Number.isNaN(page) || page < 0) {
                     page = 0;
                 }
 
-                limit = parseInt(limit || 5);
+                limit = parseInt(limit || totalDocs);
                 if (Number.isNaN(limit) || limit < 0) {
                     limit = 5
                 }
@@ -59,8 +63,6 @@ module.exports.recipeQuery = {
                     }
                 )
             }
-            let recipes = await RecipeModel.find({});
-            const totalDocs = recipes.length;
 
             if (aggregateQuery.length) {
                 recipes = await RecipeModel.aggregate(aggregateQuery);

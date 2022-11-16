@@ -3,6 +3,17 @@ const { gql } = require('apollo-server');
 const { userQuery, userMutation } = require('./typeDefs/user.typeDefs')
 
 module.exports = gql`
+    
+    type ViewPermission {
+        name: String
+        access: Boolean
+    }
+
+    type UserType {
+        user_type: String
+        view_permission: [ViewPermission]
+    }
+
     type User {
         id: ID!
         email: String!
@@ -10,7 +21,7 @@ module.exports = gql`
         first_name: String!
         last_name: String!
         status: Status
-        role: String
+        role: UserType
     }
 
     type Users {
@@ -21,9 +32,17 @@ module.exports = gql`
         totalDocs: Int
     }
 
+    type UserLogin {
+        user_id: ID
+        email: String,
+        first_name: String
+        last_name: String
+        role: UserType
+    }
+
     type Login {
         token: String
-        user: User
+        user: UserLogin
     }
 
     type Ingredient {
@@ -51,6 +70,7 @@ module.exports = gql`
         recipe_name: String
         ingredients: [IngredientForRecipe]
         price: Int
+        imgUrl: String
         available: Int
         status: Status
     }
@@ -73,6 +93,7 @@ module.exports = gql`
         id: ID
         user_id: User
         menu: [Menu]
+        total_price: Int
         order_status: OrderStatus
         order_date: String
         status: Status
@@ -84,6 +105,20 @@ module.exports = gql`
         maxPage: Int
         currentDocs: Int
         totalDocs: Int
+    }
+
+    input Pagination {
+        page: Int
+        limit: Int
+    }
+
+    input FilterIngredient {
+        name: String
+        stock: Int
+    }
+
+    input FilterRecipe {
+        name: String
     }
 
     input RecipeIngredient {
@@ -120,9 +155,9 @@ module.exports = gql`
     type Mutation {
         ${userMutation}
         createIngredient(name: String, stock: Int, status: Status) : Ingredient
-        updateIngredient(id: ID, stock: Int, status: String): Ingredient
+        updateIngredient(id: ID, name: String, stock: Int, status: String): Ingredient
         deleteIngredient(id: ID): Ingredient
-        createRecipe(recipe_name: String, input: [RecipeIngredient]): Recipe
+        createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String): Recipe
         updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient]): Recipe
         deleteRecipe(id: ID): Recipe
         createTransaction(user_id: String, menu:[MenuInput]): Transaction

@@ -19,7 +19,7 @@ const status_code = require('../../utils/status_code');
 
 
 module.exports.userQuery = {
-    getAllUsers: async (_, { email, first_name, last_name, page, limit}, context) => {
+    getAllUsers: async (_, { email, first_name, last_name, page, limit }, context) => {
         try {
             console.log(context.req.user_id)
             const aggregateUsers = [];
@@ -173,6 +173,9 @@ module.exports.userMutation = {
             throw new ApolloError(err)
         }
     },
+    // createCart: async (_, { recipe_id, amount }, { user_id }) => {
+        
+    // },
     deleteUser: async (_, { id, status = 'deleted' }) => {
         try {
             const user = await UserModel.findByIdAndUpdate(id, { status: status }, { runValidators: true });
@@ -188,6 +191,8 @@ module.exports.userMutation = {
         try {
             const user = await UserModel.findOne({ email });
 
+            // console.log(user.role)
+
             if (!user || user.status === "deleted") {
                 throw new ApolloError('User not found');
             }
@@ -200,13 +205,18 @@ module.exports.userMutation = {
 
             const token = await jwt.sign({
                 user_id: user.id,
-                user_role: user.role,
+                user_role: user.role
             }, 'privateKey', { expiresIn: '1d' })
 
             return {
                 token,
-                user_id: user.id,
-                role: user.role
+                user: {
+                    user_id: user.id,
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    role: user.role
+                }
             }
 
             // 

@@ -8,7 +8,10 @@ const jwt = require('jsonwebtoken');
 const status_code = require('../status_code');
 
 async function authMiddleware(resolve, parent, args, context, info) {
-    const token = context.req.headers.authorization || '';
+    let token = context.req.headers.authorization || '';
+    token = token.replace('Bearer ', "");
+
+    console.log("auth middleware token:", token);
 
     if (!token) {
         throw new ApolloError('You are not Authorize.', status_code[401]);
@@ -18,6 +21,7 @@ async function authMiddleware(resolve, parent, args, context, info) {
         if (err) {
             throw new ApolloError(err, status_code[401]);
         }
+        console.log("auth middleware", decoded)
         context.req.user_id = decoded.user_id;
         context.req.user_role = decoded.user_role;
     });

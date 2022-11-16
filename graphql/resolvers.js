@@ -45,6 +45,7 @@ module.exports = {
         ...user_id
     },
     Recipe: {
-        ...recipe_available
+        ...recipe_available,
+        // available: async ({ingredients}) => { const ingredient = await IngredientModel.findById(ingre)}
     },
 }

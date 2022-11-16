@@ -1,9 +1,20 @@
 // Ingredient model
 const IngredientModel = require('../../models/ingredient.model');
 
+// Recipe Model
+const RecipeModel = require('../../models/recipes.model');
+
 // Apollo Error
 const { ApolloError } = require('apollo-server');
 const { default: mongoose } = require('mongoose');
+
+// Check if ingredient is used by recipe
+async function findIngredientInRecipe(id) {
+    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } } });
+    recipes = recipes.map((recipe) => recipe.recipe_name);
+    if (!recipes.length) return true;
+    throw new ApolloError(`This ingredient cannot been deleted because has been used in Recipe: ${recipes.toString()}`);
+}
 
 module.exports.ingredientQuery = {
     getAllIngredient: async (_, { name, stock, page, limit }) => {
@@ -27,16 +38,18 @@ module.exports.ingredientQuery = {
             }
 
             // pagination
-            if (page) {
+            if (page >= 0) {
                 page = parseInt(page) - 1;
                 if (Number.isNaN(page) || page < 0) {
                     page = 0;
                 }
 
-                limit = parseInt(limit || 5);
+                limit = parseInt(limit || 10);
                 if (Number.isNaN(limit) || limit < 0) {
-                    limit = 5
+                    limit = 10
                 }
+
+                console.log(limit)
 
                 aggregateIngredients.push(
                     {
@@ -48,19 +61,22 @@ module.exports.ingredientQuery = {
                 )
             }
 
-            let ingredients = await IngredientModel.find({});
+            let ingredients = await IngredientModel.find({}).sort({ createdAt: -1 });
             const totalDocs = ingredients.length;
 
             if (aggregateIngredients.length) {
+                aggregateIngredients.push({ $sort: { createdAt: -1 } })
                 ingredients = await IngredientModel.aggregate(aggregateIngredients);
                 if (!ingredients.length) { throw new ApolloError('not found') }
                 ingredients = ingredients.map((ingredient) => {
                     ingredient.id = mongoose.Types.ObjectId(ingredient._id);
                     return ingredient
                 })
-                ingredients = ingredients.filter((el) => el.stock > 0)
+                if (stock) {
+                    ingredients = ingredients.filter((el) => el.stock > 0)
+                }
             }
-            
+
             console.log(`Time: ${Date.now() - tick} ms`)
             return {
                 ingredients,
@@ -95,9 +111,9 @@ module.exports.ingredientMutation = {
         }
 
     },
-    updateIngredient: async (_, { id, stock, status }) => {
+    updateIngredient: async (_, { id, name, stock, status }) => {
         try {
-            const ingredient = await IngredientModel.findByIdAndUpdate(id, { stock: stock, status: status }, { runValidators: true });
+            const ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { runValidators: true });
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
             return await IngredientModel.findById(id);
         } catch (err) {
@@ -106,10 +122,13 @@ module.exports.ingredientMutation = {
     },
     deleteIngredient: async (_, { id }) => {
         try {
+            console.log("Delete Ingredient: ", id)
+            await findIngredientInRecipe(id);
             const ingredient = await IngredientModel.findByIdAndUpdate(id, { status: 'deleted' }, { new: true, runValidators: true });
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
             return ingredient;
         } catch (err) {
+            console.log("Delete Ingredient: ", id)
             throw new ApolloError(err);
         }
     }

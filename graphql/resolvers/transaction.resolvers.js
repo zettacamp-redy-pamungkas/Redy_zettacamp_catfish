@@ -40,7 +40,8 @@ async function validateStockIngredient(user_id, menu) {
             }
         });
 
-        const ingredientMap = []
+        const ingredientMap = [];
+        let total_price = 0;
         for (let el of transaction.menu) {
             if (el.recipe_id.status === 'deleted') throw new ApolloError(`Recipe: ${el.recipe_id.recipe_name} has been deleted`);
             const amount = el.amount;
@@ -52,10 +53,11 @@ async function validateStockIngredient(user_id, menu) {
                 if (ingredient.ingredient_id.status === "deleted") throw new ApolloError('Ingredient has been deleted');
                 if (ingredient.ingredient_id.stock < (ingredient.stock_used * amount)) return new TransactionModel({ user_id, menu, order_status: 'failed' });
             }
+            total_price += el.recipe_id.price * amount;
         }
 
         ReduceIngredient(ingredientMap);
-        return new TransactionModel({ user_id, menu });
+        return new TransactionModel({ user_id, menu, total_price });
     } catch (err) {
         throw new ApolloError(err)
     }
