@@ -16,10 +16,10 @@ mongoose.connect(`mongodb://localhost:27017/${dbName}`)
 // insertOneUser
 async function insertOneUser() {
     const newUser = new UserModel({
-        first_name: "Tegar",
-        last_name: "Pangestu",
-        password: bcrypt.hashSync("tegar123", 10),
-        email: "tegar@gmail.com",
+        first_name: "Redy",
+        last_name: "Pamungkas",
+        password: bcrypt.hashSync("redy123", 10),
+        email: "redy@mail.com",
         role: { user_type: "user", view_permission: [{ name: "menu_management", access: false }, { name: "stock_management", access: false }] }
     })
 

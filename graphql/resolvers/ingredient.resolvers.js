@@ -21,6 +21,7 @@ module.exports.ingredientQuery = {
         try {
             const tick = Date.now();
             const aggregateIngredients = [];
+            aggregateIngredients.push({ $sort: { createdAt: -1 } }, { $match: { status: 'active' } });
             const matchQuery = { $and: [] };
 
             if (name) {
@@ -49,8 +50,6 @@ module.exports.ingredientQuery = {
                     limit = 10
                 }
 
-                console.log(limit)
-
                 aggregateIngredients.push(
                     {
                         $skip: page * limit
@@ -61,12 +60,12 @@ module.exports.ingredientQuery = {
                 )
             }
 
-            let ingredients = await IngredientModel.find({}).sort({ createdAt: -1 });
+            let ingredients = await IngredientModel.find({ status: 'active' }).sort({ createdAt: -1 });
             const totalDocs = ingredients.length;
 
             if (aggregateIngredients.length) {
-                aggregateIngredients.push({ $sort: { createdAt: -1 } })
                 ingredients = await IngredientModel.aggregate(aggregateIngredients);
+                // console.log(aggregateIngredients);
                 if (!ingredients.length) { throw new ApolloError('not found') }
                 ingredients = ingredients.map((ingredient) => {
                     ingredient.id = mongoose.Types.ObjectId(ingredient._id);
@@ -77,7 +76,7 @@ module.exports.ingredientQuery = {
                 }
             }
 
-            console.log(`Time: ${Date.now() - tick} ms`)
+            console.log(`Get All Ingredient Time: ${Date.now() - tick} ms`)
             return {
                 ingredients,
                 page: page >= 0 ? page + 1 : 1,
@@ -113,8 +112,12 @@ module.exports.ingredientMutation = {
     },
     updateIngredient: async (_, { id, name, stock, status }) => {
         try {
-            const ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { runValidators: true });
+            if (status === 'deleted') {
+                await findIngredientInRecipe(id);
+            }
+            const ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
+            console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);
             return await IngredientModel.findById(id);
         } catch (err) {
             throw new ApolloError(err);

@@ -49,6 +49,7 @@ module.exports = gql`
         id: ID
         name: String
         stock: Int
+        isUsed: Boolean
         status: Status
     }
 
@@ -69,6 +70,7 @@ module.exports = gql`
         id: ID
         recipe_name: String
         ingredients: [IngredientForRecipe]
+        totalLength: Int
         price: Int
         imgUrl: String
         available: Int
@@ -84,9 +86,19 @@ module.exports = gql`
     }
 
     type Menu {
+        id: ID
         recipe_id: Recipe
         amount: Int
+        total_price: Int
         note: String
+    }
+
+    type UserCart {
+        _id: ID,
+        user_id: ID,
+        cart: [Menu],
+        total_price: Int
+        status: Status
     }
 
     type Transaction {
@@ -135,6 +147,8 @@ module.exports = gql`
     enum Status {
         active
         deleted
+        publish
+        pending
     }
 
     enum OrderStatus {
@@ -146,10 +160,11 @@ module.exports = gql`
         ${userQuery}
         getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
-        getAllRecipe(recipe_name: String, page: Int, limit: Int): Recipes
+        getAllRecipe(recipe_name: String, status: String, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
         getAllTransaction(last_name: String, recipe_name: String, order_date: String): Transactions
         getOneTransaction(id: ID): Transaction
+        getAllCart: [UserCart]
     }
 
     type Mutation {
@@ -157,10 +172,14 @@ module.exports = gql`
         createIngredient(name: String, stock: Int, status: Status) : Ingredient
         updateIngredient(id: ID, name: String, stock: Int, status: String): Ingredient
         deleteIngredient(id: ID): Ingredient
-        createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String): Recipe
-        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient]): Recipe
+        createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String, price: Int): Recipe
+        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient], status: String, imgUrl: String, price: Int): Recipe
         deleteRecipe(id: ID): Recipe
         createTransaction(user_id: String, menu:[MenuInput]): Transaction
         deleteTransaction(id: ID): Transaction
+        addCart(user_id: ID, cart: [MenuInput]): UserCart
+        removeMenu(user_id: ID, item_id: ID): UserCart
+        updateCart(user_id: ID, item_id: ID, amount: String, note: String): UserCart,
+        deleteCart: UserCart
     }
 `

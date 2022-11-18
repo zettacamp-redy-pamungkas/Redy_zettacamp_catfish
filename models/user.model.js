@@ -40,9 +40,29 @@ const userSchema = new Schema({
             }
         ]
     },
-    // cart: [
-    //     {}
-    // ],
+    cart: [
+        {
+            _id: false,
+            recipe_id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            amount: {
+                type: Number,
+                min: 0
+            },
+            note: {
+                type: String,
+                minLength: 3,
+                maxlength: 30
+            },
+            status: {
+                type: String,
+                enum: ['active', 'deleted'],
+                default: 'active'
+            }
+        }
+    ],
     status: {
         type: String,
         enum: ['active', 'deleted'],

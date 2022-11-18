@@ -17,4 +17,7 @@ module.exports = [
     'Kubis',
     'Sawi',
     'Lobak',
+    'Bawang Putih',
+    'Bawang Merah',
+    'Bawang Bombay',
 ]

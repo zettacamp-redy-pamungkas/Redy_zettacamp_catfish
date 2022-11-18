@@ -4,8 +4,14 @@ const { userQuery, userMutation } = require('./resolvers/user.resolvers');
 // ingredient resolvers
 const { ingredientQuery, ingredientMutation } = require('../graphql/resolvers/ingredient.resolvers');
 
+// Ingredient isUsed resolvers
+const { ingredientIsUsed } = require('../graphql/resolvers/ingredient.isUsed.resolvers');
+
 // recipe resolvers
 const { recipeQuery, recipeMutation, Recipe } = require('../graphql/resolvers/recipe.resolvers');
+
+// recipe totalLength
+const { recipe_totalLength } = require('../graphql/resolvers/recipe.totalLength.resolvers');
 
 // RecipeForIngredient
 const { IngredientForRecipe } = require('./resolvers/ingredientForRecipe.resolvers');
@@ -17,10 +23,21 @@ const { recipe_available } = require('../graphql/resolvers/recipe.available.reso
 const { recipe_id } = require('./resolvers/menu.ingredient_id.resolvers');
 
 // Transaction -> user_id
-const { user_id } = require('./resolvers/transaction.user_id.resolvers')
+const { user_id } = require('./resolvers/transaction.user_id.resolvers');
 
 // Tranasactions resolver
 const { transactionQuery, transactionMutation } = require('./resolvers/transaction.resolvers');
+
+// Cart Resolvers
+const { cartMutation, cartQuery } = require('../graphql/resolvers/cart.resolvers');
+
+// Menu Resolvers
+const { menu_totalPrice } = require('../graphql/resolvers/menu.totalPrice.resolvers');
+
+// User Cart Resolvers
+const { userCart_totalPrice } = require('../graphql/resolvers/userCart.totalPrice.resolvers');
+
+
 
 module.exports = {
     Query: {
@@ -28,24 +45,33 @@ module.exports = {
         ...ingredientQuery,
         ...recipeQuery,
         ...transactionQuery,
+        ...cartQuery,
     },
     Mutation: {
         ...userMutation,
         ...ingredientMutation,
         ...recipeMutation,
         ...transactionMutation,
+        ...cartMutation,
     },
     IngredientForRecipe: {
         ...IngredientForRecipe,
     },
     Menu: {
-        ...recipe_id
+        ...recipe_id,
+        ...menu_totalPrice,
     },
     Transaction: {
         ...user_id
     },
     Recipe: {
         ...recipe_available,
-        // available: async ({ingredients}) => { const ingredient = await IngredientModel.findById(ingre)}
+        ...recipe_totalLength,
     },
+    Ingredient: {
+        ...ingredientIsUsed,
+    },
+    UserCart: {
+        ...userCart_totalPrice,
+    }
 }

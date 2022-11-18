@@ -15,6 +15,9 @@ const { makeExecutableSchema } = require('@graphql-tools/schema');
 // applySchemaMiddleware
 const { applyMiddleware } = require('graphql-middleware');
 
+// morgan
+const morgan = require('morgan');
+
 // authMiddleware
 const authMiddleware = require('./utils/middleware/authMiddleware');
 

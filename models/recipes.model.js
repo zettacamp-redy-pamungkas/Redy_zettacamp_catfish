@@ -28,7 +28,7 @@ const recipeSchema = new Schema({
     imgUrl: {type: String, minLength: 3},
     status: {
         type: String,
-        enum: ['active', 'deleted'],
+        enum: ['active', 'deleted', 'publish'],
         default: 'active'
     }
 }, {timestamps: true});
