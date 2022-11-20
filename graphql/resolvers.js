@@ -28,14 +28,20 @@ const { user_id } = require('./resolvers/transaction.user_id.resolvers');
 // Tranasactions resolver
 const { transactionQuery, transactionMutation } = require('./resolvers/transaction.resolvers');
 
+// transaction totalPrice
+const { transaction_totalPrice } = require('../graphql/resolvers/transaction.totalPrice.resolvers');
+
 // Cart Resolvers
 const { cartMutation, cartQuery } = require('../graphql/resolvers/cart.resolvers');
 
 // Menu Resolvers
 const { menu_totalPrice } = require('../graphql/resolvers/menu.totalPrice.resolvers');
 
-// User Cart Resolvers
+// User Cart total price Resolvers
 const { userCart_totalPrice } = require('../graphql/resolvers/userCart.totalPrice.resolvers');
+
+// User Cart cart length resolvers
+const { userCart_length } = require('../graphql/resolvers/userCart.cartLength.resolvers');
 
 
 
@@ -62,7 +68,8 @@ module.exports = {
         ...menu_totalPrice,
     },
     Transaction: {
-        ...user_id
+        ...user_id,
+        ...transaction_totalPrice,
     },
     Recipe: {
         ...recipe_available,
@@ -73,5 +80,6 @@ module.exports = {
     },
     UserCart: {
         ...userCart_totalPrice,
+        ...userCart_length,
     }
 }

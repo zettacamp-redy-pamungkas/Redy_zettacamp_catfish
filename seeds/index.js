@@ -7,6 +7,9 @@ const RecipeModel = require('../models/recipes.model');
 // Transaction model
 const TransactionModel = require('../models/transaction.model');
 
+// Cart Model
+const CartModel = require('../models/cart.model');
+
 // ingredient seed
 const ingredientSeeds = require('./ingredientSeed');
 
@@ -33,6 +36,7 @@ async function deleteAllData() {
     await IngredientModel.deleteMany({});
     await RecipeModel.deleteMany({});
     await TransactionModel.deleteMany({});
+    await CartModel.deleteMany({});
 
     console.log('All data has been deleted');
 }

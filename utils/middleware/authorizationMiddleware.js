@@ -21,7 +21,7 @@ module.exports = {
         getOneUser: authorizationMiddleware,
         getAllIngredient: authorizationMiddleware,
         getOneIngredient: authorizationMiddleware,
-        // getAllRecipe: authorizationMiddleware,
+        getAllRecipes: authorizationMiddleware,
 
     },
     Mutation: {

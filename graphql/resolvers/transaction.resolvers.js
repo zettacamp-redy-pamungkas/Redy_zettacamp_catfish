@@ -10,6 +10,9 @@ const RecipeModel = require('../../models/recipes.model');
 // Ingredient Model
 const IngredientModel = require('../../models/ingredient.model');
 
+// Cart Model
+const CartModel = require('../../models/cart.model');
+
 // Apollo Error
 const { ApolloError } = require('apollo-server');
 const { default: mongoose } = require('mongoose');
@@ -60,6 +63,17 @@ async function validateStockIngredient(user_id, menu) {
         return new TransactionModel({ user_id, menu, total_price });
     } catch (err) {
         throw new ApolloError(err)
+    }
+}
+
+// total price menu / recipe
+async function getTotalPriceMenu({ recipe_id, amount }, args, context) {
+    try {
+        const recipe = await RecipeModel.findById(recipe_id);
+        const price = recipe.price;
+        return price * amount;
+    } catch (err) {
+        throw new ApolloError(err);
     }
 }
 
@@ -166,11 +180,13 @@ async function createTransaction(parent, { menu }, context) {
         // check user if exist
         const user = await UserModel.findById(user_id);
         if (!user) throw new ApolloError(`User with ID: ${user_id} not found`);
+        const keranjang = await CartModel.findOne({ user_id, status: 'pending' }).sort({ updatedAt: -1 });
+        if (!keranjang) { throw new ApolloError(`Cart with user_id: ${user_id} is empty`) };
 
+        const { cart: menu } = keranjang
         const newTransaction = await validateStockIngredient(user_id, menu)
-
         await newTransaction.save();
-
+        if (newTransaction.status === 'active') { await keranjang.updateOne({ $set: { status: 'success' } }) }
         return newTransaction;
     } catch (err) {
         throw new ApolloError(err)

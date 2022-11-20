@@ -101,6 +101,76 @@ module.exports.recipeQuery = {
             throw new ApolloError(err);
         }
     },
+    getAllRecipes: async (_, { recipe_name, page, limit, status }) => {
+        try {
+            const tick = Date.now();
+            const aggregateQuery = [];
+            aggregateQuery.push({ $sort: { createdAt: -1 } });
+            const matchQuery = { $and: [] };
+            if (status) {
+                if (status === 'deleted') {
+                    aggregateQuery.push({ $match: { status: { $ne: status } } });
+                } else {
+                    aggregateQuery.push({ $match: { status: status } });
+                }
+            }
+            if (recipe_name) {
+                matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+            }
+            if (matchQuery.$and.length) {
+                aggregateQuery.push({
+                    $match: matchQuery
+                })
+            }
+
+
+            let recipes = await RecipeModel.find({ status: 'active' }).sort({ createdAt: -1 });
+            const totalDocs = recipes.length;
+
+            // pagination
+            if (page >= 0) {
+                page = parseInt(page) - 1;
+                if (Number.isNaN(page) || page < 0) {
+                    page = 0;
+                }
+
+                limit = parseInt(limit || totalDocs);
+                if (Number.isNaN(limit) || limit < 0) {
+                    limit = 5
+                }
+
+                aggregateQuery.push(
+                    {
+                        $skip: page * limit
+                    },
+                    {
+                        $limit: limit
+                    }
+                )
+            }
+
+            if (aggregateQuery.length) {
+                recipes = await RecipeModel.aggregate(aggregateQuery);
+                if (!recipes.length) {
+                    throw new ApolloError(`Recipe name: ${recipe_name} not found`)
+                }
+                recipes = recipes.map((resep) => {
+                    resep.id = mongoose.Types.ObjectId(resep._id);
+                    return resep
+                })
+            }
+            console.log(`Get All Recipe Time: ${Date.now() - tick} ms`);
+            return {
+                recipes,
+                page: page >= 0 ? page + 1 : 1,
+                maxPage: Math.ceil(totalDocs / (limit || recipes.length)),
+                currentDocs: recipes.length,
+                totalDocs
+            };
+        } catch (err) {
+            throw new ApolloError(err);
+        }
+    },
     getOneRecipe: async (_, { id }) => {
         try {
             const recipe = await RecipeModel.findById(id);
@@ -115,7 +185,7 @@ module.exports.recipeQuery = {
 module.exports.recipeMutation = {
     createRecipe: async (_, { recipe_name, input, price, imgUrl }) => {
         try {
-            // checkIngredient(input);
+            checkIngredient(input);
             console.log(`Create Recipe
             Recipe Name: ${recipe_name}, 
             ingredients: ${input} 

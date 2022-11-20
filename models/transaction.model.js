@@ -24,12 +24,11 @@ const transactionSchema = new Schema({
             },
             note: {
                 type: String,
-                minLength: 3,
-                maxlength: 30
+                maxlength: 30,
+                trim: true,
             }
         }
     ],
-    total_price: { type: Number, min: 0 },
     order_status: {
         type: String,
         enum: ['success', 'failed'],

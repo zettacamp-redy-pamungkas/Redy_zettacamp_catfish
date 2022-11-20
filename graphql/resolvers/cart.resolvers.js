@@ -6,10 +6,24 @@ const cartModel = require('../../models/cart.model');
 // Cart Model
 const CartModel = require('../../models/cart.model');
 
+// Recipe Model
+const RecipeModel = require('../../models/recipes.model');
+
+// Check Recipe
+async function checkRecipe(cart) {
+    try {
+        const recipe = await RecipeModel.findById(cart.recipe_id);
+        if (!recipe) { throw new ApolloError(`Recipe with id: ${cart.recipe_id} not found.`) }
+    } catch (err) {
+        throw new ApolloError(err);
+    }
+}
+
 // Add Cart function
 async function addCart(_, { cart }, context) {
     try {
         console.log('Mutation, Add Cart')
+        await checkRecipe(cart)
         const user_id = mongoose.Types.ObjectId(context.req.user_id)
         let keranjang = await CartModel.findOne({ user_id, status: 'pending' });
         if (!keranjang) {
@@ -27,7 +41,7 @@ async function addCart(_, { cart }, context) {
 
 async function getAllCart(_, args, context) {
     try {
-        const carts = await CartModel.find({ user_id: context.req.user_id, status: 'pending' });
+        const carts = await CartModel.findOne({ user_id: context.req.user_id, status: 'pending' });
         return carts;
     } catch (err) {
         throw new ApolloError(err);
@@ -46,6 +60,19 @@ async function removeMenu(_, { item_id }, context) {
     }
 }
 
+async function updateAmountMenu(_, { item_id, quantity }, { req: { user_id } }) {
+    try {
+        const keranjang = await CartModel.findOne({ user_id, status: 'pending' }).sort({ createdAt: -1 });
+        if (!keranjang) { throw new ApolloError(`Cart with user id: ${user_id} not found`) };
+        await CartModel.updateOne({ "cart._id": mongoose.Types.ObjectId(item_id) }, { $inc: { "cart.$.amount": quantity } })
+        const cartMenuEmpty = await CartModel.findOne({ "cart._id": mongoose.Types.ObjectId(item_id), "cart.amount": 0, status: 'pending' });
+        if (cartMenuEmpty) await keranjang.updateOne({ $pull: { cart: { _id: mongoose.Types.ObjectId(item_id) } } })
+        return await CartModel.findOne({ user_id, status: 'pending' }).sort({ createdAt: -1 });
+    } catch (err) {
+        throw new ApolloError(err);
+    }
+}
+
 async function updateCart(_, { item_id, amount, note }, context) {
     try {
         const user_id = context.req.user_id
@@ -60,12 +87,11 @@ async function updateCart(_, { item_id, amount, note }, context) {
 
 async function deleteCart(_, args, context) {
     try {
-        console.log(context.req.user_id);
         const user_id = context.req.user_id;
         const cart = await CartModel.findOne({ user_id, status: 'pending' });
         if (!cart) { throw new ApolloError(`Cart with user id: ${user_id} not found`) };
         await cart.updateOne({ $set: { status: "deleted" } }, { runValidators: true });
-        return await CartModel.findOne({ user_id, status: 'deleted' }).sort({updatedAt: -1});
+        return await CartModel.findOne({ user_id, status: 'deleted' }).sort({ updatedAt: -1 });
     } catch (error) {
         throw new ApolloError(error);
     }
@@ -75,6 +101,7 @@ async function deleteCart(_, args, context) {
 module.exports.cartMutation = {
     addCart,
     removeMenu,
+    updateAmountMenu,
     updateCart,
     deleteCart
 }

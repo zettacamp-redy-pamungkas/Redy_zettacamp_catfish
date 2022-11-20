@@ -35,8 +35,10 @@ module.exports = {
         getOneUser: authMiddleware,
         getAllIngredient: authMiddleware,
         getOneIngredient: authMiddleware,
+        getAllRecipes: authMiddleware,
         getOneRecipe: authMiddleware,
         getOneTransaction: authMiddleware,
+        getAllTransaction: authMiddleware,
         getAllCart: authMiddleware
     },
     Mutation: {
@@ -52,6 +54,7 @@ module.exports = {
         deleteRecipe: authMiddleware,
         addCart: authMiddleware,
         removeMenu: authMiddleware,
+        updateAmountMenu: authMiddleware,
         updateCart: authMiddleware,
         deleteCart: authMiddleware,
     }
