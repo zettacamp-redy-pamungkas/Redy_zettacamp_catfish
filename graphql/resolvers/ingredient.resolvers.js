@@ -138,7 +138,7 @@ module.exports.ingredientMutation = {
             // console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);
             return await IngredientModel.findById(id);
         } catch (err) {
-            throw new ApolloError(err);
+            throw new ApolloError(err, '400');
         }
     },
     deleteIngredient: async (_, { id }) => {

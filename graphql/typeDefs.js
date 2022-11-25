@@ -75,6 +75,9 @@ module.exports = gql`
         imgUrl: String
         available: Int
         status: Status
+        special_offer: Boolean
+        special_offer_price: Int
+        highlight: Boolean
     }
 
     type Recipes {
@@ -162,8 +165,8 @@ module.exports = gql`
         ${userQuery}
         getAllIngredient(name: String, stock: Int, status: String, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
-        getAllRecipe(recipe_name: String, status: String, page: Int, limit: Int): Recipes
-        getAllRecipes(recipe_name: String, status: String, page: Int, limit: Int): Recipes
+        getAllRecipe(recipe_name: String, status: String, page: Int, limit: Int, special_offer: Boolean, highlight: Boolean,): Recipes
+        getAllRecipes(recipe_name: String, status: String, special_offer: Boolean, highlight: Boolean, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
         getAllTransaction(last_name: String,recipe_name: String, order_date: String, order_status: String, page: Int, limit: Int): Transactions
         getAllTransactionAdmin(last_name: String, recipe_name: String, order_date: String, order_status: String, page: Int, limit: Int): Transactions
@@ -177,7 +180,7 @@ module.exports = gql`
         updateIngredient(id: ID, name: String, stock: Int, status: String): Ingredient
         deleteIngredient(id: ID): Ingredient
         createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String, price: Int): Recipe
-        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient], status: String, imgUrl: String, price: Int): Recipe
+        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient], status: String, imgUrl: String, price: Int, special_offer: Boolean, highlight: Boolean): Recipe
         deleteRecipe(id: ID): Recipe
         createTransaction(user_id: String, menu:[MenuInput]): Transaction
         deleteTransaction(id: ID): Transaction

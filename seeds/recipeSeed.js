@@ -42,6 +42,7 @@ module.exports = [
         ],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1647093953000-9065ed6f85ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80",
+        special_offer: true
     },
     {
         recipe_name: "Nasi Goreng Daging",
@@ -49,6 +50,8 @@ module.exports = [
         { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Telur Ayam", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }
         ],
         price: 12000,
-        imgUrl: "https://images.unsplash.com/photo-1647093953000-9065ed6f85ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80"
+        imgUrl: "https://images.unsplash.com/photo-1647093953000-9065ed6f85ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80",
+        special_offer: true,
+        highlight: true,
     },
 ]

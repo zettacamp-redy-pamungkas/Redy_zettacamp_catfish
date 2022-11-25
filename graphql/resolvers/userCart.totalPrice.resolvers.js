@@ -7,8 +7,10 @@ const { ApolloError } = require('apollo-server');
 async function getTotalPrice({ cart }) {
     try {
         let cart_totalPrice = 0;
+        console.log(cart)
         for (let el of cart) {
-            const recipe = await RecipeModel.findById(el.recipe_id);
+            const recipe = await RecipeModel.findById(el.recipe_id).lean();
+            if (recipe.special_offer) { recipe.price = Math.floor(recipe.price * (1 - 0.7)) }
             cart_totalPrice += (recipe.price * el.amount);
         }
         return cart_totalPrice;

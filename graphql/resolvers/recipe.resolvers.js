@@ -30,7 +30,7 @@ async function checkIngredient(input) {
 }
 
 module.exports.recipeQuery = {
-    getAllRecipe: async (_, { recipe_name, page, limit, status }) => {
+    getAllRecipe: async (_, { recipe_name, page, limit, status, special_offer, highlight, }) => {
         try {
             const tick = Date.now();
             const aggregateQuery = [];
@@ -45,6 +45,12 @@ module.exports.recipeQuery = {
             }
             if (recipe_name) {
                 matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+            }
+            if (special_offer) {
+                matchQuery.$and.push({ special_offer })
+            }
+            if (highlight) {
+                matchQuery.$and.push({ highlight })
             }
             if (matchQuery.$and.length) {
                 aggregateQuery.push({
@@ -100,7 +106,7 @@ module.exports.recipeQuery = {
             throw new ApolloError(err);
         }
     },
-    getAllRecipes: async (_, { recipe_name, page, limit, status }) => {
+    getAllRecipes: async (_, { recipe_name, page, limit, status, special_offer, highlight }) => {
         try {
             const tick = Date.now();
             const aggregateQuery = [];
@@ -115,6 +121,12 @@ module.exports.recipeQuery = {
             if (recipe_name) {
                 matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
             }
+            if (special_offer) {
+                matchQuery.$and.push({ special_offer })
+            }
+            if (highlight) {
+                matchQuery.$and.push({ highlight })
+            }
             if (matchQuery.$and.length) {
                 aggregateQuery.push({
                     $match: matchQuery
@@ -123,7 +135,7 @@ module.exports.recipeQuery = {
 
 
             let recipes = await RecipeModel.find({ status: { $ne: 'deleted' } }).sort({ createdAt: -1 });
-            
+
             // pagination
             if (page >= 0) {
                 page = parseInt(page) - 1;
@@ -135,7 +147,7 @@ module.exports.recipeQuery = {
                 if (Number.isNaN(limit) || limit < 0) {
                     limit = 5
                 }
-                
+
                 aggregateQuery.push(
                     {
                         $skip: page * limit
@@ -143,13 +155,13 @@ module.exports.recipeQuery = {
                     {
                         $limit: limit
                     }
-                    )
-                }
-                
-                if (aggregateQuery.length) {
-                    recipes = await RecipeModel.aggregate(aggregateQuery);
-                    if (!recipes.length) {
-                        throw new ApolloError(`Recipe name: ${recipe_name} not found`)
+                )
+            }
+
+            if (aggregateQuery.length) {
+                recipes = await RecipeModel.aggregate(aggregateQuery);
+                if (!recipes.length) {
+                    throw new ApolloError(`Recipe name: ${recipe_name} not found`)
                 }
                 recipes = recipes.map((resep) => {
                     resep.id = mongoose.Types.ObjectId(resep._id);
@@ -197,7 +209,7 @@ module.exports.recipeMutation = {
             throw new ApolloError(err);
         }
     },
-    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price }) => {
+    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, highlight }) => {
         try {
             if (!input) {
                 const recipe = await RecipeModel.findById(id);
@@ -211,7 +223,9 @@ module.exports.recipeMutation = {
                 ingredients: input,
                 status: status,
                 imgUrl: imgUrl,
-                price: price
+                price: price,
+                special_offer,
+                highlight
             }, { new: true, runValidators: true });
             if (!updatedRecipe) { throw new ApolloError(`Recipe with id: ${id} not found`) }
             if (updatedRecipe.status === 'unpublish') {
