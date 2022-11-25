@@ -16,12 +16,18 @@ async function findIngredientInRecipe(id) {
     throw new ApolloError(`This ingredient cannot been deleted because has been used in Recipe: ${recipes.toString()}`);
 }
 
+async function isUsed(ingredient_id) {
+    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(ingredient_id) } } });
+    if (!recipes.length) return false;
+    return true;
+}
+
 module.exports.ingredientQuery = {
-    getAllIngredient: async (_, { name, stock, page, limit }) => {
+    getAllIngredient: async (_, { name, stock, status, page, limit }) => {
         try {
             const tick = Date.now();
             const aggregateIngredients = [];
-            aggregateIngredients.push({ $sort: { createdAt: -1 } }, { $match: { status: 'active' } });
+            aggregateIngredients.push({ $sort: { createdAt: -1 } });
             const matchQuery = { $and: [] };
 
             if (name) {
@@ -30,6 +36,10 @@ module.exports.ingredientQuery = {
 
             if (stock >= 0) {
                 matchQuery.$and.push({ stock });
+            }
+
+            if (status) {
+                matchQuery.$and.push({ status });
             }
 
             if (matchQuery.$and.length) {
@@ -61,8 +71,7 @@ module.exports.ingredientQuery = {
             }
 
             let ingredients = await IngredientModel.find({ status: 'active' }).sort({ createdAt: -1 });
-            const totalDocs = ingredients.length;
-
+            
             if (aggregateIngredients.length) {
                 ingredients = await IngredientModel.aggregate(aggregateIngredients);
                 // console.log(aggregateIngredients);
@@ -75,8 +84,9 @@ module.exports.ingredientQuery = {
                     ingredients = ingredients.filter((el) => el.stock > 0)
                 }
             }
-
-            console.log(`Get All Ingredient Time: ${Date.now() - tick} ms`)
+            const totalDocs = ingredients.length;
+            
+            // console.log(`Get All Ingredient Time: ${Date.now() - tick} ms`)
             return {
                 ingredients,
                 page: page >= 0 ? page + 1 : 1,
@@ -102,6 +112,8 @@ module.exports.ingredientQuery = {
 module.exports.ingredientMutation = {
     createIngredient: async (_, { name, stock }) => {
         try {
+            const ingredient = await IngredientModel.findOne({ name: new RegExp("^" + name.trim() + "$", 'i') });
+            if (ingredient) { throw new ApolloError(`Ingredient: ${name} has been exist.`) }
             const newIngredient = new IngredientModel({ name, stock });
             await newIngredient.save();
             return newIngredient;
@@ -115,9 +127,15 @@ module.exports.ingredientMutation = {
             if (status === 'deleted') {
                 await findIngredientInRecipe(id);
             }
-            const ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
+            const used = await isUsed(id)
+            let ingredient = null;
+            if (used) {
+                ingredient = await IngredientModel.findByIdAndUpdate(id, { stock: stock }, { new: true, runValidators: true });
+            } else {
+                ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
+            }
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
-            console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);
+            // console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);
             return await IngredientModel.findById(id);
         } catch (err) {
             throw new ApolloError(err);
@@ -125,13 +143,13 @@ module.exports.ingredientMutation = {
     },
     deleteIngredient: async (_, { id }) => {
         try {
-            console.log("Delete Ingredient: ", id)
+            // console.log("Delete Ingredient: ", id)
             await findIngredientInRecipe(id);
             const ingredient = await IngredientModel.findByIdAndUpdate(id, { status: 'deleted' }, { new: true, runValidators: true });
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
             return ingredient;
         } catch (err) {
-            console.log("Delete Ingredient: ", id)
+            // console.log("Delete Ingredient: ", id)
             throw new ApolloError(err);
         }
     }

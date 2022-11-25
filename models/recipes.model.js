@@ -25,13 +25,13 @@ const recipeSchema = new Schema({
         }
     ],
     price: { type: Number, required: true, min: 0 },
-    imgUrl: {type: String, minLength: 3},
+    imgUrl: { type: String, minLength: 3 },
     status: {
         type: String,
-        enum: ['active', 'deleted', 'publish'],
-        default: 'active'
+        enum: ['publish', 'deleted', 'unpublish'],
+        default: 'unpublish'
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 // recipe models
 module.exports = mongoose.model('Recipe', recipeSchema);

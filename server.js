@@ -47,6 +47,8 @@ mongoose.connect(`mongodb://localhost:27017/${dbName}`)
     .then(() => { console.log('MongoDB connections open') })
     .catch((err) => { console.log(err) })
 
+// mongoose.set('debug', true);
+
 // server
 const server = new ApolloServer({
     schema: schemaMiddleware,

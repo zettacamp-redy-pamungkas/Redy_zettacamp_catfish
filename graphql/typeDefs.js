@@ -149,6 +149,7 @@ module.exports = gql`
         active
         deleted
         publish
+        unpublish
         pending
     }
 
@@ -159,12 +160,13 @@ module.exports = gql`
 
     type Query {
         ${userQuery}
-        getAllIngredient(name: String, stock: Int, page: Int, limit: Int): Ingredients
+        getAllIngredient(name: String, stock: Int, status: String, page: Int, limit: Int): Ingredients
         getOneIngredient(id: ID): Ingredient
         getAllRecipe(recipe_name: String, status: String, page: Int, limit: Int): Recipes
         getAllRecipes(recipe_name: String, status: String, page: Int, limit: Int): Recipes
         getOneRecipe(id: ID): Recipe
-        getAllTransaction(last_name: String, recipe_name: String, order_date: String): Transactions
+        getAllTransaction(last_name: String,recipe_name: String, order_date: String, order_status: String, page: Int, limit: Int): Transactions
+        getAllTransactionAdmin(last_name: String, recipe_name: String, order_date: String, order_status: String, page: Int, limit: Int): Transactions
         getOneTransaction(id: ID): Transaction
         getAllCart: UserCart
     }

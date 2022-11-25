@@ -65,7 +65,7 @@ async function insertRecipe(arrRecipe) {
             const index = ingredientsName.indexOf(ingredient.ingredient_name);
             recipe_ingredients.push({ ingredient_id: ingredients[index]._id, stock_used: ingredient.stock_used });
         }
-        const newRecipe = new RecipeModel({ recipe_name: recipe.recipe_name, price: recipe.price, ingredients: recipe_ingredients, imgUrl: recipe.imgUrl });
+        const newRecipe = new RecipeModel({ recipe_name: recipe.recipe_name, price: recipe.price, ingredients: recipe_ingredients, imgUrl: recipe.imgUrl, status: 'publish' });
         await newRecipe.save();
     }
     

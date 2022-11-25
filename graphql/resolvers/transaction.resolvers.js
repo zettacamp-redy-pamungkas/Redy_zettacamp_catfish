@@ -77,11 +77,15 @@ async function getTotalPriceMenu({ recipe_id, amount }, args, context) {
     }
 }
 
-async function getAllTransaction(parent, { last_name, recipe_name, order_date, page, limit }) {
+async function getAllTransaction(parent, { last_name, recipe_name, order_date, order_status, page, limit }, { req: { user_id, user_role: { user_type } } }) {
     try {
         const aggregateQuery = [];
         const matchQuery = { $and: [] };
-
+        if (user_type === 'admin') {
+            aggregateQuery.push({ $sort: { createdAt: -1 } });
+        } else {
+            aggregateQuery.push({ $match: { user_id: mongoose.Types.ObjectId(user_id) } }, { $sort: { createdAt: -1 } });
+        }
         const lookUp = (from, localField, foreignField, as) => {
             return {
                 $lookup:
@@ -106,8 +110,14 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, p
 
         if (order_date) {
             // console.log(new Date(order_date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }));
-            const tanggal = moment(order_date, "MMM-DD-YYYY").format('LL');
+            const tanggal = moment(order_date, "YYYY-MM-DD").format('LL');
+            // console.log(`order date: ${order_date}, tanggal: ${tanggal}`)
             matchQuery.$and.push({ "order_date": tanggal })
+        }
+
+        if (order_status) {
+            matchQuery.$and.push({ "order_status": order_status })
+            // console.log(order_status, JSON.stringify(matchQuery));
         }
 
         if (matchQuery.$and.length) {
@@ -116,8 +126,9 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, p
             })
         }
 
+
         // pagination
-        if (page) {
+        if (page >= 0) {
             page = parseInt(page) - 1;
             if (Number.isNaN(page) || page < 0) {
                 page = 0;
@@ -138,8 +149,99 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, p
             )
         }
 
-        let transactions = await TransactionModel.find({});
+        let transactions = null;
+
+        if (aggregateQuery.length) {
+            transactions = await TransactionModel.aggregate(aggregateQuery);
+            transactions = transactions.map((transaction) => {
+                transaction.id = mongoose.Types.ObjectId(transaction._id);
+                return transaction;
+            })
+        }
+
+        if (!transactions.length) throw new ApolloError('Transaction not found');
+
         let totalDocs = transactions.length;
+        return {
+            transactions,
+            page: page >= 0 ? page + 1 : 1,
+            maxPage: Math.ceil(totalDocs / (limit || transactions.length)),
+            currentDocs: transactions.length,
+            totalDocs
+        };
+    } catch (error) {
+        throw new ApolloError(error);
+    }
+}
+
+async function getAllTransactionAdmin(parent, { last_name, recipe_name, order_date, order_status, page, limit }, { req: { user_id } }) {
+    try {
+        const aggregateQuery = [];
+        const matchQuery = { $and: [] };
+        aggregateQuery.push({ $sort: { createdAt: -1 } });
+        const lookUp = (from, localField, foreignField, as) => {
+            return {
+                $lookup:
+                {
+                    from,
+                    localField,
+                    foreignField,
+                    as
+                }
+            }
+        }
+
+        if (last_name) {
+            aggregateQuery.push(lookUp("users", "user_id", "_id", "users"));
+            matchQuery.$and.push({ "users.last_name": new RegExp(last_name, "i") });
+        }
+
+        if (recipe_name) {
+            aggregateQuery.push(lookUp("recipes", "menu.recipe_id", "_id", "recipes"))
+            matchQuery.$and.push({ "recipes.recipe_name": new RegExp(recipe_name, "i") })
+        }
+
+        if (order_date) {
+            // console.log(new Date(order_date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }));
+            const tanggal = moment(order_date, "YYYY-MM-DD").format('LL');
+            // console.log(`order date: ${order_date}, tanggal: ${tanggal}`)
+            matchQuery.$and.push({ "order_date": tanggal })
+        }
+
+        if (order_status) {
+            matchQuery.$and.push({ "order_status": order_status })
+            // console.log(order_status, JSON.stringify(matchQuery));
+        }
+
+        if (matchQuery.$and.length) {
+            aggregateQuery.push({
+                $match: matchQuery
+            })
+        }
+
+        let totalDocs = await TransactionModel.count({});
+
+        // pagination
+        if (page >= 0) {
+            page = parseInt(page) - 1;
+            if (Number.isNaN(page) || page < 0) {
+                page = 0;
+            }
+
+            limit = parseInt(limit || 5);
+            if (Number.isNaN(limit) || limit < 0) {
+                limit = 5
+            }
+
+            aggregateQuery.push(
+                {
+                    $skip: page * limit
+                },
+                {
+                    $limit: limit
+                }
+            )
+        }
 
         if (aggregateQuery.length) {
             transactions = await TransactionModel.aggregate(aggregateQuery);
@@ -184,9 +286,11 @@ async function createTransaction(parent, { menu }, context) {
         if (!keranjang) { throw new ApolloError(`Cart with user_id: ${user_id} is empty`) };
 
         const { cart: menu } = keranjang
-        const newTransaction = await validateStockIngredient(user_id, menu)
+        const newTransaction = await validateStockIngredient(user_id, menu);
+        // console.log(newTransaction);
         await newTransaction.save();
-        if (newTransaction.status === 'active') { await keranjang.updateOne({ $set: { status: 'success' } }) }
+        if (newTransaction.order_status === 'success') { await keranjang.updateOne({ $set: { status: 'success' } }) }
+        if (newTransaction.order_status === 'failed') { throw new ApolloError("Order Status Failed") }
         return newTransaction;
     } catch (err) {
         throw new ApolloError(err)

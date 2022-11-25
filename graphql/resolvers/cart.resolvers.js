@@ -22,7 +22,7 @@ async function checkRecipe(cart) {
 // Add Cart function
 async function addCart(_, { cart }, context) {
     try {
-        console.log('Mutation, Add Cart')
+        // console.log('Mutation, Add Cart')
         await checkRecipe(cart)
         const user_id = mongoose.Types.ObjectId(context.req.user_id)
         let keranjang = await CartModel.findOne({ user_id, status: 'pending' });
@@ -31,6 +31,9 @@ async function addCart(_, { cart }, context) {
             await newCart.save();
             return await CartModel.findOne({ user_id, status: 'pending' });
         } else {
+            for (let recipe of keranjang.cart) {
+                if (recipe.recipe_id.toString() === cart.recipe_id) throw new ApolloError('Menu has been added to cart')
+            }
             await keranjang.updateOne({ $push: { cart: cart } }, { new: true, runValidators: true });
             return await CartModel.findOne({ user_id, status: 'pending' });;
         }
@@ -62,6 +65,7 @@ async function removeMenu(_, { item_id }, context) {
 
 async function updateAmountMenu(_, { item_id, quantity }, { req: { user_id } }) {
     try {
+        // console.log(`Update Amount ID: ${item_id}, amount: ${quantity}`);
         const keranjang = await CartModel.findOne({ user_id, status: 'pending' }).sort({ createdAt: -1 });
         if (!keranjang) { throw new ApolloError(`Cart with user id: ${user_id} not found`) };
         await CartModel.updateOne({ "cart._id": mongoose.Types.ObjectId(item_id) }, { $inc: { "cart.$.amount": quantity } })
@@ -90,7 +94,7 @@ async function deleteCart(_, args, context) {
         const user_id = context.req.user_id;
         const cart = await CartModel.findOne({ user_id, status: 'pending' });
         if (!cart) { throw new ApolloError(`Cart with user id: ${user_id} not found`) };
-        await cart.updateOne({ $set: { status: "deleted" } }, { runValidators: true });
+        await cart.updateOne({ $set: { cart: [] } }, { runValidators: true });
         return await CartModel.findOne({ user_id, status: 'deleted' }).sort({ updatedAt: -1 });
     } catch (error) {
         throw new ApolloError(error);
