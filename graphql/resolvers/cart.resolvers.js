@@ -45,7 +45,11 @@ async function addCart(_, { cart }, context) {
 async function getAllCart(_, args, context) {
     try {
         const carts = await CartModel.findOne({ user_id: context.req.user_id, status: 'pending' });
-        return carts;
+        if (!carts) {
+            const newCart = new CartModel({ user_id: context.req.user_id, cart: [] });
+            await newCart.save();
+        }
+        return await CartModel.findOne({ user_id: context.req.user_id, status: 'pending' });
     } catch (err) {
         throw new ApolloError(err);
     }

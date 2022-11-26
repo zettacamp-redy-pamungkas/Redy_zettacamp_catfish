@@ -31,7 +31,9 @@ module.exports.ingredientQuery = {
             const matchQuery = { $and: [] };
 
             if (name) {
-                matchQuery.$and.push({ name: new RegExp(name, "i") });
+                if (name.length > 3) {
+                    matchQuery.$and.push({ name: new RegExp(name, "i") });
+                }
             }
 
             if (stock >= 0) {

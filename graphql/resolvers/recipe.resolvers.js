@@ -44,7 +44,9 @@ module.exports.recipeQuery = {
                 }
             }
             if (recipe_name) {
-                matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+                if (recipe_name.length > 2) {
+                    matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+                }
             }
             if (special_offer) {
                 matchQuery.$and.push({ special_offer })
@@ -119,7 +121,9 @@ module.exports.recipeQuery = {
                 aggregateQuery.push({ $match: { status: status } });
             }
             if (recipe_name) {
-                matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+                if (recipe_name.length > 2) {
+                    matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
+                }
             }
             if (special_offer) {
                 matchQuery.$and.push({ special_offer })
@@ -193,7 +197,7 @@ module.exports.recipeQuery = {
 }
 
 module.exports.recipeMutation = {
-    createRecipe: async (_, { recipe_name, input, price, imgUrl }) => {
+    createRecipe: async (_, { recipe_name, input, price, imgUrl, discount }) => {
         try {
             if (!input.length) { throw new ApolloError('Input Empty'); }
             await checkIngredient(input);
@@ -202,17 +206,20 @@ module.exports.recipeMutation = {
             // ingredients: ${input} 
             // price: ${price}
             // imgUrl: ${imgUrl}`);
-            const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish' });
+            if (!discount && discount !== 0) { discount = 40 }
+            // if (discount === null ) { discount = 40 }
+            const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount / 100 });
             await newRecipe.save()
             return newRecipe;
         } catch (err) {
             throw new ApolloError(err);
         }
     },
-    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, highlight }) => {
+    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount, highlight }) => {
         try {
             if (!input) {
                 const recipe = await RecipeModel.findById(id);
+                if (!recipe) throw new ApolloError(`Recipe with id: ${id} not found`, '400')
                 input = recipe.ingredients;
                 // console.log("Hello Input Kosong")
             }
@@ -225,6 +232,7 @@ module.exports.recipeMutation = {
                 imgUrl: imgUrl,
                 price: price,
                 special_offer,
+                discount: (discount || 40) / 100,
                 highlight
             }, { new: true, runValidators: true });
             if (!updatedRecipe) { throw new ApolloError(`Recipe with id: ${id} not found`) }

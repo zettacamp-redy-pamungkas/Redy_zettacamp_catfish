@@ -42,19 +42,26 @@ async function validateStockIngredient(user_id, menu) {
                 path: "ingredients.ingredient_id"
             }
         });
-
         const ingredientMap = [];
+        const stockIngredient = {};
         let total_price = 0;
         for (let el of transaction.menu) {
             if (el.recipe_id.status === 'deleted') throw new ApolloError(`Recipe: ${el.recipe_id.recipe_name} has been deleted`);
             const amount = el.amount;
             for (let ingredient of el.recipe_id.ingredients) {
-                ingredientMap.push({
+                const ingredientRecipe = {
                     ingredient_id: ingredient.ingredient_id._id,
                     stock: ingredient.ingredient_id.stock - (ingredient.stock_used * amount),
-                })
+                }
+                if (ingredientRecipe.ingredient_id in stockIngredient) { }
+                else { stockIngredient[ingredientRecipe.ingredient_id] = ingredient.ingredient_id.stock; }
                 if (ingredient.ingredient_id.status === "deleted") throw new ApolloError('Ingredient has been deleted');
-                if (ingredient.ingredient_id.stock < (ingredient.stock_used * amount)) return new TransactionModel({ user_id, menu, order_status: 'failed' });
+                if (stockIngredient[ingredientRecipe.ingredient_id] < (ingredient.stock_used * amount)) { return new TransactionModel({ user_id, menu, order_status: 'failed' }); }
+                stockIngredient[ingredientRecipe.ingredient_id] -= (ingredient.stock_used * amount);
+                ingredientMap.push({
+                    ingredient_id: ingredient.ingredient_id._id,
+                    stock: stockIngredient[ingredientRecipe.ingredient_id],
+                })
             }
             total_price += el.recipe_id.price * amount;
         }
@@ -193,7 +200,9 @@ async function getAllTransactionAdmin(parent, { last_name, recipe_name, order_da
 
         if (last_name) {
             aggregateQuery.push(lookUp("users", "user_id", "_id", "users"));
-            matchQuery.$and.push({ "users.last_name": new RegExp(last_name, "i") });
+            if (last_name.length > 3) {
+                matchQuery.$and.push({ "users.last_name": new RegExp(last_name, "i") });
+            }
         }
 
         if (recipe_name) {

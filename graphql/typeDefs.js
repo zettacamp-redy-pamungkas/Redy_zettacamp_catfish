@@ -78,6 +78,7 @@ module.exports = gql`
         special_offer: Boolean
         special_offer_price: Int
         highlight: Boolean
+        discount: Float
     }
 
     type Recipes {
@@ -148,6 +149,25 @@ module.exports = gql`
         note: String
     }
 
+    input CreateRecipe {
+        name: String
+        stock: Int
+        discount: Float
+        status: Status
+    }
+
+    input UpdateRecipe {
+        id: ID
+        recipe_name: String
+        input: [RecipeIngredient]
+        status: String
+        imgUrl: String
+        price: Int
+        special_offer: Boolean
+        discount: Float
+        highlight: Boolean
+    }
+
     enum Status {
         active
         deleted
@@ -179,8 +199,8 @@ module.exports = gql`
         createIngredient(name: String, stock: Int, status: Status) : Ingredient
         updateIngredient(id: ID, name: String, stock: Int, status: String): Ingredient
         deleteIngredient(id: ID): Ingredient
-        createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String, price: Int): Recipe
-        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient], status: String, imgUrl: String, price: Int, special_offer: Boolean, highlight: Boolean): Recipe
+        createRecipe(recipe_name: String, input: [RecipeIngredient], imgUrl: String, price: Int, discount: Float): Recipe
+        updateRecipe(id: ID, recipe_name: String input: [RecipeIngredient], status: String, imgUrl: String, price: Int, special_offer: Boolean, discount: Float highlight: Boolean): Recipe
         deleteRecipe(id: ID): Recipe
         createTransaction(user_id: String, menu:[MenuInput]): Transaction
         deleteTransaction(id: ID): Transaction

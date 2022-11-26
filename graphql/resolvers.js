@@ -19,6 +19,9 @@ const { IngredientForRecipe } = require('./resolvers/ingredientForRecipe.resolve
 // Recipe available
 const { recipe_available } = require('../graphql/resolvers/recipe.available.resolvers');
 
+// Recipe dsicount
+const { recipe_discount } = require('../graphql/resolvers/recipe.discount.resolvers')
+
 //  Menu -> recipe_id
 const { recipe_id } = require('./resolvers/menu.ingredient_id.resolvers');
 
@@ -78,6 +81,7 @@ module.exports = {
         ...recipe_available,
         ...recipe_totalLength,
         ...recipe_specialOfferPrice,
+        ...recipe_discount,
     },
     Ingredient: {
         ...ingredientIsUsed,

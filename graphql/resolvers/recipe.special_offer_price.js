@@ -1,6 +1,6 @@
-async function recipeSpecialOfferPrice({ special_offer, price }) {
+async function recipeSpecialOfferPrice({ special_offer, price, discount }) {
     
-    return special_offer ? Math.floor(price * (1 - 0.7)) : price;
+    return special_offer ? Math.floor(price * (1 - discount)) : price;
 }
 
 module.exports.recipe_specialOfferPrice = {
