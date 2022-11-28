@@ -38,6 +38,7 @@ const transactionSchema = new Schema({
         type: String,
         default: moment(new Date()).locale('id-ID').format('LL')
     },
+    note_transaction: {type: String, minLength: 0, default: ''},
     status: {
         type: String,
         enum: ['active', 'deleted'],
