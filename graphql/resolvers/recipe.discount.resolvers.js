@@ -1,5 +1,5 @@
 async function recipeDiscount({ discount }) {
-    return discount * 100
+    return discount
 }
 
 module.exports.recipe_discount = {

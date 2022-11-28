@@ -56,7 +56,7 @@ async function validateStockIngredient(user_id, menu) {
                 if (ingredientRecipe.ingredient_id in stockIngredient) { }
                 else { stockIngredient[ingredientRecipe.ingredient_id] = ingredient.ingredient_id.stock; }
                 if (ingredient.ingredient_id.status === "deleted") throw new ApolloError('Ingredient has been deleted');
-                if (stockIngredient[ingredientRecipe.ingredient_id] < (ingredient.stock_used * amount)) { return new TransactionModel({ user_id, menu, order_status: 'failed' }); }
+                if (stockIngredient[ingredientRecipe.ingredient_id] < (ingredient.stock_used * amount)) { return new TransactionModel({ user_id, menu, order_status: 'failed', note_transaction: `${el.recipe_id.recipe_name} has sufficient stock.` }); }
                 stockIngredient[ingredientRecipe.ingredient_id] -= (ingredient.stock_used * amount);
                 ingredientMap.push({
                     ingredient_id: ingredient.ingredient_id._id,
@@ -299,7 +299,7 @@ async function createTransaction(parent, { menu }, context) {
         // console.log(newTransaction);
         await newTransaction.save();
         if (newTransaction.order_status === 'success') { await keranjang.updateOne({ $set: { status: 'success' } }) }
-        if (newTransaction.order_status === 'failed') { throw new ApolloError("Order Status Failed") }
+        if (newTransaction.order_status === 'failed') { throw new ApolloError(newTransaction.note_transaction) }
         return newTransaction;
     } catch (err) {
         throw new ApolloError(err)

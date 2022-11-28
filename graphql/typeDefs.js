@@ -113,6 +113,7 @@ module.exports = gql`
         total_price: Int
         order_status: OrderStatus
         order_date: String
+        note_transaction: String
         status: Status
     }
 

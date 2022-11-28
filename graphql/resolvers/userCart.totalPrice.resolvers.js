@@ -9,7 +9,7 @@ async function getTotalPrice({ cart }) {
         let cart_totalPrice = 0;
         for (let el of cart) {
             const recipe = await RecipeModel.findById(el.recipe_id).lean();
-            if (recipe.special_offer) { recipe.price = Math.floor(recipe.price * (1 - recipe.discount)) }
+            if (recipe.special_offer) { recipe.price = Math.floor(recipe.price * (1 - (recipe.discount / 100))) }
             cart_totalPrice += (recipe.price * el.amount);
         }
         return cart_totalPrice;

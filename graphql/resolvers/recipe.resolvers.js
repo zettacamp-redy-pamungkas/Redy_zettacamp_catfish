@@ -201,14 +201,15 @@ module.exports.recipeMutation = {
         try {
             if (!input.length) { throw new ApolloError('Input Empty'); }
             await checkIngredient(input);
-            // console.log(`Create Recipe
-            // Recipe Name: ${recipe_name}, 
-            // ingredients: ${input} 
-            // price: ${price}
-            // imgUrl: ${imgUrl}`);
-            if (!discount && discount !== 0) { discount = 40 }
+            console.log(`Create Recipe
+            Recipe Name: ${recipe_name}, 
+            ingredients: ${input} 
+            price: ${price}
+            imgUrl: ${imgUrl}
+            discount: ${discount}`);
+            // if (!discount && discount !== 0) { discount = 40 }
             // if (discount === null ) { discount = 40 }
-            const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount / 100 });
+            const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount });
             await newRecipe.save()
             return newRecipe;
         } catch (err) {
@@ -224,7 +225,7 @@ module.exports.recipeMutation = {
                 // console.log("Hello Input Kosong")
             }
             await checkIngredient(input);
-            // console.log(`Update Recipe, ID: ${id}, recipe_name: ${recipe_name}, input: ${input}, status: ${status}, price: ${price}, imgUrl: ${imgUrl}`);
+            // console.log(`Update Recipe, ID: ${id}, recipe_name: ${recipe_name}, input: ${input}, status: ${status}, price: ${price}, imgUrl: ${imgUrl}, discount: ${discount}`);
             const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, {
                 recipe_name,
                 ingredients: input,
@@ -232,7 +233,7 @@ module.exports.recipeMutation = {
                 imgUrl: imgUrl,
                 price: price,
                 special_offer,
-                discount: (discount || 40) / 100,
+                discount: discount,
                 highlight
             }, { new: true, runValidators: true });
             if (!updatedRecipe) { throw new ApolloError(`Recipe with id: ${id} not found`) }
