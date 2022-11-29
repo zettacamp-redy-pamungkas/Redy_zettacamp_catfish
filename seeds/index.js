@@ -44,7 +44,7 @@ async function deleteAllData() {
 // insert ingredient
 async function insertIngredients(arrIngredient) {
     for (let ingredient of arrIngredient) {
-        const randomStock = getRandomMinMax(15, 35);
+        const randomStock = getRandomMinMax(35, 70);
         const newIngredient = new IngredientModel({ name: ingredient, stock: randomStock });
         await newIngredient.save();
     }

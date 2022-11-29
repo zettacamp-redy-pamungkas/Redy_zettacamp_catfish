@@ -47,6 +47,26 @@ module.exports = [
         highlight: true,
     },
     {
+        recipe_name: "Mie Goreng Ayam",
+        ingredients: [{ ingredient_name: "Mie", stock_used: 1 }, { ingredient_name: "Daging Ayam", stock_used: 2 }, { ingredient_name: "Cabe", stock_used: 1 },
+        { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Telur Ayam", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }
+        ],
+        price: 10000,
+        imgUrl: "https://images.unsplash.com/photo-1645696329525-8ec3bee460a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1629&q=80",
+        special_offer: true,
+        highlight: true,
+    },
+    {
+        recipe_name: "Mie Kuah Ayam",
+        ingredients: [{ ingredient_name: "Mie", stock_used: 1 }, { ingredient_name: "Daging Ayam", stock_used: 2 }, { ingredient_name: "Cabe", stock_used: 1 },
+        { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Telur Ayam", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }
+        ],
+        price: 10000,
+        imgUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
+        special_offer: true,
+        highlight: true,
+    },
+    {
         recipe_name: "Nasi Goreng Daging",
         ingredients: [{ ingredient_name: "Nasi", stock_used: 1 }, { ingredient_name: "Daging Sapi", stock_used: 2 }, { ingredient_name: "Cabe", stock_used: 1 },
         { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Telur Ayam", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }
@@ -54,6 +74,26 @@ module.exports = [
         price: 12000,
         imgUrl: "https://images.unsplash.com/photo-1568717099337-5aaecc090548?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
         special_offer: true,
+        highlight: true,
+    },
+    {
+        recipe_name: "Iga Bakar",
+        ingredients: [{ ingredient_name: "Daging Sapi", stock_used: 3 }, { ingredient_name: "Cabe", stock_used: 1 },
+        { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }, { ingredient_name: "Bawang Merah", stock_used: 2 }, { ingredient_name: "Bawang Bombay", stock_used: 2 },
+        ],
+        price: 30000,
+        imgUrl: "https://images.unsplash.com/photo-1615937657715-bc7b4b7962c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+        special_offer: false,
+        highlight: true,
+    },
+    {
+        recipe_name: "Sup Iga",
+        ingredients: [{ ingredient_name: "Daging Sapi", stock_used: 2 }, { ingredient_name: "Cabe", stock_used: 1 },
+        { ingredient_name: "Penyedap Rasa", stock_used: 1 }, { ingredient_name: "Garam", stock_used: 2 }, { ingredient_name: "Bawang Merah", stock_used: 2 }, { ingredient_name: "Bawang Bombay", stock_used: 2 },
+        ],
+        price: 25000,
+        imgUrl: "https://images.unsplash.com/photo-1608500219063-e5164085cd6f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80",
+        special_offer: false,
         highlight: true,
     },
 ]
