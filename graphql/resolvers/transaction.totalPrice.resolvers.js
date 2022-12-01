@@ -9,7 +9,8 @@ async function getTotalPrice({ menu }) {
         let menu_totalPrice = 0;
         for (let el of menu) {
             const recipe = await RecipeModel.findById(el.recipe_id).lean();
-            { recipe.price = Math.floor(recipe.price * (1 - (recipe.discount / 100))) }
+            // console.log(recipe);
+            if (recipe.special_offer) { recipe.price = Math.floor(recipe.price * (1 - (recipe.discount / 100))) }
             menu_totalPrice += (recipe.price * el.amount);
         }
         return menu_totalPrice;

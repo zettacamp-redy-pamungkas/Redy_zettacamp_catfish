@@ -75,7 +75,7 @@ module.exports = {
     },
     Transaction: {
         ...user_id,
-        ...transaction_totalPrice,
+        // ...transaction_totalPrice,
     },
     Recipe: {
         ...recipe_available,

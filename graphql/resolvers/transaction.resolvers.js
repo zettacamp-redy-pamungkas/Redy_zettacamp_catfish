@@ -65,7 +65,9 @@ async function validateStockIngredient(user_id, menu) {
                     stock: stockIngredient[ingredientRecipe.ingredient_id],
                 })
             }
-            total_price += el.recipe_id.price * amount;
+            let price = 0
+            if (el.recipe_id.special_offer) { price = Math.floor(el.recipe_id.price * (1 - (el.recipe_id.discount / 100))) } else { price = el.recipe_id.price }
+            total_price += price * amount;
         }
 
         if (order_status === 'success') { ReduceIngredient(ingredientMap); }
@@ -183,99 +185,6 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, o
     }
 }
 
-async function getAllTransactionAdmin(parent, { last_name, recipe_name, order_date, order_status, page, limit }, { req: { user_id } }) {
-    try {
-        const aggregateQuery = [];
-        const matchQuery = { $and: [] };
-        aggregateQuery.push({ $sort: { createdAt: -1 } });
-        const lookUp = (from, localField, foreignField, as) => {
-            return {
-                $lookup:
-                {
-                    from,
-                    localField,
-                    foreignField,
-                    as
-                }
-            }
-        }
-
-        if (last_name) {
-            aggregateQuery.push(lookUp("users", "user_id", "_id", "users"));
-            if (last_name.length > 3) {
-                matchQuery.$and.push({ "users.last_name": new RegExp(last_name, "i") });
-            }
-        }
-
-        if (recipe_name) {
-            aggregateQuery.push(lookUp("recipes", "menu.recipe_id", "_id", "recipes"))
-            matchQuery.$and.push({ "recipes.recipe_name": new RegExp(recipe_name, "i") })
-        }
-
-        if (order_date) {
-            // console.log(new Date(order_date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }));
-            const tanggal = moment(order_date, "YYYY-MM-DD").format('LL');
-            // console.log(`order date: ${order_date}, tanggal: ${tanggal}`)
-            matchQuery.$and.push({ "order_date": tanggal })
-        }
-
-        if (order_status) {
-            matchQuery.$and.push({ "order_status": order_status })
-            // console.log(order_status, JSON.stringify(matchQuery));
-        }
-
-        if (matchQuery.$and.length) {
-            aggregateQuery.push({
-                $match: matchQuery
-            })
-        }
-
-        let totalDocs = await TransactionModel.count({});
-
-        // pagination
-        if (page >= 0) {
-            page = parseInt(page) - 1;
-            if (Number.isNaN(page) || page < 0) {
-                page = 0;
-            }
-
-            limit = parseInt(limit || 5);
-            if (Number.isNaN(limit) || limit < 0) {
-                limit = 5
-            }
-
-            aggregateQuery.push(
-                {
-                    $skip: page * limit
-                },
-                {
-                    $limit: limit
-                }
-            )
-        }
-
-        if (aggregateQuery.length) {
-            transactions = await TransactionModel.aggregate(aggregateQuery);
-            transactions = transactions.map((transaction) => {
-                transaction.id = mongoose.Types.ObjectId(transaction._id);
-                return transaction;
-            })
-        }
-
-        if (!transactions.length) throw new ApolloError('Transaction not found');
-
-        return {
-            transactions,
-            page: page >= 0 ? page + 1 : 1,
-            maxPage: Math.ceil(totalDocs / (limit || transactions.length)),
-            currentDocs: transactions.length,
-            totalDocs
-        };
-    } catch (error) {
-        throw new ApolloError(error);
-    }
-}
-
 // Get One Transaction by id
 async function getOneTransaction(parent, { id }) {
     try {
@@ -301,7 +210,6 @@ async function createTransaction(parent, { menu }, context) {
         await newTransaction.save();
         if (newTransaction.order_status === 'success') { await keranjang.updateOne({ $set: { status: 'success' } }) }
         if (newTransaction.order_status === 'failed') { throw new ApolloError(newTransaction.note_transaction) }
-        console.log(newTransaction);
         return newTransaction;
     } catch (err) {
         throw new ApolloError(err)

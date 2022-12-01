@@ -29,6 +29,7 @@ const transactionSchema = new Schema({
             }
         }
     ],
+    total_price: { type: Number, min: 0 },
     order_status: {
         type: String,
         enum: ['success', 'failed'],
@@ -38,12 +39,12 @@ const transactionSchema = new Schema({
         type: String,
         default: moment(new Date()).locale('id-ID').format('LL')
     },
-    note_transaction: {type: String, minLength: 0, default: ''},
+    note_transaction: { type: String, minLength: 0, default: '' },
     status: {
         type: String,
         enum: ['active', 'deleted'],
         default: 'active'
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Transaction', transactionSchema);
