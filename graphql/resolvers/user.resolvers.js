@@ -173,9 +173,14 @@ module.exports.userMutation = {
             throw new ApolloError(err)
         }
     },
-    // createCart: async (_, { recipe_id, amount }, { user_id }) => {
-        
-    // },
+    resetPassword: async (_, {email, password, confirmPassword}) => {
+        try {
+            const user = await UserModel.findOne({email});
+            if (!user) throw new ApolloError('User not found');
+        } catch (err) {
+            throw new ApolloError(err)
+        }
+    },
     deleteUser: async (_, { id, status = 'deleted' }) => {
         try {
             const user = await UserModel.findByIdAndUpdate(id, { status: status }, { runValidators: true });

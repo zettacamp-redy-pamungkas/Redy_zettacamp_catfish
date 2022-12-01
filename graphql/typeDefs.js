@@ -125,6 +125,16 @@ module.exports = gql`
         totalDocs: Int
     }
 
+    input User {
+        first_name: String
+        last_name: String
+        email: String
+        password: String
+        confirmPassword: String
+        friend_name: String
+        pet_name: String
+    }
+
     input Pagination {
         page: Int
         limit: Int

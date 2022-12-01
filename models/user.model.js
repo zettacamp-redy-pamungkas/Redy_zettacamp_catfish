@@ -40,29 +40,9 @@ const userSchema = new Schema({
             }
         ]
     },
-    cart: [
-        {
-            _id: false,
-            recipe_id: {
-                type: Schema.Types.ObjectId,
-                ref: 'Recipe'
-            },
-            amount: {
-                type: Number,
-                min: 0
-            },
-            note: {
-                type: String,
-                minLength: 3,
-                maxlength: 30
-            },
-            status: {
-                type: String,
-                enum: ['active', 'deleted'],
-                default: 'active'
-            }
-        }
-    ],
+    balance: { type: Number, min: 0, default: 500000 },
+    friend_name: { type: String, minLength: 3, maxLength: 25, trim: true },
+    pet_name: { type: String, minLength: 3, maxLength: 25, trim: true },
     status: {
         type: String,
         enum: ['active', 'deleted'],
