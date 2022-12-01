@@ -12,6 +12,32 @@ module.exports = [
         imgUrl: "https://images.unsplash.com/photo-1516684732162-798a0062be99?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
     },
     {
+        recipe_name: "Salad",
+        ingredients: [{ ingredient_name: "Daging Ayam", stock_used: 1 }, { ingredient_name: "Wortel", stock_used: 1 },{ ingredient_name: "Kubis", stock_used: 1 },{ ingredient_name: "Sawi", stock_used: 1 },
+            { ingredient_name: "Lobak", stock_used: 1 }
+        ],
+        price: 8000,
+        imgUrl: "https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+        special_offer: false,
+        highlight: true,
+    },
+    {
+        recipe_name: "Ayam Goreng Tepung",
+        ingredients: [{ ingredient_name: "Daging Ayam", stock_used: 4 }, { ingredient_name: "Cabe", stock_used: 2 },{ ingredient_name: "Saus", stock_used: 2 },{ ingredient_name: "Penyedap Rasa", stock_used: 1 },],
+        price: 10000,
+        imgUrl: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+        special_offer: false,
+        highlight: false,
+    },
+    {
+        recipe_name: "Ayam Bakar",
+        ingredients: [{ ingredient_name: "Daging Ayam", stock_used: 4 }, { ingredient_name: "Cabe", stock_used: 2 },{ ingredient_name: "Saus", stock_used: 2 },{ ingredient_name: "Penyedap Rasa", stock_used: 1 },],
+        price: 10000,
+        imgUrl: "https://images.unsplash.com/photo-1605908580297-f3e1c02e64ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+        special_offer: false,
+        highlight: true,
+    },
+    {
         recipe_name: "Teh Panas",
         ingredients: [{ ingredient_name: "Teh", stock_used: 1 }, { ingredient_name: "Gula", stock_used: 1 }],
         price: 2000,
