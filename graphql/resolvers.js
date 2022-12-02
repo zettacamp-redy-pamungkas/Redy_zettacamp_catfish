@@ -49,6 +49,9 @@ const { userCart_totalPrice } = require('../graphql/resolvers/userCart.totalPric
 // User Cart cart length resolvers
 const { userCart_length } = require('../graphql/resolvers/userCart.cartLength.resolvers');
 
+// User -> Balance
+const { userBalance } = require('../graphql/resolvers/user.balance');
+
 
 
 module.exports = {
@@ -68,6 +71,9 @@ module.exports = {
     },
     IngredientForRecipe: {
         ...IngredientForRecipe,
+    },
+    User: {
+        ...userBalance
     },
     Menu: {
         ...recipe_id,
