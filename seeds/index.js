@@ -10,11 +10,17 @@ const TransactionModel = require('../models/transaction.model');
 // Cart Model
 const CartModel = require('../models/cart.model');
 
+// user model
+const UserModel = require('../models/user.model');
+
 // ingredient seed
 const ingredientSeeds = require('./ingredientSeed');
 
 // recipe seed
 const recipeSeeds = require('./recipeSeed');
+
+// user seed
+const userSeeds = require('./user.seeds');
 
 // mongoose
 const mongoose = require('mongoose');
@@ -37,8 +43,16 @@ async function deleteAllData() {
     await RecipeModel.deleteMany({});
     await TransactionModel.deleteMany({});
     await CartModel.deleteMany({});
+    await UserModel.deleteMany({});
 
     console.log('All data has been deleted');
+}
+
+async function insertUsers() {
+    for (let user of userSeeds) {
+        const newUser = new UserModel(user)
+        await newUser.save();
+    }
 }
 
 // insert ingredient
@@ -68,17 +82,18 @@ async function insertRecipe(arrRecipe) {
         const newRecipe = new RecipeModel({ recipe_name: recipe.recipe_name, price: recipe.price, ingredients: recipe_ingredients, imgUrl: recipe.imgUrl, status: 'publish', special_offer: recipe.special_offer, highlight: recipe.highlight });
         await newRecipe.save();
     }
-    
+
     console.log(`${arrRecipe.length} recipes has been inserted.`);
 }
 
 // seeds
 async function seeds() {
     await deleteAllData();
+    await insertUsers();
     await insertIngredients(ingredientSeeds);
     await insertRecipe(recipeSeeds);
-
     console.log('All seeds has been inserted');
+    mongoose.connection.close();
 }
 
 // insertRecipe(recipeSeeds);

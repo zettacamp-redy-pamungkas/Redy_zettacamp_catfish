@@ -18,7 +18,7 @@ function authorizationMiddlewareUser(resolvers, parent, args, context, info) {
 module.exports = {
     Query: {
         getAllUsers: authorizationMiddleware,
-        getOneUser: authorizationMiddleware,
+        // getOneUser: authorizationMiddleware,
         getAllIngredient: authorizationMiddleware,
         getOneIngredient: authorizationMiddleware,
         getAllRecipes: authorizationMiddleware,

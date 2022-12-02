@@ -20,8 +20,11 @@ module.exports = gql`
         password: String
         first_name: String!
         last_name: String!
+        balance: Int
         status: Status
         role: UserType
+        friend_name: String
+        pet_name: String
     }
 
     type Users {
@@ -125,7 +128,7 @@ module.exports = gql`
         totalDocs: Int
     }
 
-    input User {
+    input UserInput {
         first_name: String
         last_name: String
         email: String

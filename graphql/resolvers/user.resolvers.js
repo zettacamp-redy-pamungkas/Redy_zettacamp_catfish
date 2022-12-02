@@ -173,10 +173,24 @@ module.exports.userMutation = {
             throw new ApolloError(err)
         }
     },
-    resetPassword: async (_, {email, password, confirmPassword}) => {
+    resetPassword: async (_, { email, password, confirm_password, friend_name, pet_name }) => {
         try {
-            const user = await UserModel.findOne({email});
+            // console.log(
+            //     `email: ${email}
+            //     password: ${password},
+            //     confirm password: ${confirm_password},
+            //     friend_name: ${friend_name},
+            //     pet_name: ${pet_name}
+            //     `
+            // );
+            const user = await UserModel.findOne({ email });
             if (!user) throw new ApolloError('User not found');
+            if (new RegExp(`^${friend_name}$`, "i").test(user.friend_name) && new RegExp(`^${pet_name}$`, "i").test(user.pet_name)) {
+                if (password !== confirm_password) throw new ApolloError('Password didn\'t match.');
+                password = bcrypt.hashSync(password, 10)
+                await UserModel.findByIdAndUpdate(user.id, { password: password });
+                return await UserModel.findById(user.id)
+            } else { throw new ApolloError('Security question failed') }
         } catch (err) {
             throw new ApolloError(err)
         }
@@ -229,12 +243,4 @@ module.exports.userMutation = {
             throw new ApolloError(err)
         }
     },
-    // addCart: async (_, { user_id, cart}) => {
-    //     try {
-    //         console.log('User AddCart')
-    //         console.log(user_id, cart)
-    //     } catch (err) {
-    //         throw new ApolloError(err);
-    //     }
-    // }
 }
