@@ -26,9 +26,9 @@ const userSeeds = require('./user.seeds');
 const mongoose = require('mongoose');
 
 // mongoose connect
-mongoose.connect('mongodb://localhost:27017/restoran')
-    .then(() => console.log('MongoDB connection open'))
-    .catch((err) => new Error(err));
+mongoose.connect(`mongodb+srv://zetta:zettacatfish@cluster0.yyo0wkk.mongodb.net/restoran?retryWrites=true&w=majority`)
+    .then(() => { console.log('MongoDB connections open') })
+    .catch((err) => { console.log(err) })
 
 // getRandom min max
 function getRandomMinMax(min, max) {

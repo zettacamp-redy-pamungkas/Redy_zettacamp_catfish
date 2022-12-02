@@ -43,7 +43,7 @@ const recipeLoader = require('./utils/loaders/menu.recipe_id.loader');
 const userLoader = require('./utils/loaders/transaction.user_id.loader');
 
 // mongoose connect
-mongoose.connect(`mongodb://localhost:27017/${dbName}`)
+mongoose.connect(`mongodb+srv://zetta:zettacatfish@cluster0.yyo0wkk.mongodb.net/${dbName}?retryWrites=true&w=majority`)
     .then(() => { console.log('MongoDB connections open') })
     .catch((err) => { console.log(err) })
 
