@@ -49,6 +49,10 @@ module.exports.ingredientQuery = {
                     $match: matchQuery
                 })
             }
+            let ingredients = await IngredientModel.aggregate(aggregateIngredients);
+            // console.log(aggregateIngredients.length)
+            // console.log(await IngredientModel.aggregate(aggregateIngredients));
+            const totalDocs = ingredients.length
 
             // pagination
             if (page >= 0) {
@@ -72,8 +76,7 @@ module.exports.ingredientQuery = {
                 )
             }
 
-            let ingredients = await IngredientModel.find({ status: 'active' }).sort({ createdAt: -1 });
-            
+
             if (aggregateIngredients.length) {
                 ingredients = await IngredientModel.aggregate(aggregateIngredients);
                 // console.log(aggregateIngredients);
@@ -86,8 +89,7 @@ module.exports.ingredientQuery = {
                     ingredients = ingredients.filter((el) => el.stock > 0)
                 }
             }
-            const totalDocs = ingredients.length;
-            
+
             // console.log(`Get All Ingredient Time: ${Date.now() - tick} ms`)
             return {
                 ingredients,

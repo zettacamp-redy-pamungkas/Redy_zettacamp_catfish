@@ -128,7 +128,9 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, o
                 $match: matchQuery
             })
         }
-
+        
+        let totalDocs = await TransactionModel.aggregate(aggregateQuery);
+        totalDocs = totalDocs.length;
 
         // pagination
         if (page >= 0) {
@@ -164,7 +166,6 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, o
 
         if (!transactions.length) throw new ApolloError('Transaction not found');
 
-        let totalDocs = transactions.length;
         return {
             transactions,
             page: page >= 0 ? page + 1 : 1,

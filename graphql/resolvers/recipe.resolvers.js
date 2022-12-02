@@ -115,19 +115,15 @@ module.exports.recipeQuery = {
             aggregateQuery.push({ $sort: { createdAt: -1 } });
             const matchQuery = { $and: [] };
 
-            let recipes = await RecipeModel.find({ status: { $ne: 'deleted' } }).sort({ createdAt: -1 });
-            let totalDocs = recipes.length;
             if (!status) {
                 aggregateQuery.push({ $match: { status: { $ne: 'deleted' } } });
             }
             else {
                 aggregateQuery.push({ $match: { status: status } });
-                totalDocs = await RecipeModel.find({status: status}).count();
             }
             if (recipe_name) {
                 if (recipe_name.length > 2) {
                     matchQuery.$and.push({ recipe_name: new RegExp(recipe_name, "i") })
-                    totalDocs = await RecipeModel.find({recipe_name: new RegExp(recipe_name, "i")}).count();
                 }
             }
             if (special_offer) {
@@ -141,7 +137,10 @@ module.exports.recipeQuery = {
                     $match: matchQuery
                 })
             }
-
+            
+            let recipes = await RecipeModel.aggregate(aggregateQuery);
+            let totalDocs = recipes.length;
+            
 
             // pagination
             if (page >= 0) {
@@ -169,7 +168,7 @@ module.exports.recipeQuery = {
 
             if (aggregateQuery.length) {
                 recipes = await RecipeModel.aggregate(aggregateQuery);
-                console.log(JSON.stringify(aggregateQuery))
+                // console.log(JSON.stringify(aggregateQuery))
                 if (!recipes.length) {
                     throw new ApolloError(`Recipe name: ${recipe_name} not found`)
                 }
