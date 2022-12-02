@@ -19,6 +19,7 @@ const { default: mongoose } = require('mongoose');
 
 // moment
 const moment = require('moment');
+const userModel = require('../../models/user.model');
 
 // set locale to ID - Indonesia
 moment.locale('id-ID');
@@ -70,21 +71,12 @@ async function validateStockIngredient(user_id, menu) {
             total_price += price * amount;
         }
 
-        if (order_status === 'success') { ReduceIngredient(ingredientMap); }
+        if (order_status === 'success') {
+            ReduceIngredient(ingredientMap); 
+        }
         return new TransactionModel({ user_id, menu, total_price, order_status, note_transaction });
     } catch (err) {
         throw new ApolloError(err)
-    }
-}
-
-// total price menu / recipe
-async function getTotalPriceMenu({ recipe_id, amount }, args, context) {
-    try {
-        const recipe = await RecipeModel.findById(recipe_id);
-        const price = recipe.price;
-        return price * amount;
-    } catch (err) {
-        throw new ApolloError(err);
     }
 }
 
@@ -196,9 +188,25 @@ async function getOneTransaction(parent, { id }) {
     }
 }
 
-async function createTransaction(parent, { menu }, context) {
+// function reduce balance user
+async function reduceBalance(user, transaction) {
+    // check if user_role === user
+    if (user.role.user_type === 'user') {
+        if (transaction.order_status === 'success') {
+            if (user.balance >= transaction.total_price) {
+                const balanceRemain = user.balance - transaction.total_price;
+                await UserModel.findByIdAndUpdate(user.id, { balance: balanceRemain });
+            } else {
+                transaction.order_status = 'failed';
+                transaction.note_transaction += 'Balance not enough'
+            }
+        }
+    }
+
+}
+
+async function createTransaction(parent, { menu }, { req: { user_id, user_role } }) {
     try {
-        const { user_id } = context.req
         // check user if exist
         const user = await UserModel.findById(user_id);
         if (!user) throw new ApolloError(`User with ID: ${user_id} not found`);
@@ -207,8 +215,11 @@ async function createTransaction(parent, { menu }, context) {
 
         const { cart: menu } = keranjang
         const newTransaction = await validateStockIngredient(user_id, menu);
+        await reduceBalance(user, newTransaction)
+        if (newTransaction.order_status === 'success') {
+            await keranjang.updateOne({ $set: { status: 'success' } })
+        }
         await newTransaction.save();
-        if (newTransaction.order_status === 'success') { await keranjang.updateOne({ $set: { status: 'success' } }) }
         if (newTransaction.order_status === 'failed') { throw new ApolloError(newTransaction.note_transaction) }
         return newTransaction;
     } catch (err) {
