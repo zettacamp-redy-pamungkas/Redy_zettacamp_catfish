@@ -32,7 +32,7 @@ async function authMiddleware(resolve, parent, args, context, info) {
 module.exports = {
     Query: {
         getAllUsers: authMiddleware,
-        getOneUser: authMiddleware,
+        // getOneUser: authMiddleware,
         getAllIngredient: authMiddleware,
         getOneIngredient: authMiddleware,
         getAllRecipes: authMiddleware,
