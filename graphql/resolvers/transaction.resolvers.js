@@ -203,7 +203,6 @@ async function reduceBalance(user, transaction) {
             }
         }
     }
-
 }
 
 async function createTransaction(parent, { menu }, { req: { user_id, user_role } }) {

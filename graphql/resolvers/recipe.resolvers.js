@@ -50,6 +50,7 @@ module.exports.recipeQuery = {
             }
             if (special_offer) {
                 matchQuery.$and.push({ special_offer })
+                aggregateQuery.push({ $sort: { discount: -1 } });
             }
             if (highlight) {
                 matchQuery.$and.push({ highlight })
@@ -61,8 +62,8 @@ module.exports.recipeQuery = {
             }
 
 
-            let recipes = await RecipeModel.find({ status: 'publish' }).sort({ createdAt: -1 });
-            const totalDocs = recipes.length;
+            let recipes = await RecipeModel.aggregate(aggregateQuery);
+            let totalDocs = recipes.length;
 
             // pagination
             if (page >= 0) {
@@ -137,10 +138,10 @@ module.exports.recipeQuery = {
                     $match: matchQuery
                 })
             }
-            
+
             let recipes = await RecipeModel.aggregate(aggregateQuery);
             let totalDocs = recipes.length;
-            
+
 
             // pagination
             if (page >= 0) {
