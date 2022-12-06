@@ -27,7 +27,7 @@ const recipeSchema = new Schema({
     price: { type: Number, required: true, min: 0 },
     imgUrl: { type: String, minLength: 3 },
     special_offer: { type: Boolean, default: false },
-    discount: { type: Number, min: 1, max: 80, default: 40 },
+    discount: { type: Number, min: 0, max: 80, default: 0 },
     highlight: { type: Boolean, default: false },
     status: {
         type: String,
