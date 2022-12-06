@@ -18,7 +18,7 @@ module.exports = [
         ],
         price: 8000,
         imgUrl: "https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-        special_offer: false,
+        // special_offer: false,
         highlight: true,
     },
     {
@@ -26,7 +26,7 @@ module.exports = [
         ingredients: [{ ingredient_name: "Daging Ayam", stock_used: 4 }, { ingredient_name: "Cabe", stock_used: 2 },{ ingredient_name: "Saus", stock_used: 2 },{ ingredient_name: "Penyedap Rasa", stock_used: 1 },],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-        special_offer: false,
+        // special_offer: false,
         highlight: false,
     },
     {
@@ -34,7 +34,7 @@ module.exports = [
         ingredients: [{ ingredient_name: "Daging Ayam", stock_used: 4 }, { ingredient_name: "Cabe", stock_used: 2 },{ ingredient_name: "Saus", stock_used: 2 },{ ingredient_name: "Penyedap Rasa", stock_used: 1 },],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1605908580297-f3e1c02e64ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-        special_offer: false,
+        // special_offer: false,
         highlight: true,
     },
     {
@@ -69,7 +69,7 @@ module.exports = [
         ],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1647093953000-9065ed6f85ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=80",
-        special_offer: true,
+        // special_offer: true,
         highlight: true,
     },
     {
@@ -79,6 +79,7 @@ module.exports = [
         ],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1645696329525-8ec3bee460a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1629&q=80",
+        discount: 15,
         special_offer: true,
         highlight: true,
     },
@@ -89,6 +90,7 @@ module.exports = [
         ],
         price: 10000,
         imgUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
+        discount: 20,
         special_offer: true,
         highlight: true,
     },
@@ -99,6 +101,7 @@ module.exports = [
         ],
         price: 12000,
         imgUrl: "https://images.unsplash.com/photo-1568717099337-5aaecc090548?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
+        discount: 25,
         special_offer: true,
         highlight: true,
     },
@@ -109,7 +112,6 @@ module.exports = [
         ],
         price: 30000,
         imgUrl: "https://images.unsplash.com/photo-1615937657715-bc7b4b7962c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
-        special_offer: false,
         highlight: true,
     },
     {
@@ -119,7 +121,8 @@ module.exports = [
         ],
         price: 25000,
         imgUrl: "https://images.unsplash.com/photo-1608500219063-e5164085cd6f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80",
-        special_offer: false,
+        discount: 15,
+        special_offer: true,
         highlight: true,
     },
 ]
