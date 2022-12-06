@@ -201,17 +201,25 @@ module.exports.recipeQuery = {
     }
 }
 
+async function checkRecipeName(recipe_name) {
+    const recipe = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
+    if (recipe && (recipe.status === 'publish' || recipe.status === 'unpublish')) throw new ApolloError(`Recipe name : ${recipe_name} has been used.`);
+    if (recipe && recipe.status === 'deleted') await RecipeModel.findByIdAndDelete(recipe.id);
+}
+
 module.exports.recipeMutation = {
     createRecipe: async (_, { recipe_name, input, price, imgUrl, discount }) => {
         try {
+            recipe_name = recipe_name.trim();
             if (!input.length) { throw new ApolloError('Input Empty'); }
+            await checkRecipeName(recipe_name);
             await checkIngredient(input);
-            console.log(`Create Recipe
-            Recipe Name: ${recipe_name}, 
-            ingredients: ${input} 
-            price: ${price}
-            imgUrl: ${imgUrl}
-            discount: ${discount}`);
+            // console.log(`Create Recipe
+            // Recipe Name: ${recipe_name}, 
+            // ingredients: ${input} 
+            // price: ${price}
+            // imgUrl: ${imgUrl}
+            // discount: ${discount}`);
             // if (!discount && discount !== 0) { discount = 40 }
             // if (discount === null ) { discount = 40 }
             const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount });
@@ -229,6 +237,7 @@ module.exports.recipeMutation = {
                 input = recipe.ingredients;
                 // console.log("Hello Input Kosong")
             }
+            await checkRecipeName(recipe_name);
             await checkIngredient(input);
             // console.log(`Update Recipe, ID: ${id}, recipe_name: ${recipe_name}, input: ${input}, status: ${status}, price: ${price}, imgUrl: ${imgUrl}, discount: ${discount}`);
             const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, {

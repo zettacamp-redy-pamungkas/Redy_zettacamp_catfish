@@ -126,7 +126,13 @@ module.exports.userMutation = {
             // hash password
             args.password = await bcrypt.hash(args.password, 10);
 
+            // Check firstName, lastName
+            const { first_name, last_name } = args;
+            if (!new RegExp('^[A-Z]+$', "i").test(first_name)) throw new ApolloError(`First name must Alphabet, not ${first_name}`);
+            if (!new RegExp('^[A-Z]+$', "i").test(last_name)) throw new ApolloError(`Last name must Alphabet, not ${last_name}`);
+
             const newUser = new UserModel(args);
+
             // save newUser
             await newUser.save();
             return newUser;
