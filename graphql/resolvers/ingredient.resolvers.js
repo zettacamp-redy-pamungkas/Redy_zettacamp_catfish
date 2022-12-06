@@ -117,9 +117,8 @@ module.exports.ingredientMutation = {
     createIngredient: async (_, { name, stock }) => {
         try {
             const ingredient = await IngredientModel.findOne({ name: new RegExp("^" + name.trim() + "$", 'i') });
-            console.log(ingredient)
-            if (ingredient && ingredient.status === 'active') { throw new ApolloError(`Ingredient: ${name} has been exist.`) }
-            else { await IngredientModel.findByIdAndDelete(ingredient.id) }
+            // console.log(ingredient)
+            if (ingredient) { if (ingredient.status === 'active') { throw new ApolloError(`Ingredient: ${name} has been exist.`) } else { await IngredientModel.findByIdAndDelete(ingredient.id) } }
             const newIngredient = new IngredientModel({ name, stock });
             await newIngredient.save();
             return newIngredient;
