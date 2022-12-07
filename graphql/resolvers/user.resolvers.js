@@ -95,7 +95,7 @@ module.exports.userQuery = {
                 return user
             }
 
-            if (pet_name && friend_name) {
+            if (email && pet_name && friend_name) {
                 const user = await UserModel.findOne({ email, pet_name, friend_name });
                 if (!user) {
                     throw new ApolloError(`User with email: ${email}, security validation failed.`, status_code[404]);
