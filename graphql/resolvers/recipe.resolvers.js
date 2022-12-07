@@ -240,13 +240,17 @@ module.exports.recipeMutation = {
             }
             // await checkRecipeName(recipe_name);
             let recipeName = await RecipeModel.findById(id);
-            console.log(recipeName.recipe_name, recipe_name)
-            console.log(new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name))
+            // console.log(recipeName.recipe_name, recipe_name)
+            // console.log(new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name))
+            console.log(recipeName)
             if (recipeName) {
-                if (new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name)) { }
+                if (new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name)) {
+                    if (recipeName.status === 'deleted') { await RecipeModel.findByIdAndUpdate(recipeName.id, { $set: { status: 'unpublish' } }) }
+                }
                 else {
                     recipeName = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
                     if (recipeName) {
+                        // console.log('hello there')
                         throw new Error(`Recipe name: ${recipeName.recipe_name} has been used / taken.`)
                     }
                 }
