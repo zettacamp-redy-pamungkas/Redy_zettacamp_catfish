@@ -7,6 +7,7 @@ const RecipeModel = require('../../models/recipes.model');
 // Apollo Error
 const { ApolloError } = require('apollo-server');
 const { default: mongoose } = require('mongoose');
+const ingredientModel = require('../../models/ingredient.model');
 
 // Check if ingredient is used by recipe
 async function findIngredientInRecipe(id) {
@@ -128,6 +129,9 @@ module.exports.ingredientMutation = {
 
     },
     updateIngredient: async (_, { id, name, stock, status }) => {
+        if (name) {
+            name = name.trim();
+        }
         try {
             if (status === 'deleted') {
                 await findIngredientInRecipe(id);
@@ -137,7 +141,20 @@ module.exports.ingredientMutation = {
             if (used) {
                 ingredient = await IngredientModel.findByIdAndUpdate(id, { stock: stock }, { new: true, runValidators: true });
             } else {
-                ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
+                //     const ingredientName = await ingredientModel.findOne({ name: new RegExp(`^${name}$`, 'i') })
+                //     console.log(ingredientName);
+                //     if (ingredientName) throw new Error(`Ingredient with name: ${name} has been taken / used.`)
+                // If ingredent name === name, bisa di update, jika ingredient name === ingredient name yang sudah di pakai throw error otherwise update
+                let ingredientName = await ingredientModel.findById(id);
+                if (!ingredientName) throw new Error(`Ingredient not found.`)
+                // console.log(new RegExp(`^${ingredientName.name}`, 'i').test(name))
+                if (new RegExp(`^${ingredientName.name}`, 'i').test(name)) {
+                    ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
+                } else {
+                    ingredientName = await IngredientModel.findOne({ name: new RegExp(`^${name}$`, 'i') })
+                    if (ingredientName) throw new Error(`Ingredient with name: ${name} has been taken / used.`)
+                    ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
+                }
             }
             if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
             // console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);

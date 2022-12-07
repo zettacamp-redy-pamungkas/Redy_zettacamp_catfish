@@ -231,13 +231,26 @@ module.exports.recipeMutation = {
     },
     updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount, highlight }) => {
         try {
+            if (recipe_name) { recipe_name.trim() }
             if (!input) {
                 const recipe = await RecipeModel.findById(id);
                 if (!recipe) throw new ApolloError(`Recipe with id: ${id} not found`, '400')
                 input = recipe.ingredients;
                 // console.log("Hello Input Kosong")
             }
-            await checkRecipeName(recipe_name);
+            // await checkRecipeName(recipe_name);
+            let recipeName = await RecipeModel.findById(id);
+            console.log(recipeName.recipe_name, recipe_name)
+            console.log(new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name))
+            if (recipeName) {
+                if (new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name)) { }
+                else {
+                    recipeName = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
+                    if (recipeName) {
+                        throw new Error(`Recipe name: ${recipeName.recipe_name} has been used / taken.`)
+                    }
+                }
+            }
             await checkIngredient(input);
             // console.log(`Update Recipe, ID: ${id}, recipe_name: ${recipe_name}, input: ${input}, status: ${status}, price: ${price}, imgUrl: ${imgUrl}, discount: ${discount}`);
             const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, {
