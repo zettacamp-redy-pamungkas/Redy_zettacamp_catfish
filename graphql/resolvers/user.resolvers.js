@@ -85,12 +85,20 @@ module.exports.userQuery = {
             throw new ApolloError(err);
         }
     },
-    getOneUser: async (_, { id, email }) => {
+    getOneUser: async (_, { id, email, pet_name, friend_name }) => {
         try {
             if (id) {
                 const user = await UserModel.findById(id)
                 if (!user) {
                     throw new ApolloError(`User with ID: ${id} not found`, status_code[404]);
+                }
+                return user
+            }
+
+            if (pet_name && friend_name) {
+                const user = await UserModel.findOne({ email, pet_name, friend_name });
+                if (!user) {
+                    throw new ApolloError(`User with email: ${email}, security validation failed.`, status_code[404]);
                 }
                 return user
             }
@@ -102,6 +110,7 @@ module.exports.userQuery = {
                 }
                 return user
             }
+
         } catch (err) {
             throw new ApolloError(err)
         }

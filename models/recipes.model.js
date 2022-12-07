@@ -24,7 +24,7 @@ const recipeSchema = new Schema({
             }
         }
     ],
-    price: { type: Number, required: true, min: 0 },
+    price: { type: Number, required: true, min: 1000 },
     imgUrl: { type: String, minLength: 3 },
     special_offer: { type: Boolean, default: false },
     discount: { type: Number, min: 0, max: 80, default: 0 },
