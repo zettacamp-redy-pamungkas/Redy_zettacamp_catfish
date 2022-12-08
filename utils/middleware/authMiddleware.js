@@ -39,7 +39,7 @@ module.exports = {
         getOneRecipe: authMiddleware,
         getOneTransaction: authMiddleware,
         getAllTransaction: authMiddleware,
-        getAllCart: authMiddleware
+        // getAllCart: authMiddleware
     },
     Mutation: {
         updateUser: authMiddleware,
