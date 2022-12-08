@@ -10,7 +10,7 @@ const { default: mongoose } = require('mongoose');
 
 // Check if ingredient is used by recipe
 async function findIngredientInRecipe({ id }) {
-    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } } });
+    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } }, status: { $ne: 'deleted' } });
     if (!recipes.length) return false;
     return true;
 }

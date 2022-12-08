@@ -32,7 +32,7 @@ module.exports.ingredientQuery = {
             const matchQuery = { $and: [] };
 
             if (name) {
-                if (name.length > 3) {
+                if (name.length >= 3) {
                     matchQuery.$and.push({ name: new RegExp(name, "i") });
                 }
             }
