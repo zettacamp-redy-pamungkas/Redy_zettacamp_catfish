@@ -215,6 +215,7 @@ module.exports.recipeMutation = {
         try {
             // trim recipe name
             recipe_name = recipe_name.trim();
+            if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet, not ${recipe_name}`);
 
             // set discount to 0 if discount is null or undefined
             if (!discount) discount = 0
@@ -240,7 +241,10 @@ module.exports.recipeMutation = {
     updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount, highlight }) => {
         try {
             // Trim recipe_name
-            if (recipe_name) { recipe_name.trim() }
+            if (recipe_name) {
+                recipe_name.trim();
+                if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet, not ${recipe_name}`);
+            }
 
             // Set discount to 0 if discount is null or undefined
             if (!discount) discount = 0

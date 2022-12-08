@@ -117,6 +117,7 @@ module.exports.ingredientQuery = {
 module.exports.ingredientMutation = {
     createIngredient: async (_, { name, stock }) => {
         try {
+            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet, not ${name}`);
             const ingredient = await IngredientModel.findOne({ name: new RegExp("^" + name.trim() + "$", 'i') });
             // console.log(ingredient)
             if (ingredient) { if (ingredient.status === 'active') { throw new ApolloError(`Ingredient: ${name} has been exist.`) } else { await IngredientModel.findByIdAndDelete(ingredient.id) } }
@@ -131,6 +132,7 @@ module.exports.ingredientMutation = {
     updateIngredient: async (_, { id, name, stock, status }) => {
         if (name) {
             name = name.trim();
+            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet, not ${name}`);
         }
         try {
             if (status === 'deleted') {
