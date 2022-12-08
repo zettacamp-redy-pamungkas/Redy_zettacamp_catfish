@@ -45,7 +45,7 @@ module.exports = [
     {
         first_name: "Redy",
         last_name: "Admin",
-        password: bcrypt.hashSync("redy123", 10),
+        password: bcrypt.hashSync("redy12345", 10),
         email: "redyadmin@mail.com",
         balance: 0,
         friend_name: "test",
@@ -55,7 +55,7 @@ module.exports = [
     {
         first_name: "Redy",
         last_name: "Pamungkas",
-        password: bcrypt.hashSync("redy123", 10),
+        password: bcrypt.hashSync("redy12345", 10),
         email: "redy@mail.com",
         friend_name: "test",
         pet_name: "user",

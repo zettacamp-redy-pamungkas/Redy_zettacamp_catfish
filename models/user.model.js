@@ -8,15 +8,15 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minLength: 3,
-        maxLength: 50
+        minLength: [3, 'First name must at less 3 chars'],
+        maxLength: [25, 'First name max chars is 25 chars']
     },
     'last_name': {
         type: String,
         required: true,
         trim: true,
-        minLength: 3,
-        maxLength: 50
+        minLength: [3, 'Last name must at less 3 chars'],
+        maxLength: [25, 'Last name max chars is 25 chars']
     },
     email: {
         type: String,
@@ -27,7 +27,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-        minLength: 5
+        minLength: [8, 'Password at less 8 digits.']
     },
     role: {
         _id: false,
@@ -41,8 +41,8 @@ const userSchema = new Schema({
         ]
     },
     balance: { type: Number, min: 0, default: 500000 },
-    friend_name: { type: String, minLength: 3, maxLength: 25, trim: true },
-    pet_name: { type: String, minLength: 3, maxLength: 25, trim: true },
+    friend_name: { type: String, minLength: [3, 'Friend name at less 3 chars'], maxLength: [25, 'Friend name max chars is 25 chars'], trim: true },
+    pet_name: { type: String, minLength: [3, 'Pet name at less 3 chars'], maxLength: [25, 'Pet name max chars is 25 chars'], trim: true },
     status: {
         type: String,
         enum: ['active', 'deleted'],

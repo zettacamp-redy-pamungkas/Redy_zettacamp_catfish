@@ -127,6 +127,9 @@ module.exports.userMutation = {
                 throw new ApolloError('Email not valid', status_code[400]);
             }
 
+            // check password length
+            if (args.password.length < 8) throw new Error('Password at less 8 digits')
+
             // check if password didn't match
             if (args.password !== args.confirmPassword) {
                 throw new ApolloError('Password didn\'t match', status_code[400]);
@@ -137,8 +140,12 @@ module.exports.userMutation = {
 
             // Check firstName, lastName
             let { first_name, last_name } = args;
-            if (!new RegExp('^[A-Z ]+$', "i").test(first_name.trim())) throw new ApolloError(`First name must Alphabet, not ${first_name}`);
-            if (!new RegExp('^[A-Z ]+$', "i").test(last_name.trim())) throw new ApolloError(`Last name must Alphabet, not ${last_name}`);
+            if (!new RegExp('^[A-Z ]+$', "i").test(first_name.trim())) throw new ApolloError(`First name must Alphabet`);
+            if (!new RegExp('^[A-Z ]+$', "i").test(last_name.trim())) throw new ApolloError(`Last name must Alphabet`);
+
+            // check email isUsed
+            const user = await UserModel.findOne({ email: args.email })
+            if (user) throw new Error('Email has been used.');
 
             const newUser = new UserModel(args);
 
@@ -146,7 +153,8 @@ module.exports.userMutation = {
             await newUser.save();
             return newUser;
         } catch (err) {
-            throw new ApolloError(err);
+            if (err.message.includes(':')) err.message = err.message.split(':')[2]
+            throw new ApolloError(err.message);
         }
     },
     updateUser: async (_, args) => {
@@ -164,8 +172,8 @@ module.exports.userMutation = {
             }
 
             // check password length
-            if (args.password && args.password.length <= 5) {
-                throw new ApolloError('Password length must greater than 5 digits.', status_code[400])
+            if (args.password && args.password.length <= 7) {
+                throw new ApolloError('Password length must greater than 8 digits.', status_code[400])
             } else if (args.password && args.password.length > 5) {
                 // check oldPassword
                 if (!args.oldPassword) throw new ApolloError('Please insert old passwrod', status_code[400]);
@@ -185,7 +193,8 @@ module.exports.userMutation = {
             await UserModel.findByIdAndUpdate(args.id, args, { new: true, runValidators: true });
             return await UserModel.findById(args.id);
         } catch (err) {
-            throw new ApolloError(err)
+            if (err.message.includes(':')) err.message = err.message.split(':')[2]
+            throw new ApolloError(err.message);
         }
     },
     resetPassword: async (_, { email, password, confirm_password, friend_name, pet_name }) => {
@@ -198,8 +207,14 @@ module.exports.userMutation = {
             //     pet_name: ${pet_name}
             //     `
             // );
+
+            // check if user has been used
             const user = await UserModel.findOne({ email });
             if (!user) throw new ApolloError('User not found');
+
+            // check password length
+            if (args.password.length < 8) throw new Error('Password at less 8 digits')
+
             if (new RegExp(`^${friend_name}$`, "i").test(user.friend_name) && new RegExp(`^${pet_name}$`, "i").test(user.pet_name)) {
                 if (password !== confirm_password) throw new ApolloError('Password didn\'t match.');
                 password = bcrypt.hashSync(password, 10)
@@ -207,7 +222,8 @@ module.exports.userMutation = {
                 return await UserModel.findById(user.id)
             } else { throw new ApolloError('Security question failed') }
         } catch (err) {
-            throw new ApolloError(err)
+            if (err.message.includes(':')) err.message = err.message.split(':')[2]
+            throw new ApolloError(err.message);
         }
     },
     deleteUser: async (_, { id, status = 'deleted' }) => {
@@ -218,7 +234,8 @@ module.exports.userMutation = {
             }
             return await UserModel.findById(id);
         } catch (err) {
-            throw new ApolloError(err);
+            if (err.message.includes(':')) err.message = err.message.split(':')[2]
+            throw new ApolloError(err.message);
         }
     },
     login: async (_, { email, password }, context) => {
@@ -255,7 +272,8 @@ module.exports.userMutation = {
 
             // 
         } catch (err) {
-            throw new ApolloError(err)
+            if (err.message.includes(':')) err.message = err.message.split(':')[2]
+            throw new ApolloError(err.message);
         }
     },
 }
