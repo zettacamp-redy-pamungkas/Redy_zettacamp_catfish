@@ -208,7 +208,7 @@ async function checkRecipeName(recipe_name) {
 }
 
 module.exports.recipeMutation = {
-    createRecipe: async (_, { recipe_name, input, price, imgUrl, discount }) => {
+    createRecipe: async (_, { recipe_name, input, price, imgUrl, discount = 0 }) => {
         try {
             recipe_name = recipe_name.trim();
             if (!input.length) { throw new ApolloError('Input Empty'); }
@@ -229,7 +229,7 @@ module.exports.recipeMutation = {
             throw new ApolloError(err);
         }
     },
-    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount, highlight }) => {
+    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount = 0, highlight }) => {
         try {
             if (recipe_name) { recipe_name.trim() }
             if (!input) {
