@@ -11,7 +11,7 @@ const ingredientModel = require('../../models/ingredient.model');
 
 // Check if ingredient is used by recipe
 async function findIngredientInRecipe(id) {
-    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } } });
+    let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } }, status: { $ne: 'deleted' } });
     recipes = recipes.map((recipe) => recipe.recipe_name);
     if (!recipes.length) return true;
     throw new ApolloError(`This ingredient cannot been deleted because has been used in Recipe: ${recipes.toString()}`);
