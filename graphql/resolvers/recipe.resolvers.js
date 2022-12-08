@@ -201,27 +201,35 @@ module.exports.recipeQuery = {
     }
 }
 
+// check is name has been used
 async function checkRecipeName(recipe_name) {
     const recipe = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
     if (recipe && (recipe.status === 'publish' || recipe.status === 'unpublish')) throw new ApolloError(`Recipe name : ${recipe_name} has been used.`);
     if (recipe && recipe.status === 'deleted') await RecipeModel.findByIdAndDelete(recipe.id);
 }
 
+// check updated recipe name has been used
+
 module.exports.recipeMutation = {
-    createRecipe: async (_, { recipe_name, input, price, imgUrl, discount = 0 }) => {
+    createRecipe: async (_, { recipe_name, input, price, imgUrl, discount }) => {
         try {
+            // trim recipe name
             recipe_name = recipe_name.trim();
+
+            // set discount to 0 if discount is null or undefined
+            if (!discount) discount = 0
+
             if (!input.length) { throw new ApolloError('Input Empty'); }
             await checkRecipeName(recipe_name);
             await checkIngredient(input);
+
             // console.log(`Create Recipe
             // Recipe Name: ${recipe_name}, 
             // ingredients: ${input} 
             // price: ${price}
             // imgUrl: ${imgUrl}
             // discount: ${discount}`);
-            // if (!discount && discount !== 0) { discount = 40 }
-            // if (discount === null ) { discount = 40 }
+
             const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount });
             await newRecipe.save()
             return newRecipe;
@@ -229,9 +237,13 @@ module.exports.recipeMutation = {
             throw new ApolloError(err);
         }
     },
-    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount = 0, highlight }) => {
+    updateRecipe: async (_, { id, recipe_name, input, status, imgUrl, price, special_offer, discount, highlight }) => {
         try {
+            // Trim recipe_name
             if (recipe_name) { recipe_name.trim() }
+
+            // Set discount to 0 if discount is null or undefined
+            if (!discount) discount = 0
             if (!input) {
                 const recipe = await RecipeModel.findById(id);
                 if (!recipe) throw new ApolloError(`Recipe with id: ${id} not found`, '400')
