@@ -14,7 +14,7 @@ async function findIngredientInRecipe(id) {
     let recipes = await RecipeModel.find({ ingredients: { $elemMatch: { ingredient_id: mongoose.Types.ObjectId(id) } }, status: { $ne: 'deleted' } });
     recipes = recipes.map((recipe) => recipe.recipe_name);
     if (!recipes.length) return true;
-    throw new ApolloError(`This ingredient cannot been deleted because has been used in Recipe: ${recipes.toString()}`);
+    throw new ApolloError(`This ingredient cannot been deleted because has been used in Recipe.`);
 }
 
 async function isUsed(ingredient_id) {
@@ -117,10 +117,10 @@ module.exports.ingredientQuery = {
 module.exports.ingredientMutation = {
     createIngredient: async (_, { name, stock }) => {
         try {
-            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet, not ${name}`);
+            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet.`);
             const ingredient = await IngredientModel.findOne({ name: new RegExp("^" + name.trim() + "$", 'i') });
             // console.log(ingredient)
-            if (ingredient) { if (ingredient.status === 'active') { throw new ApolloError(`Ingredient: ${name} has been exist.`) } else { await IngredientModel.findByIdAndDelete(ingredient.id) } }
+            if (ingredient) { if (ingredient.status === 'active') { throw new ApolloError(`Ingredient name has been used.`) } else { await IngredientModel.findByIdAndDelete(ingredient.id) } }
             const newIngredient = new IngredientModel({ name, stock });
             await newIngredient.save();
             return newIngredient;
@@ -132,7 +132,7 @@ module.exports.ingredientMutation = {
     updateIngredient: async (_, { id, name, stock, status }) => {
         if (name) {
             name = name.trim();
-            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet, not ${name}`);
+            if (!new RegExp('^[A-Z ]+$', "i").test(name.trim())) throw new ApolloError(`Ingredient name must be Alphabet.`);
         }
         try {
             if (status === 'deleted') {
@@ -154,11 +154,11 @@ module.exports.ingredientMutation = {
                     ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
                 } else {
                     ingredientName = await IngredientModel.findOne({ name: new RegExp(`^${name}$`, 'i') })
-                    if (ingredientName) throw new Error(`Ingredient with name: ${name} has been taken / used.`)
+                    if (ingredientName) throw new Error(`Ingredient name has been used.`)
                     ingredient = await IngredientModel.findByIdAndUpdate(id, { name: name, stock: stock, status: status }, { new: true, runValidators: true });
                 }
             }
-            if (!ingredient) throw new ApolloError(`Ingredient with ID: ${id} not found`);
+            if (!ingredient) throw new ApolloError(`Ingredient not found`);
             // console.log(`Update Ingredient ID: ${id}, name: ${ingredient.name}, stock: ${ingredient.stock}, status: ${ingredient.status}`);
             return await IngredientModel.findById(id);
         } catch (err) {
