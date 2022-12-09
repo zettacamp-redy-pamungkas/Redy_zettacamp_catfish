@@ -111,7 +111,6 @@ module.exports.recipeQuery = {
     },
     getAllRecipes: async (_, { recipe_name, page, limit, status, special_offer, highlight }) => {
         try {
-            const tick = Date.now();
             const aggregateQuery = [];
             aggregateQuery.push({ $sort: { createdAt: -1 } });
             const matchQuery = { $and: [] };
@@ -163,13 +162,10 @@ module.exports.recipeQuery = {
                         $limit: limit
                     }
                 )
-
-                // console.log('Pagination', page)
             }
 
             if (aggregateQuery.length) {
                 recipes = await RecipeModel.aggregate(aggregateQuery);
-                // console.log(JSON.stringify(aggregateQuery))
                 if (!recipes.length) {
                     throw new ApolloError(`Recipe name: ${recipe_name} not found`)
                 }
@@ -178,7 +174,6 @@ module.exports.recipeQuery = {
                     return resep
                 })
             }
-            // console.log(`Get All Recipe Time: ${Date.now() - tick} ms`);
             return {
                 recipes,
                 page: page >= 0 ? page + 1 : 1,
@@ -204,7 +199,7 @@ module.exports.recipeQuery = {
 // check is name has been used
 async function checkRecipeName(recipe_name) {
     const recipe = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
-    if (recipe && (recipe.status === 'publish' || recipe.status === 'unpublish')) throw new ApolloError(`Recipe name : ${recipe_name} has been used.`);
+    if (recipe && (recipe.status === 'publish' || recipe.status === 'unpublish')) throw new ApolloError(`Recipe name has been used.`);
     if (recipe && recipe.status === 'deleted') await RecipeModel.findByIdAndDelete(recipe.id);
 }
 
@@ -215,7 +210,7 @@ module.exports.recipeMutation = {
         try {
             // trim recipe name
             recipe_name = recipe_name.trim();
-            if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet, not ${recipe_name}`);
+            if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet.`);
 
             // set discount to 0 if discount is null or undefined
             if (!discount) discount = 0
@@ -223,13 +218,6 @@ module.exports.recipeMutation = {
             if (!input.length) { throw new ApolloError('Input Empty'); }
             await checkRecipeName(recipe_name);
             await checkIngredient(input);
-
-            // console.log(`Create Recipe
-            // Recipe Name: ${recipe_name}, 
-            // ingredients: ${input} 
-            // price: ${price}
-            // imgUrl: ${imgUrl}
-            // discount: ${discount}`);
 
             const newRecipe = new RecipeModel({ recipe_name, ingredients: input, price, imgUrl, status: 'unpublish', discount: discount });
             await newRecipe.save()
@@ -243,7 +231,7 @@ module.exports.recipeMutation = {
             // Trim recipe_name
             if (recipe_name) {
                 recipe_name.trim();
-                if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet, not ${recipe_name}`);
+                if (!new RegExp('^[A-Z ]+$', "i").test(recipe_name)) throw new ApolloError(`Recipe name must be Alphabet.`);
             }
 
             // Set discount to 0 if discount is null or undefined
@@ -252,13 +240,8 @@ module.exports.recipeMutation = {
                 const recipe = await RecipeModel.findById(id);
                 if (!recipe) throw new ApolloError(`Recipe with id: ${id} not found`, '400')
                 input = recipe.ingredients;
-                // console.log("Hello Input Kosong")
             }
-            // await checkRecipeName(recipe_name);
             let recipeName = await RecipeModel.findById(id);
-            // console.log(recipeName.recipe_name, recipe_name)
-            // console.log(new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name))
-            console.log(recipeName)
             if (recipeName) {
                 if (new RegExp(`^${recipeName.recipe_name}$`, 'i').test(recipe_name)) {
                     if (recipeName.status === 'deleted') { await RecipeModel.findByIdAndUpdate(recipeName.id, { $set: { status: 'unpublish' } }) }
@@ -266,13 +249,11 @@ module.exports.recipeMutation = {
                 else {
                     recipeName = await RecipeModel.findOne({ recipe_name: new RegExp(`^${recipe_name}$`, 'i') });
                     if (recipeName) {
-                        // console.log('hello there')
-                        throw new Error(`Recipe name: ${recipeName.recipe_name} has been used / taken.`)
+                        throw new Error(`Recipe name has been used.`)
                     }
                 }
             }
             await checkIngredient(input);
-            // console.log(`Update Recipe, ID: ${id}, recipe_name: ${recipe_name}, input: ${input}, status: ${status}, price: ${price}, imgUrl: ${imgUrl}, discount: ${discount}`);
             const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, {
                 recipe_name,
                 ingredients: input,
@@ -286,9 +267,7 @@ module.exports.recipeMutation = {
             if (!updatedRecipe) { throw new ApolloError(`Recipe with id: ${id} not found`) }
             if (updatedRecipe.status === 'unpublish') {
                 const carts = await cartModel.find({ status: 'pending' });
-                // console.log('update recipe pending', JSON.stringify(carts));
                 for (let cart of carts) {
-                    // console.log(cart)
                     await cart.updateOne({ $pull: { "cart": { "recipe_id": mongoose.Types.ObjectId(id) } } })
                 }
             }
@@ -304,7 +283,6 @@ module.exports.recipeMutation = {
                 status: 'deleted'
             }, { new: true, runValidators: true })
             if (!deletedRecipe) throw new ApolloError(`Recipe with ID: ${id} not found`);
-            // console.log(`Delete Recipe ID: ${id}, Name: ${deletedRecipe.recipe_name}`);
             return deletedRecipe;
         } catch (error) {
             throw new ApolloError(error);
