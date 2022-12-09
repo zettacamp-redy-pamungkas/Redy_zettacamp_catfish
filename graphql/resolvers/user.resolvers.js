@@ -216,7 +216,7 @@ module.exports.userMutation = {
             if (!user) throw new ApolloError('User not found');
 
             // check password length
-            if (args.password.length < 8) throw new Error('Password at less 8 digits')
+            if (password.length < 8) throw new Error('Password at less 8 digits')
 
             if (new RegExp(`^${friend_name}$`, "i").test(user.friend_name) && new RegExp(`^${pet_name}$`, "i").test(user.pet_name)) {
                 if (password !== confirm_password) throw new ApolloError('Password didn\'t match.');
