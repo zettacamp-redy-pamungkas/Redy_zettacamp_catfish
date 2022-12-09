@@ -127,6 +127,9 @@ module.exports.userMutation = {
                 throw new ApolloError('Email not valid', status_code[400]);
             }
 
+            // check if isPassword empty
+            if (!args.password) throw new Error('Password cannot empty')
+
             // check password length
             if (args.password.length < 8) throw new Error('Password at less 8 digits')
 
