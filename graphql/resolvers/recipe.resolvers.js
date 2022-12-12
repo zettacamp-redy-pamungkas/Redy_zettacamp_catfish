@@ -93,7 +93,7 @@ module.exports.recipeQuery = {
                     throw new ApolloError(`Recipe name: ${recipe_name} not found`)
                 }
                 recipes = recipes.map((resep) => {
-                    resep.id = mongoose.Types.ObjectId(resep._id);
+                    resep.id = resep._id;
                     return resep
                 })
             }
@@ -170,7 +170,7 @@ module.exports.recipeQuery = {
                     throw new ApolloError(`Recipe name: ${recipe_name} not found`)
                 }
                 recipes = recipes.map((resep) => {
-                    resep.id = mongoose.Types.ObjectId(resep._id);
+                    resep.id = resep._id;
                     return resep
                 })
             }

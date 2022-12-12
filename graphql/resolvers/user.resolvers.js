@@ -70,7 +70,7 @@ module.exports.userQuery = {
                 users = await UserModel.aggregate(aggregateUsers);
                 if (!users.length) { throw new ApolloError('not found') }
                 users.map((user) => {
-                    user.id = mongoose.Types.ObjectId(user._id);
+                    user.id = user._id;
                 })
             }
 

@@ -83,7 +83,7 @@ module.exports.ingredientQuery = {
                 // console.log(aggregateIngredients);
                 if (!ingredients.length) { throw new ApolloError('not found') }
                 ingredients = ingredients.map((ingredient) => {
-                    ingredient.id = mongoose.Types.ObjectId(ingredient._id);
+                    ingredient.id = ingredient._id;
                     return ingredient
                 })
                 if (stock) {

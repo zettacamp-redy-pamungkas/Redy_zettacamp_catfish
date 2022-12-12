@@ -159,7 +159,7 @@ async function getAllTransaction(parent, { last_name, recipe_name, order_date, o
         if (aggregateQuery.length) {
             transactions = await TransactionModel.aggregate(aggregateQuery);
             transactions = transactions.map((transaction) => {
-                transaction.id = mongoose.Types.ObjectId(transaction._id);
+                transaction.id = transaction._id;
                 return transaction;
             })
         }
