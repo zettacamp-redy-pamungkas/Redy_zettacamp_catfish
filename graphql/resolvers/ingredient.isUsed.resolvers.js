@@ -6,7 +6,7 @@ const RecipeModel = require('../../models/recipes.model');
 
 // Apollo Error
 const { ApolloError } = require('apollo-server');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 // Check if ingredient is used by recipe
 async function findIngredientInRecipe({ id }) {

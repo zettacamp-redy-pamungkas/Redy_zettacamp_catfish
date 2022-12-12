@@ -12,7 +12,7 @@ const emailValidator = require('email-validator');
 
 // jsonwebtoken
 const jwt = require('jsonwebtoken');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 // status code
 const status_code = require('../../utils/status_code');

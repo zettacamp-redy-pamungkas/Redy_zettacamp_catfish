@@ -15,7 +15,7 @@ const CartModel = require('../../models/cart.model');
 
 // Apollo Error
 const { ApolloError } = require('apollo-server');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 // moment
 const moment = require('moment');

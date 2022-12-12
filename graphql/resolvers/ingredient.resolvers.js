@@ -6,7 +6,7 @@ const RecipeModel = require('../../models/recipes.model');
 
 // Apollo Error
 const { ApolloError } = require('apollo-server');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const ingredientModel = require('../../models/ingredient.model');
 
 // Check if ingredient is used by recipe

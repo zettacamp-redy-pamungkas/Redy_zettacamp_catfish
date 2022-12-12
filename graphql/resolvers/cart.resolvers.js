@@ -1,6 +1,6 @@
 // Apollo Error
 const { ApolloError } = require('apollo-server');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const cartModel = require('../../models/cart.model');
 
 // Cart Model
